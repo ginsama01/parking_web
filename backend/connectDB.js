@@ -7,6 +7,7 @@ const sequelize = new Sequelize('parking_web', 'root', null, {
   dialect: 'mysql'
 });
 
+
 let connectDB = async () => {
   try {
       await sequelize.authenticate();
