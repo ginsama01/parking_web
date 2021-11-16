@@ -8,6 +8,13 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 var models = require('./models/models');
+var { dbConnect } = require('./connectDB');
+dbConnect.query("SELECT * FROM account")
+.then((result) => {
+  console.log(result);
+}, (err) => next(err))
+.catch((err) => console.log(err));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
