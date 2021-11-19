@@ -7,19 +7,13 @@ const Park_User = require('./park_user.model');
 const Chat = require('./chat.model');
 const Car = require('./car.model');
 const Favorite = require('./favorite.model');
-const Rating = require('./rating.model');
 const Comment = require('./comment.model');
 const Parking = require('./parking.model');
 const Pending = require('./pending.model');
 
 Owner.belongsTo(Account, {
-    foreignKey: 'owner_id',
+    foreignKey: 'own_id',
     targetKey: 'id'
-});
-
-Owner.belongsTo(Admin, {
-    foreignKey: 'admin_id',
-    targetKey: 'admin_id'
 });
 
 Admin.belongsTo(Account, {
@@ -89,11 +83,6 @@ Favorite.belongsTo(Park_User, {
     targetKey: 'rela_id'
 });
 
-//Reference between rating and park_user
-Rating.belongsTo(Park_User, {
-    foreignKey: 'rela_id',
-    targetKey: 'rela_id'
-});
 
 //Reference between parking and park_user
 Park_User.hasMany(Parking, {
@@ -126,7 +115,6 @@ module.exports = {
     Chat,
     Parking,
     Pending,
-    Rating,
     Comment, 
     Favorite
 }

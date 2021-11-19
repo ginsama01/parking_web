@@ -3,15 +3,9 @@ const { dbConnect, DataTypes, Deferrable } = require('../connectDB');
 
 const Owner = dbConnect.define('owner', {
     own_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        
-        /*references: {
-            model: Account,
-            key: 'id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
-        }*/
     },
     age: {
         type: DataTypes.INTEGER
@@ -23,15 +17,6 @@ const Owner = dbConnect.define('owner', {
         type: DataTypes.TINYINT,
         allowNull: false
     }, 
-    adminid: {
-        type: DataTypes.STRING(30),
-        
-       /* references: {
-            model: Admin,
-            key: 'admin_id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
-        }*/
-    }
 }, {
     freezeTableName: true
 });

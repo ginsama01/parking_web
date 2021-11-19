@@ -3,12 +3,13 @@ const { dbConnect, DataTypes, Deferrable } = require('../connectDB');
 
 const Park = dbConnect.define('park', {
     park_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
+        autoIncrement: true
     },
     own_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     total_space: {
@@ -21,6 +22,22 @@ const Park = dbConnect.define('park', {
     },
     price: {
         type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
+    }, 
+    hasCamera: {
+        type: DataTypes.TINYINT,
+        allowNull: false
+    }, 
+    hasRoof: {
+        type: DataTypes.TINYINT,
+        allowNull: false
+    }, 
+    allowOvernight: {
+        type: DataTypes.TINYINT,
+        allowNull: false
+    }, 
+    allowBooking: {
+        type: DataTypes.TINYINT,
         allowNull: false
     }, 
     description: {

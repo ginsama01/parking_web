@@ -2,9 +2,10 @@ const { dbConnect, DataTypes} = require('../connectDB');
 
 const Account = dbConnect.define('account', {
     id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
+        autoIncrement: true
     },
     username: {
         type: DataTypes.STRING,
@@ -14,16 +15,20 @@ const Account = dbConnect.define('account', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    fullname: {
+    firstname: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    lastname: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    address: {
+        type: DataTypes.STRING,
     },
     phone: {
         type: DataTypes.INTEGER
     },
-    image_url: {
-        type: DataTypes.STRING
-    }
 }, {
     freezeTableName: true
 });

@@ -3,12 +3,13 @@ const { dbConnect, DataTypes, Deferrable } = require('../connectDB');
 
 const Favorite = dbConnect.define('favorite', {
     flist_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
+        autoIncrement: true
     },
     rela_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         allowNull: false
     },
 }, {

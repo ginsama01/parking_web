@@ -3,17 +3,21 @@ const { dbConnect, DataTypes, Deferrable } = require('../connectDB');
 
 const Comment = dbConnect.define('comment', {
     cmt_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
+        autoIncrement: true
     },
     rela_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    rate: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     content: {
         type: DataTypes.TEXT,
-        allowNull: false
     }
 }, {
     freezeTableName: true
