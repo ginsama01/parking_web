@@ -1,7 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models/models');
+var authenticate = require('../authenticate');
+
 const { dbConnect } = require('../connectDB');
+var jwt = require('jsonwebtoken');
+var config = require('../config');
 
 const accountRouter = express.Router();
 
@@ -42,9 +46,10 @@ accountRouter.route('/signup')
 
 accountRouter.route('/login')
     .post((req, res, next) => {
+        //const token = req.header('Authorization').replace('Bearer ', '')
         let username = req.body.username;
         let password = req.body.password;
-        if (!req.session.user) {
+        
             if (!username) {
                 var err = new Error('You are not authenticated!');
                 err.status = 401;
@@ -64,17 +69,12 @@ accountRouter.route('/login')
                     return next(err);
                 }
                 else if (result[0].username === username && result[0].password === password) {
-                    req.session.user = 'authenticated';
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'text/plain');
-                    res.end('You are authenticated!')
+                    var token = authenticate.getToken({id: result[0].id});
+                    res.json({success: true, token: token, status: 'You are successfully logged in!'});
                 }
             }) .catch((err) => next(err));
-        } else {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'text/plain');
-            res.end('You are already authenticated!');
-        }
     })
 
 accountRouter.route('/logout')

@@ -1,8 +1,9 @@
 var express = require('express');
+const { verifyUser, verifyOwner, verifyAdmin } = require('../authenticate');
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/',verifyAdmin, function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
