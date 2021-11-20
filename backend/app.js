@@ -2,37 +2,15 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var FileStore = require('session-file-store')(session);
 var logger = require('morgan');
-var FileStore = require('session-file-store');
-var passport = require('passport');
-var authenticate = require('./authenticate');
-
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+var ownRouter = require('./routes/own.router');
+var authenRouter = require('./routes/authen.router');
 var app = express();
-var models = require('./models/models');
-var {dbConnect} = require('./connectDB');
-var username = "MomThu";
-var password = "1234";
-  dbConnect.query("select * from account where username = '"+username+"'")
-            .then((result) => {
-                if(result == null) {
-                    var newUser = new Object();
-                    newUser.username = username;
-                    newUser.password = password;
-                    var insertQuery = "INSERT INTO account ( username, password ) values ('" + username +"','"+ password +"')";
-                    console.log(insertQuery);
-                    dbConnect.query(insertQuery)
-                        .then(() => {
-                            console.log("Insert new user successfully!");
-                        }, (err) => next(err))
-                        .catch((err) => console.log(err));
-                } else {
-                    console.log('This account is alredy exist.');
-                }
-            }, (err) => next(err))
-            .catch((err) => console.log(err));
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,14 +19,58 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-//app.use(cookieParser());
 
-app.use(passport.initialize());
+//app.use(cookieParser('12345-67890-09876-54321'));
+const fileStoreOptions = {
+  path: '/tmp'
+}
+app.use(session({
+  name: 'session-id',
+  secret: '12345-67890-09876-54321',
+  saveUninitialized: false,
+  resave: false,
+  store: new FileStore(fileStoreOptions)
+}));
+
+app.use('/authen', authenRouter);
+
+function auth (req, res, next) {
+  let username = req.body.username;
+  let password = req.body.password;
+  if (!req.session.user) {
+    if (!username) {
+      var err = new Error('You are not authenticated!');
+      err.status = 401;
+      next(err);
+      return;
+    }
+    if (username == 'admin' && password == 'password') {
+        req.session.user = 'admin';
+        next(); // authorized
+    } else {
+        var err = new Error('You are not authenticated!');
+        err.status = 401;
+        next(err);
+    }
+  } else {
+    if (req.session.user === 'admin') {
+      next();
+    }
+    else {
+        var err = new Error('You are not authenticated!');
+        err.status = 401;
+        next(err);
+    }
+  }
+}
+
+app.use(auth);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/own', ownRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

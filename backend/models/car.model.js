@@ -7,7 +7,7 @@ const Car = dbConnect.define('car', {
         allowNull: false,
     },
     user_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     cartype: {

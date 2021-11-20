@@ -3,16 +3,17 @@ const { dbConnect, DataTypes, Deferrable } = require('../connectDB');
 
 const Chat = dbConnect.define('chat', {
     chat_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
+        autoIncrement: true
     },
     user1_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     user2_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     content: {

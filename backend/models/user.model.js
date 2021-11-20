@@ -3,15 +3,9 @@ const { dbConnect, DataTypes, Deferrable } = require('../connectDB');
 
 const User = dbConnect.define('user', {
     user_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        
-        /*references: {
-            model: Account,
-            key: 'id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
-        }*/
     },
     age: {
         type: DataTypes.INTEGER
