@@ -16,6 +16,10 @@ const User = dbConnect.define('user', {
     isactivated: {
         type: DataTypes.TINYINT,
         allowNull: false
+    },
+    penalty: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     }
 }, {
     freezeTableName: true

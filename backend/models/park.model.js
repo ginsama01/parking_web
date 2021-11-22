@@ -16,6 +16,10 @@ const Park = dbConnect.define('park', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    active_time: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     location: {
         type: DataTypes.STRING,
         allowNull: false

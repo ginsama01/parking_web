@@ -22,7 +22,8 @@ ownRouter.route('/')
             .catch((err) => next(err));
     })
     .post((req, res, next) => {
-        req.body["own_id"] = 1;
+        let parkJson = req.body;
+        
         models.Park.create(req.body)
             .then((park) => {
                 console.log('Park created ', park);
