@@ -1,5 +1,5 @@
 * {
-  font-family: 'Patrick Hand', cursive;
+  font-family: 'Nunito', sans-serif;
 }
 
 .app-name {
@@ -13,36 +13,37 @@
   border-bottom: 1px ridge;
   min-height: 400px;
 }
-.footer{
-  background-color: #EBFFED;
-  margin:0px auto;
+
+.footer {
+  background-color: #CEE5D0;
+  margin: 0px auto;
   padding: 20px 0px 20px 0px;
 }
 
-address{
-  font-size:80%;
-  margin:0px;
-  color:#0f0f0f;
+address {
+  font-size: 80%;
+  margin: 0px;
+  color: #0f0f0f;
 }
 
 #entrance-time:before {
-  content:'Từ:';
-  margin-right:.6em;
+  content: 'Từ:';
+  margin-right: .6em;
 }
 
 #exit-time:before {
-  content:'Đến:';
-  margin-right:.6em;
+  content: 'Đến:';
+  margin-right: .6em;
 }
 
 #entrance-date:before {
-  content:'Ngày gửi:';
-  margin-right:.6em;
+  content: 'Ngày gửi:';
+  margin-right: .6em;
 }
 
 #exit-date:before {
-  content:'Ngày trả:';
-  margin-right:.6em;
+  content: 'Ngày trả:';
+  margin-right: .6em;
 }
 
 .title {
@@ -55,11 +56,6 @@ p {
 
 .form-group {
   padding-top: 10px;
-}
-
-.park-card {
-  margin-top: 10px;
-  margin-left: -30px;
 }
 
 .park-list-tab {
