@@ -229,3 +229,88 @@ export const postReport = (park_id, content) => (dispatch) => {
         .catch(error => { console.log('Post report ', error.message)
             alert('Your report could not be posted \nError: ' + error.message) })
 }
+
+
+export const postUser = (username, password, email, firstname, lastname, type) => (dispatch) => {
+    const newUser = {
+        username: username,
+        password: password,
+        email: email,
+        firstname: firstname,
+        lastname: lastname,
+        type: type
+    };
+    return fetch(baseUrl + 'authen/signup', 
+        {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+              },
+            body: JSON.stringify(newUser),
+            credentials: "same-origin"
+        })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => {
+            alert('Đăng ký thành công'); 
+            window.location.href='/'
+        })
+        .then(user => dispatch(addUser(user)))
+        .catch(error =>  { console.log('post user', error.message); alert('Your account could not be posted\nError: '+error.message); });
+    }
+
+export const userFailed = (errmess) => ({
+    type: ActionTypes.USER_FAILED,
+    payload: errmess
+});
+
+export const addUser = (user) => ({
+    type: ActionTypes.ADD_USER,
+    payload: user
+});
+
+export const postLogin = (username, password) => (dispatch) => {
+    const Login = {
+        username: username,
+        password: password
+    };
+    return fetch(baseUrl + 'authen/login', 
+        {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+              },
+            body: JSON.stringify(Login),
+            credentials: "same-origin"
+        })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => {
+            alert('Đăng nhập thành công'); 
+            window.location.href='/'
+        })
+        .then(user => dispatch(addUser(user)))
+        .catch(error =>  { console.log('post user', error.message); alert('Your account could not be posted\nError: '+error.message); });
+    }

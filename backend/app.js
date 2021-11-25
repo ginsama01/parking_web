@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
+var passport = require('passport');
 var FileStore = require('session-file-store')(session);
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
@@ -10,9 +11,9 @@ var usersRouter = require('./routes/users');
 var ownRouter = require('./routes/own.router');
 var parkRouter = require('./routes/park.router');
 var authenRouter = require('./routes/authen.router');
+var config = require('./config');
 
 var app = express();
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,17 +23,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//app.use(cookieParser('12345-67890-09876-54321'));
-const fileStoreOptions = {
-  path: '/tmp'
-}
-// app.use(session({
-//   name: 'session-id',
-//   secret: '12345-67890-09876-54321',
-//   saveUninitialized: false,
-//   resave: false,
-//   store: new FileStore(fileStoreOptions)
-// }));
+app.use(cookieParser(config.cookieKey));
 
 app.use('/', indexRouter);
 

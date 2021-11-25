@@ -3,10 +3,10 @@ var router = express.Router();
 var cors = require('./cors');
 var models = require('../models/models');
 var authenticate = require('../authenticate');
+var passport = require('passport');
+var cors = require('./cors');
 
 const { dbConnect } = require('../connectDB');
-var jwt = require('jsonwebtoken');
-var config = require('../config');
 
 const accountRouter = express.Router();
 
@@ -15,6 +15,7 @@ accountRouter.use(express.json());
 
 accountRouter.route('/signup')
     .post((req, res, next) => {
+        console.log(req.body);
         dbConnect.query("SELECT * FROM account WHERE username = '" + req.body.username +"';", {
             type: dbConnect.QueryTypes.SELECT
         }) .then((result) => {
@@ -30,13 +31,13 @@ accountRouter.route('/signup')
                             models.User.create({"user_id": result.dataValues.id, "isactivated": false})
                                 .then(() => {
                                     console.log('User created ');
-                                    res.json();
+                                    res.json({success: true, status: 'Đăng ký thành công!'});
                                 }, (err) => next(err));
                         } else {
                             models.Owner.create({"own_id": result.dataValues.id, "isactivated": false})
                                 .then(() => {
                                     console.log('Owner created ');
-                                    res.json();
+                                    res.json({success: true, status: 'Đăng ký thành công!'});
                                 }, (err) => next(err));
                         }
                     }, (err) => next(err))
@@ -47,7 +48,6 @@ accountRouter.route('/signup')
 
 accountRouter.route('/login')
     .post((req, res, next) => {
-        //const token = req.header('Authorization').replace('Bearer ', '')
         let username = req.body.username;
         let password = req.body.password;
         
@@ -71,9 +71,10 @@ accountRouter.route('/login')
                 }
                 else if (result[0].username === username && result[0].password === password) {
                     res.statusCode = 200;
-                    res.setHeader('Content-Type', 'text/plain');
+                    res.setHeader('Content-Type', 'application/json');
                     var token = authenticate.getToken({id: result[0].id});
-                    res.json({success: true, token: token, status: 'You are successfully logged in!'});
+                    res.cookie('token', token, {signed: true});
+                    res.json({success: true, status: 'You are successfully logged in!'});
                 }
             }, (err) => next(err)) 
             .catch((err) => next(err));
@@ -81,10 +82,9 @@ accountRouter.route('/login')
 
 accountRouter.route('/logout')
     .get((req, res, next) => {
-        if (req.session) {
-            req.session.destroy();
-            res.clearCookie('session-id');
-            res.redirect('/');
+        if (req.signedCookies.token) {
+            res.clearCookie("token");
+            res.json({success: true, status: 'You are successfully logged out!'});
         } else {
             var err = new Error('You are not logged in!');
             err.status = 403;

@@ -4,10 +4,12 @@ import Footer from './FooterComponent';
 import SearchInfo from './SearchInfoComponent';
 import { connect } from "react-redux";
 import ParkListTabs from "./ParkListComponent";
-import { fetchComments, fetchParkInfo, fetchParks, fetchParkStatus } from "../redux/ActionCreators";
+import { fetchComments, fetchParkInfo, fetchParks, fetchParkStatus, postUser, postLogin } from "../redux/ActionCreators";
 import Start from "./StartComponent"
 import ParkDetail from "./ParkDetailComponent";
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import Login from "./LoginComponent";
+import Register from "./SignupComponent";
 
 const mapStateToProps = state => {
     return {
@@ -19,10 +21,9 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchParks: () => { dispatch(fetchParks()) },
-    // fetchParkStatus: (park_id) => { dispatch(fetchParkStatus(park_id)) },
-    // fetchParkInfo: () => { dispatch(fetchParkInfo()) },
-    // fetchComments: () => { dispatch(fetchComments()) }
+    fetchParks: () => {dispatch(fetchParks())},
+    postLogin: (username, password) => dispatch(postLogin(username, password)),
+    postUser: (username, password, email, firstname, lastname, type) => dispatch(postUser(username, password, email, firstname, lastname, type))
 });
 
 
@@ -37,6 +38,8 @@ class Main extends Component {
         // this.props.fetchParkStatus();
         // this.props.fetchParkInfo();
         // this.props.fetchComments();
+        //this.props.fetchParks();
+        //this.props.postUser();
     }
 
 
@@ -53,8 +56,12 @@ class Main extends Component {
                             comments={this.props.comments} />} /> */}
                     <Route exact path="/parks" 
                         component={ () => <ParkListTabs parks={this.props.parks} /> } />
+                    <Route exact path="/login" component={() => <Login postLogin = {this.props.postLogin}/>} />
+                    <Route exact path="/register" component= {() => <Register postUser = {this.props.postUser}/> } />
                     <Redirect to="/start" />
                 </Switch>
+                {/* <SearchInfo />
+                <ParkListTabs parks={this.props.parks} /> */}
                 <Footer />
             </div>
         );

@@ -29,6 +29,9 @@ const Account = dbConnect.define('account', {
     phone: {
         type: DataTypes.INTEGER
     },
+    facebookId: {
+        type: DataTypes.STRING
+    }
 }, {
     freezeTableName: true
 });
