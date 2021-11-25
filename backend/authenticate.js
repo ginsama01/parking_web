@@ -8,11 +8,18 @@ exports.getToken = function(user) {
     return jwt.sign(user, config.secretKey, {expiresIn: 3600});
 }
 
+exports.getAccountId = (req) => {
+    var token = req.headers.authorization.split(' ')[1];
+    var id = jwt.verify(token, config.secretKey).id;
+    return id;
+}
+
 exports.verifyUser = (req, res, next) => {
     if (!req.headers.authorization) {
         var err = new Error('You are not login!');
         err.status = 401;
         return next(err);
+        
     }
     else {
         var token = req.headers.authorization.split(' ')[1];
@@ -34,7 +41,8 @@ exports.verifyUser = (req, res, next) => {
             } else {
                 return next();
             }
-        })
+        }, (err) => next(err))
+        .catch(err => next(err));
     }
 }
 

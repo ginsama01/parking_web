@@ -8,7 +8,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var ownRouter = require('./routes/own.router');
-
+var parkRouter = require('./routes/park.router');
 var authenRouter = require('./routes/authen.router');
 
 var app = express();
@@ -38,32 +38,13 @@ app.use('/', indexRouter);
 
 app.use('/authen', authenRouter);
 
-// function auth (req, res, next) {
-//   console.log(req.session);
-//   if (!req.session.user) {
-//     var err = new Error('You are not authenticated!');
-//     err.status = 403;
-//     return next(err);
-//   } else {
-//     if (req.session.user === 'authenticated') {
-//       next();
-//     }
-//     else {
-//         var err = new Error('You are not authenticated!');
-//         err.status = 403;
-//         return next(err);
-//     }
-//   }
-// }
-
-// app.use(auth);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/users', usersRouter);
 app.use('/own', ownRouter)
-
+app.use('/parks', parkRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var cors = require('./cors');
 var models = require('../models/models');
 var authenticate = require('../authenticate');
 
@@ -9,6 +10,7 @@ var config = require('../config');
 
 const accountRouter = express.Router();
 
+accountRouter.use(cors.cors);
 accountRouter.use(express.json());
 
 accountRouter.route('/signup')
@@ -38,10 +40,9 @@ accountRouter.route('/signup')
                                 }, (err) => next(err));
                         }
                     }, (err) => next(err))
-                    .catch((err) => next(err));
             }
-        })
-
+        }, (err) => next(err))
+        .catch(err => next(err));
     })
 
 accountRouter.route('/login')
@@ -74,7 +75,8 @@ accountRouter.route('/login')
                     var token = authenticate.getToken({id: result[0].id});
                     res.json({success: true, token: token, status: 'You are successfully logged in!'});
                 }
-            }) .catch((err) => next(err));
+            }, (err) => next(err)) 
+            .catch((err) => next(err));
     })
 
 accountRouter.route('/logout')
@@ -88,6 +90,7 @@ accountRouter.route('/logout')
             err.status = 403;
             next(err);
         }
-    })
+    });
+
 
 module.exports = accountRouter;

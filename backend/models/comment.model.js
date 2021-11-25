@@ -12,7 +12,7 @@ const Comment = dbConnect.define('comment', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    rate: {
+    rating: {
         type: DataTypes.INTEGER,
         allowNull: false
     },

@@ -1,80 +1,83 @@
-import React from "react";
-import { CardMedia, CardContent, Box, Card, AppBar, Tabs, styled, Paper } from "@mui/material";
+import React, { Component, useEffect } from "react";
+import {
+    Rating, CardMedia, CardContent, Box, Card, CardHeader,
+    AppBar, Tabs, styled, Paper, ButtonBase, CircularProgress
+} from "@mui/material";
 import { baseUrl } from '../shared/baseUrl';
 import { Loading } from "./LoadingComponent";
 import { Media } from "reactstrap";
 import { useTheme } from "@emotion/react";
 import { Tab } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
+import ParkDetail from "./ParkDetailComponent";
+import { fetchComments, fetchParkInfo, postComment, fetchParkStatus, postReport } from "../redux/ActionCreators";
+import { connect } from "react-redux";
 
 
-function RenderParkCard({ park }) {
+function RenderParkCard({ park, selectedPark, setSelectedPark }) {
+    const handleSelect = (id) => {
+        setSelectedPark(id);
+    }
     return (
         <div>
             <Card sx={{ display: 'flex' }}>
-                <CardMedia
-                    component="img"
-                    sx={{ width: 150 }}
-                    image={baseUrl + park.image}
-                    alt={park.name} />
-                <Box sx={{ display: 'flex' }}>
-                    <CardContent>
-                        <h4>
-                            {park.name}
-                        </h4>
-                        <p>
-                            {park.description}
-                        </p>
-                        <Box sx={{ display: 'flex', alignItems: "center" }}>
-                            <div className="col offset-1">
-                                <h4>
-                                    <i class="fas fa-dollar-sign"></i> {park.price}
-                                </h4>
-                            </div>
-                            <div className="col order-6">
-                                <h4>
-                                    <i class="fas fa-route"></i> {park.distance}
-                                </h4>
-                            </div>
-                        </Box>
-                    </CardContent>
-                </Box>
+                <ButtonBase
+                    style={{ textAlign: "initial", width: "100%", height: "100%" }}
+                    onClick={() => handleSelect(park.id)} >
+                    <CardMedia
+                        component="img"
+                        sx={{ width: 150 }}
+                        image={baseUrl + park.image}
+                        alt={park.name} />
+                    <Box>
+                        <CardContent>
+                            <h5>{park.name}</h5>
+                            <Box sx={{ display: 'flex' }}>
+                                <Rating size="small" name="rating" value={park.rate} precision={0.1} readOnly />
+                                <Box sx={{ ml: 1 }}>({park.numOfRate})</Box>
+                            </Box>
+                            <Box sx={{ display: 'flex' }} style={{ marginTop: "10px" }}>
+                                <div>
+                                    <h4><i class="fas fa-dollar-sign"></i> {park.price}</h4>
+                                </div>
+                                <div style={{ marginLeft: "20px" }}>
+                                    <h4><i class="fas fa-route"></i> {park.distance}</h4>
+                                </div>
+                            </Box>
+                        </CardContent>
+                    </Box>
+                </ButtonBase>
             </Card>
-        </div>
+        </div >
     );
 }
 
 function ParkList(props) {
+    const { selectedPark, setSelectedPark } = props;
     if (props.isLoading) {
         return (
             <div className="container">
-                <div className="row">
-                    <Loading />
-                </div>
+                <CircularProgress color="success" />
             </div>
         );
     } else if (props.errMess) {
         return (
             <div className='container'>
-                <div className='row'>
-                    <h4>{props.errMess}</h4>
-                </div>
+                <h4>{props.errMess}</h4>
             </div>
         );
     } else {
         return (
             <div className="container">
-                <div className="row">
-                    <Media list>
-                        {props.parks.parks.map((park) => {
-                            return (
-                                <div key={park.id} class="park-card">
-                                    <RenderParkCard park={park} />
-                                </div>
-                            );
-                        })}
-                    </Media>
-                </div>
+                <Media list>
+                    {props.parks.parks.map((park) => {
+                        return (
+                            <div key={park.id} style={{ margin: "15px 0px 0px -70px" }}>
+                                <RenderParkCard park={park} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
+                            </div>
+                        );
+                    })}
+                </Media>
             </div>
         );
     }
@@ -99,14 +102,15 @@ function TabPanel(props) {
 
 const AntTab = styled((props) => <Tab disableRipple {...props} />)(({ theme }) => ({
     fontWeight: theme.typography.fontWeightRegular,
-    fontSize: theme.typography.pxToRem(22),
-    fontFamily: 'Patrick Hand',
+    fontSize: theme.typography.pxToRem(18),
+    fontFamily: 'Nunito',
     '&:hover': {
-        color: '#40a9ff',
+        color: '#3E7C17',
         opacity: 1,
+        fontWeight: "Bold",
     },
     '&.Mui-selected': {
-        color: '#1890ff',
+        color: '#3E7C17',
         fontWeight: "Bolder",
     },
     '&.Mui-focusVisible': {
@@ -114,16 +118,34 @@ const AntTab = styled((props) => <Tab disableRipple {...props} />)(({ theme }) =
     },
 }));
 
-function a11yProps(index) {
+function allyProps(index) {
     return {
         id: `full-width-tab-${index}`,
         'aria-controls': `full-width-tabpanel-${index}`,
     };
 }
 
+const mapStateToProps = state => {
+    return {
+        park_status: state.park_status,
+        park_info: state.park_info,
+        comments: state.comments,
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+    postComment: (park_id, rating, comment) => dispatch(postComment(park_id, rating, comment)),
+    postReport: (park_id, content) => dispatch(postReport(park_id, content)),
+    fetchParkStatus: (park_id) => { dispatch(fetchParkStatus(park_id)) },
+    fetchParkInfo: () => { dispatch(fetchParkInfo()) },
+    fetchComments: () => { dispatch(fetchComments()) }
+});
+
 function ParkListTabs(props) {
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
+    const { parks } = props;
+    const [selectedPark, setSelectedPark] = React.useState(-1);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -133,56 +155,74 @@ function ParkListTabs(props) {
         setValue(index);
     }
 
-    return (
-        <div className="col-5">
 
-            <div class="park-list-tab">
-                <AppBar position="static" color="transparent">
-                    <Tabs
-                        value={value}
-                        onChange={handleChange}
-                        indicatorColor="secondary"
-                        textColor="inherit"
-                        variant="fullWidth"
-                        aria-label="full width tabs" >
-                        <AntTab label="Tốt nhất" {...a11yProps(0)} />
-                        <AntTab label="Rẻ nhất" {...a11yProps(1)} />
-                        <AntTab label="Gần nhất" {...a11yProps(2)} />
-                    </Tabs>
-                </AppBar>
-                <Paper style={{ maxHeight: 450, overflow: 'auto' }}>
-                    <SwipeableViews
-                        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                        index={value}
-                        onChangeIndex={handleChangeIndex}
-                    >
-                        <TabPanel value={value} index={0} dir={theme.direction}>
-                            <div>
-                                <Media list>
-                                    <ParkList parks={props.parks} />
-                                </Media>
-                            </div>
-                        </TabPanel>
-                        <TabPanel value={value} index={1} dir={theme.direction}>
-                            <div>
-                                <Media list>
-                                    <ParkList parks={props.parks} />
-                                </Media>
-                            </div>
-                        </TabPanel>
-                        <TabPanel value={value} index={2} dir={theme.direction}>
-                            <div>
-                                <Media list>
-                                    <ParkList parks={props.parks} />
-                                </Media>
-                            </div>
-                        </TabPanel>
-                    </SwipeableViews>
-                </Paper>
+    useEffect(() => {
+        props.fetchParkStatus(selectedPark);
+        props.fetchParkInfo();
+        props.fetchComments();
+    }, [selectedPark])
+
+    return (
+        <div className="row">
+            <div className="col-4">
+                {parseInt(selectedPark) == -1 &&
+                    <div class="park-list-tab">
+                        <AppBar position="static" color="transparent">
+                            <Tabs
+                                value={value}
+                                onChange={handleChange}
+                                indicatorColor="secondary"
+                                textColor="inherit"
+                                variant="fullWidth"
+                                aria-label="full width tabs" >
+                                <AntTab label="Tốt nhất" {...allyProps(0)} />
+                                <AntTab label="Rẻ nhất" {...allyProps(1)} />
+                                <AntTab label="Gần nhất" {...allyProps(2)} />
+                            </Tabs>
+                        </AppBar>
+                        <Paper class="park-list-tab" style={{ maxHeight: 450, overflow: 'auto' }}>
+                            <SwipeableViews
+                                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                                index={value}
+                                onChangeIndex={handleChangeIndex}
+                            >
+                                <TabPanel value={value} index={0} dir={theme.direction}>
+                                    <Media list>
+                                        <ParkList parks={parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
+                                    </Media>
+                                </TabPanel>
+                                <TabPanel value={value} index={1} dir={theme.direction}>
+                                    <Media list>
+                                        <ParkList parks={parks} />
+                                    </Media>
+                                </TabPanel>
+                                <TabPanel value={value} index={2} dir={theme.direction}>
+                                    <Media list>
+                                        <ParkList parks={parks} />
+                                    </Media>
+                                </TabPanel>
+                            </SwipeableViews>
+                        </Paper>
+                    </div>
+                }
+                {
+                parseInt(selectedPark) >= 0 && <div>
+                    <ParkDetail
+                        park_status={props.park_status}
+                        park_info={props.park_info}
+                        comments={props.comments}
+                        postComment={props.postComment}
+                        postReport={props.postReport}
+                        selectedPark={selectedPark}
+                        setSelectedPark={setSelectedPark} />
+                </div>
+            }
             </div>
+            <div className="col-4"></div>
+
         </div>
     );
 }
 
 
-export default ParkListTabs;
+export default connect(mapStateToProps, mapDispatchToProps)(ParkListTabs);

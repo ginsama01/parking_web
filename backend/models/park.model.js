@@ -12,6 +12,10 @@ const Park = dbConnect.define('park', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     total_space: {
         type: DataTypes.INTEGER,
         allowNull: false

@@ -27,7 +27,7 @@ class SearchInfo extends Component {
 
     render() {
         return (
-            <div className="container">
+            <div style={{ margin: "5px 20px" }}>
                 <Form>
                     <Row className="form-group">
                         <Col md={2}>
