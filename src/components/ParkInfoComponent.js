@@ -1,7 +1,6 @@
 import { ImageList, ImageListItem } from "@mui/material";
 import React from "react";
 import { baseUrl } from "../shared/baseUrl";
-import { Loading } from "./LoadingComponent";
 
 
 function CameraIcon({ hasCamera }) {
@@ -86,7 +85,7 @@ const ParkInfo = (props) => {
     if (props.isLoading) {
         return (
             <div>
-                <Loading />
+                <CircularProgress color="success" />
             </div>
         );
     }

@@ -1,6 +1,5 @@
-import { Button, Grid, styled, Paper } from "@mui/material";
+import { Button, Grid, styled, Paper, CircularProgress } from "@mui/material";
 import React from "react";
-import { Loading } from "./LoadingComponent";
 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -74,7 +73,7 @@ const ParkStatus = (props) => {
     if (props.isLoading) {
         return (
             <div>
-                <Loading />
+                <CircularProgress color="success" />
             </div>
         );
     }
