@@ -20,6 +20,10 @@ const Park = dbConnect.define('park', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    total_in: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
     active_time: {
         type: DataTypes.STRING,
         allowNull: false
@@ -59,8 +63,8 @@ const Park = dbConnect.define('park', {
 });
 
 
-dbConnect.sync().then(() => {
-    console.log('Park model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Park model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Park;

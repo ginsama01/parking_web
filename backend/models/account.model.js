@@ -23,6 +23,10 @@ const Account = dbConnect.define('account', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     address: {
         type: DataTypes.STRING,
     },
@@ -36,9 +40,9 @@ const Account = dbConnect.define('account', {
     freezeTableName: true
 });
 
-dbConnect.sync().then(() => {
-    console.log('Account model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Account model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Account;
 

@@ -8,7 +8,6 @@ router.get('/',verifyUser, function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-
 router.post('/', function(req, res, next) {
   res.json({"username": "thu"})
 })

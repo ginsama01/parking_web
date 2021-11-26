@@ -17,8 +17,8 @@ const Favorite = dbConnect.define('favorite', {
 });
 
 
-dbConnect.sync().then(() => {
-    console.log('Favorite model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Favorite model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Favorite;

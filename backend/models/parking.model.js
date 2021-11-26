@@ -12,9 +12,6 @@ const Parking = dbConnect.define('parking', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    outAt: {
-        type: DataTypes.DATE
-    },
     status: {
         type: DataTypes.STRING(20),
         allowNull: false
@@ -24,8 +21,8 @@ const Parking = dbConnect.define('parking', {
 });
 
 
-dbConnect.sync().then(() => {
-    console.log('Parking model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Parking model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Parking;

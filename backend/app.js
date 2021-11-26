@@ -12,9 +12,11 @@ var ownRouter = require('./routes/own.router');
 var parkRouter = require('./routes/park.router');
 var authenRouter = require('./routes/authen.router');
 var config = require('./config');
+const { cors } = require('./routes/cors');
 
 var app = express();
 
+app.use(cors);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -24,13 +26,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cookieParser(config.cookieKey));
-
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 
 app.use('/authen', authenRouter);
 
 
-app.use(express.static(path.join(__dirname, 'public')));
+
 
 
 app.use('/users', usersRouter);

@@ -24,7 +24,7 @@ ownRouter.route('/')
     })
     .post(authenticate.verifyOwner, (req, res, next) => {
         let parkJson = req.body;
-        parkJson["own_id"] = authenticate.getAccountId(req.headers.token);
+        parkJson["own_id"] = authenticate.getAccountId(req);
         models.Park.create(req.body)
             .then((park) => {
                 console.log('Park created ', park);

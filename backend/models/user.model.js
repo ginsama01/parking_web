@@ -27,8 +27,8 @@ const User = dbConnect.define('user', {
 
 
 
-dbConnect.sync().then(() => {
-    console.log('User model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('User model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = User;

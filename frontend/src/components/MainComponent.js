@@ -14,9 +14,7 @@ import Register from "./SignupComponent";
 const mapStateToProps = state => {
     return {
         parks: state.parks,
-        // park_status: state.park_status,
-        // park_info: state.park_info,
-        // comments: state.comments,
+        
     }
 }
 
@@ -35,11 +33,6 @@ class Main extends Component {
 
     componentDidMount() {
         this.props.fetchParks();
-        // this.props.fetchParkStatus();
-        // this.props.fetchParkInfo();
-        // this.props.fetchComments();
-        //this.props.fetchParks();
-        //this.props.postUser();
     }
 
 

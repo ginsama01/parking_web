@@ -5,7 +5,7 @@ import { baseUrl } from '../shared/baseUrl';
 export const fetchParks = () => (dispatch) => {
     dispatch(parksLoading(true));
 
-    return fetch(baseUrl + 'parks')
+    return fetch(baseUrl + 'parks/best')
         .then(response => {
             if (response.ok) {
                 return response;
@@ -44,7 +44,7 @@ export const fetchParkStatus = (park_id) => (dispatch) => {
     console.log(park_id)
     dispatch(parkStatusLoading(true));
 
-    return fetch(baseUrl + 'id=' + park_id)
+    return fetch(baseUrl + 'parks/status/' + park_id)
         .then(response => {
             if (response.ok) {
                 return response;
@@ -231,6 +231,7 @@ export const postReport = (park_id, content) => (dispatch) => {
 }
 
 
+//Sign up
 export const postUser = (username, password, email, firstname, lastname, type) => (dispatch) => {
     const newUser = {
         username: username,
@@ -280,6 +281,8 @@ export const addUser = (user) => ({
     payload: user
 });
 
+
+//Login 
 export const postLogin = (username, password) => (dispatch) => {
     const Login = {
         username: username,

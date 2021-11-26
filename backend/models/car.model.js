@@ -22,8 +22,8 @@ const Car = dbConnect.define('car', {
 });
 
 
-dbConnect.sync().then(() => {
-    console.log('Car model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Car model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Car;

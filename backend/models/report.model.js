@@ -1,8 +1,8 @@
 const { dbConnect, DataTypes, Deferrable } = require('../connectDB');
 
 
-const Comment = dbConnect.define('comment', {
-    cmt_id: {
+const Report = dbConnect.define('report', {
+    report_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
@@ -12,20 +12,15 @@ const Comment = dbConnect.define('comment', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    rating: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
     content: {
         type: DataTypes.TEXT,
+        allowNull: false
     }
 }, {
     freezeTableName: true
 });
 
 
-// dbConnect.sync().then(() => {
-//     console.log('Comment model sync ok');
-// }).catch(e => console.error(e));
 
-module.exports = Comment;
+
+module.exports = Report;

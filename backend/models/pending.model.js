@@ -12,6 +12,14 @@ const Pending = dbConnect.define('pending', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    time_start: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    time_end:{
+        type: DataTypes.DATE,
+        allowNull: false
+    },
     status: {
         type: DataTypes.STRING(20),
         allowNull: false
@@ -21,8 +29,8 @@ const Pending = dbConnect.define('pending', {
 });
 
 
-dbConnect.sync().then(() => {
-    console.log('Pending model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Pending model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Pending;

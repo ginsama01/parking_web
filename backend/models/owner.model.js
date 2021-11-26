@@ -22,8 +22,8 @@ const Owner = dbConnect.define('owner', {
 });
 
 
-dbConnect.sync().then(() => {
-    console.log('Owner model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Owner model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Owner;

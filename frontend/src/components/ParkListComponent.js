@@ -38,10 +38,10 @@ function RenderParkCard({ park, selectedPark, setSelectedPark }) {
                             </Box>
                             <Box sx={{ display: 'flex' }} style={{ marginTop: "10px" }}>
                                 <div>
-                                    <h4><i class="fas fa-dollar-sign"></i> {park.price}</h4>
+                                    <h5><i class="fas fa-dollar-sign"></i> {park.price}</h5>
                                 </div>
                                 <div style={{ marginLeft: "20px" }}>
-                                    <h4><i class="fas fa-route"></i> {park.distance}</h4>
+                                    <h5><i class="fas fa-route"></i> {park.distance}</h5>
                                 </div>
                             </Box>
                         </CardContent>
@@ -102,7 +102,7 @@ function TabPanel(props) {
 
 const AntTab = styled((props) => <Tab disableRipple {...props} />)(({ theme }) => ({
     fontWeight: theme.typography.fontWeightRegular,
-    fontSize: theme.typography.pxToRem(18),
+    fontSize: theme.typography.pxToRem(16),
     fontFamily: 'Nunito',
     '&:hover': {
         color: '#3E7C17',
@@ -156,11 +156,14 @@ function ParkListTabs(props) {
     }
 
 
-    useEffect(() => {
-        props.fetchParkStatus(selectedPark);
-        props.fetchParkInfo();
-        props.fetchComments();
-    }, [selectedPark])
+    useEffect(
+        () => {
+            if (selectedPark >= 0) {
+            props.fetchParkStatus(selectedPark);
+            props.fetchParkInfo();
+            props.fetchComments();
+            }
+        }, [selectedPark])
 
     return (
         <div className="row">
@@ -206,17 +209,17 @@ function ParkListTabs(props) {
                     </div>
                 }
                 {
-                parseInt(selectedPark) >= 0 && <div>
-                    <ParkDetail
-                        park_status={props.park_status}
-                        park_info={props.park_info}
-                        comments={props.comments}
-                        postComment={props.postComment}
-                        postReport={props.postReport}
-                        selectedPark={selectedPark}
-                        setSelectedPark={setSelectedPark} />
-                </div>
-            }
+                    parseInt(selectedPark) >= 0 && <div>
+                        <ParkDetail
+                            park_status={props.park_status}
+                            park_info={props.park_info}
+                            comments={props.comments}
+                            postComment={props.postComment}
+                            postReport={props.postReport}
+                            selectedPark={selectedPark}
+                            setSelectedPark={setSelectedPark} />
+                    </div>
+                }
             </div>
             <div className="col-4"></div>
 

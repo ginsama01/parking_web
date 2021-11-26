@@ -10,7 +10,7 @@ exports.getToken = function(user) {
 }
 
 exports.getAccountId = (req) => {
-    var token = req.headers.authorization.split(' ')[1];
+    var token = req.signedCookies.token;
     var id = jwt.verify(token, config.secretKey).id;
     return id;
 }
