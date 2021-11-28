@@ -11,15 +11,8 @@ import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import Login from "./LoginComponent";
 import Register from "./SignupComponent";
 
-const mapStateToProps = state => {
-    return {
-        parks: state.parks,
-        
-    }
-}
 
 const mapDispatchToProps = dispatch => ({
-    fetchParks: () => {dispatch(fetchParks())},
     postLogin: (username, password) => dispatch(postLogin(username, password)),
     postUser: (username, password, email, firstname, lastname, type) => dispatch(postUser(username, password, email, firstname, lastname, type))
 });
@@ -30,11 +23,6 @@ class Main extends Component {
     constructor(props) {
         super(props);
     }
-
-    componentDidMount() {
-        this.props.fetchParks();
-    }
-
 
     render() {
         return (
@@ -48,10 +36,10 @@ class Main extends Component {
                             park_info={this.props.park_info}
                             comments={this.props.comments} />} /> */}
                     <Route exact path="/parks" 
-                        component={ () => <ParkListTabs parks={this.props.parks} /> } />
+                        component={ () => <ParkListTabs /> } />
                     <Route exact path="/login" component={() => <Login postLogin = {this.props.postLogin}/>} />
                     <Route exact path="/register" component= {() => <Register postUser = {this.props.postUser}/> } />
-                    <Redirect to="/start" />
+                    <Redirect to="/parks" />
                 </Switch>
                 {/* <SearchInfo />
                 <ParkListTabs parks={this.props.parks} /> */}
@@ -61,4 +49,4 @@ class Main extends Component {
     }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
+export default withRouter(connect(mapDispatchToProps)(Main));

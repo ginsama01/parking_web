@@ -1,87 +1,14 @@
-import React, { Component, useEffect } from "react";
-import {
-    Rating, CardMedia, CardContent, Box, Card, CardHeader,
-    AppBar, Tabs, styled, Paper, ButtonBase, CircularProgress
-} from "@mui/material";
-import { baseUrl } from '../shared/baseUrl';
-import { Loading } from "./LoadingComponent";
-import { Media } from "reactstrap";
+import React, { useEffect } from "react";
+import { AppBar, Tabs, styled, Paper } from "@mui/material";
+import { Media, Row, Col } from "reactstrap";
 import { useTheme } from "@emotion/react";
-import { Tab } from "@mui/material";
+import { Tab} from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
 import ParkDetail from "./ParkDetailComponent";
-import { fetchComments, fetchParkInfo, postComment, fetchParkStatus, postReport } from "../redux/ActionCreators";
-import { connect } from "react-redux";
-
-
-function RenderParkCard({ park, selectedPark, setSelectedPark }) {
-    const handleSelect = (id) => {
-        setSelectedPark(id);
-    }
-    return (
-        <div>
-            <Card sx={{ display: 'flex' }}>
-                <ButtonBase
-                    style={{ textAlign: "initial", width: "100%", height: "100%" }}
-                    onClick={() => handleSelect(park.id)} >
-                    <CardMedia
-                        component="img"
-                        sx={{ width: 150 }}
-                        image={baseUrl + park.image}
-                        alt={park.name} />
-                    <Box>
-                        <CardContent>
-                            <h5>{park.name}</h5>
-                            <Box sx={{ display: 'flex' }}>
-                                <Rating size="small" name="rating" value={park.rate} precision={0.1} readOnly />
-                                <Box sx={{ ml: 1 }}>({park.numOfRate})</Box>
-                            </Box>
-                            <Box sx={{ display: 'flex' }} style={{ marginTop: "10px" }}>
-                                <div>
-                                    <h5><i class="fas fa-dollar-sign"></i> {park.price}</h5>
-                                </div>
-                                <div style={{ marginLeft: "20px" }}>
-                                    <h5><i class="fas fa-route"></i> {park.distance}</h5>
-                                </div>
-                            </Box>
-                        </CardContent>
-                    </Box>
-                </ButtonBase>
-            </Card>
-        </div >
-    );
-}
-
-function ParkList(props) {
-    const { selectedPark, setSelectedPark } = props;
-    if (props.isLoading) {
-        return (
-            <div className="container">
-                <CircularProgress color="success" />
-            </div>
-        );
-    } else if (props.errMess) {
-        return (
-            <div className='container'>
-                <h4>{props.errMess}</h4>
-            </div>
-        );
-    } else {
-        return (
-            <div className="container">
-                <Media list>
-                    {props.parks.parks.map((park) => {
-                        return (
-                            <div key={park.id} style={{ margin: "15px 0px 0px -70px" }}>
-                                <RenderParkCard park={park} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
-                            </div>
-                        );
-                    })}
-                </Media>
-            </div>
-        );
-    }
-}
+import { fetchComments, fetchParkInfo, postComment, fetchParkStatus, postReport, fetchBestParks,
+fetchCheapParks, fetchNearParks } from "../redux/ActionCreators";
+import { useSelector, useDispatch } from "react-redux";
+import { ParkList } from "./RenderParkListComponent";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -102,7 +29,7 @@ function TabPanel(props) {
 
 const AntTab = styled((props) => <Tab disableRipple {...props} />)(({ theme }) => ({
     fontWeight: theme.typography.fontWeightRegular,
-    fontSize: theme.typography.pxToRem(16),
+    fontSize: theme.typography.pxToRem(18),
     fontFamily: 'Nunito',
     '&:hover': {
         color: '#3E7C17',
@@ -125,26 +52,10 @@ function allyProps(index) {
     };
 }
 
-const mapStateToProps = state => {
-    return {
-        park_status: state.park_status,
-        park_info: state.park_info,
-        comments: state.comments,
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-    postComment: (park_id, rating, comment) => dispatch(postComment(park_id, rating, comment)),
-    postReport: (park_id, content) => dispatch(postReport(park_id, content)),
-    fetchParkStatus: (park_id) => { dispatch(fetchParkStatus(park_id)) },
-    fetchParkInfo: () => { dispatch(fetchParkInfo()) },
-    fetchComments: () => { dispatch(fetchComments()) }
-});
-
 function ParkListTabs(props) {
+    
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
-    const { parks } = props;
     const [selectedPark, setSelectedPark] = React.useState(-1);
 
     const handleChange = (event, newValue) => {
@@ -155,20 +66,31 @@ function ParkListTabs(props) {
         setValue(index);
     }
 
+    const best_parks = useSelector(state => state.best_parks)
+    const cheap_parks = useSelector(state => state.cheap_parks)
+    const near_parks = useSelector(state => state.near_parks)
+    const park_status = useSelector(state => state.park_status)
+    const park_info = useSelector(state => state.park_info)
+    const comments = useSelector(state => state.comments)
+
+    const dispatch = useDispatch()
 
     useEffect(
         () => {
+            dispatch(fetchBestParks());
+            dispatch(fetchCheapParks());
+            dispatch(fetchNearParks());
             if (selectedPark >= 0) {
-                props.fetchParkStatus(selectedPark);
-                props.fetchParkInfo();
-                props.fetchComments();
+                dispatch(fetchParkStatus(selectedPark));
+                dispatch(fetchParkInfo(selectedPark));
+                dispatch(fetchComments(selectedPark));
             }
         }, [selectedPark]
     )
 
     return (
-        <div className="row">
-            <div className="col-4">
+        <Row>
+            <Col sm='4' xs='12'>
                 {parseInt(selectedPark) == -1 &&
                     <div class="park-list-tab">
                         <AppBar position="static" color="transparent">
@@ -192,17 +114,17 @@ function ParkListTabs(props) {
                             >
                                 <TabPanel value={value} index={0} dir={theme.direction}>
                                     <Media list>
-                                        <ParkList parks={parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
+                                        <ParkList parks={best_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
                                     </Media>
                                 </TabPanel>
                                 <TabPanel value={value} index={1} dir={theme.direction}>
                                     <Media list>
-                                        <ParkList parks={parks} />
+                                        <ParkList parks={cheap_parks} />
                                     </Media>
                                 </TabPanel>
                                 <TabPanel value={value} index={2} dir={theme.direction}>
                                     <Media list>
-                                        <ParkList parks={parks} />
+                                        <ParkList parks={near_parks} />
                                     </Media>
                                 </TabPanel>
                             </SwipeableViews>
@@ -212,21 +134,19 @@ function ParkListTabs(props) {
                 {
                     parseInt(selectedPark) >= 0 && <div>
                         <ParkDetail
-                            park_status={props.park_status}
-                            park_info={props.park_info}
-                            comments={props.comments}
-                            postComment={props.postComment}
-                            postReport={props.postReport}
+                            park_status={park_status}
+                            park_info={park_info}
+                            comments={comments}
+                            postComment={postComment}
+                            postReport={postReport}
                             selectedPark={selectedPark}
                             setSelectedPark={setSelectedPark} />
                     </div>
                 }
-            </div>
-            <div className="col-4"></div>
-
-        </div>
+            </Col>
+        </Row>
     );
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParkListTabs);
+export default ParkListTabs;

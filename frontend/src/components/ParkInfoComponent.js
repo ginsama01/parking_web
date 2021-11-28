@@ -1,4 +1,4 @@
-import { ImageList, ImageListItem } from "@mui/material";
+import { ImageList, ImageListItem, CircularProgress } from "@mui/material";
 import React from "react";
 import { baseUrl } from "../shared/baseUrl";
 import { Loading } from "./LoadingComponent";
@@ -86,7 +86,7 @@ const ParkInfo = (props) => {
     if (props.isLoading) {
         return (
             <div>
-                <Loading />
+                <CircularProgress color="success" />
             </div>
         );
     }

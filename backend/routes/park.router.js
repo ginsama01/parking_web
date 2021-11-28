@@ -101,7 +101,7 @@ parkRouter.route('/status/:parkId')
             start = start.substr(-2, 2) == 'AM' ? Number(start.slice(0, -2)) : Number(start.slice(0, -2)) + 12;
             end = end.substr(-2, 2) == 'AM' ? Number(end.slice(0, -2)) : Number(end.slice(0, -2)) + 12;
             park['isOpen'] = (start <= currentHours && currentHours <= end) ? true : false;
-            for (let i = 0; i <=)
+            //for (let i = 0; i <=)
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(park);
