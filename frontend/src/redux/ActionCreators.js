@@ -1,0 +1,298 @@
+import * as ActionTypes from './ActionTypes';
+import { baseUrl } from '../shared/baseUrl';
+
+
+// fetch best parks list
+export const fetchBestParks = () => (dispatch) => {
+    dispatch(bestParksLoading(true));
+
+    return fetch(baseUrl + 'parks/best')
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(best_parks => dispatch(addBestParks(best_parks)))
+        .catch(error => dispatch(bestParksFailed(error.message)));
+}
+
+export const bestParksLoading = () => ({
+    type: ActionTypes.BESTPARKS_LOADING
+});
+
+export const bestParksFailed = (errmess) => ({
+    type: ActionTypes.BESTPARKS_FAILED,
+    payload: errmess
+});
+
+export const addBestParks = (best_parks) => ({
+    type: ActionTypes.ADD_BESTPARKS,
+    payload: best_parks
+});
+
+
+// fetch cheap parks list
+export const fetchCheapParks = () => (dispatch) => {
+    dispatch(cheapParksLoading(true));
+
+    return fetch(baseUrl + 'parks/cheap')
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(cheap_parks => dispatch(addCheapParks(cheap_parks)))
+        .catch(error => dispatch(cheapParksFailed(error.message)));
+}
+
+export const cheapParksLoading = () => ({
+    type: ActionTypes.CHEAPPARKS_LOADING
+});
+
+export const cheapParksFailed = (errmess) => ({
+    type: ActionTypes.CHEAPPARKS_FAILED,
+    payload: errmess
+});
+
+export const addCheapParks = (cheap_parks) => ({
+    type: ActionTypes.ADD_CHEAPPARKS,
+    payload: cheap_parks
+});
+
+
+// fetch near parks list
+export const fetchNearParks = () => (dispatch) => {
+    dispatch(nearParksLoading(true));
+
+    return fetch(baseUrl + 'parks/near')
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(near_parks => dispatch(addNearParks(near_parks)))
+        .catch(error => dispatch(nearParksFailed(error.message)));
+}
+
+export const nearParksLoading = () => ({
+    type: ActionTypes.NEARPARKS_LOADING
+});
+
+export const nearParksFailed = (errmess) => ({
+    type: ActionTypes.NEARPARKS_FAILED,
+    payload: errmess
+});
+
+export const addNearParks = (near_parks) => ({
+    type: ActionTypes.ADD_NEARPARKS,
+    payload: near_parks
+});
+
+
+// park-status
+export const fetchParkStatus = (park_id) => (dispatch) => {
+    dispatch(parkStatusLoading(true));
+
+    return fetch(baseUrl + 'parks/status/' + park_id)
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(park_status => dispatch(addParkStatus(park_status)))
+        .catch(error => dispatch(parkStatusFailed(error.message)));
+}
+
+export const parkStatusLoading = () => ({
+    type: ActionTypes.PARK_STATUS_LOADING
+});
+
+export const parkStatusFailed = (errmess) => ({
+    type: ActionTypes.PARK_STATUS_FAILED,
+    payload: errmess
+});
+
+export const addParkStatus = (park_status) => ({
+    type: ActionTypes.ADD_PARK_STATUS,
+    payload: park_status
+});
+
+
+//park-info
+export const fetchParkInfo = (park_id) => (dispatch) => {
+    dispatch(parkInfoLoading(true));
+
+    return fetch(baseUrl + 'parks/info/' + park_id)
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(park_info => dispatch(addParkInfo(park_info)))
+        .catch(error => dispatch(parkInfoFailed(error.message)));
+}
+
+export const parkInfoLoading = () => ({
+    type: ActionTypes.PARK_INFO_LOADING
+});
+
+export const parkInfoFailed = (errmess) => ({
+    type: ActionTypes.PARK_INFO_FAILED,
+    payload: errmess
+});
+
+export const addParkInfo = (park_info) => ({
+    type: ActionTypes.ADD_PARK_INFO,
+    payload: park_info
+});
+
+
+//get comments
+export const fetchComments = (park_id) => (dispatch) => {
+    return fetch(baseUrl + 'parks/comment/' + park_id)
+        .then(response => {
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        }, 
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(comments => dispatch(addComments(comments)))
+        .catch(error => dispatch(commentsFailed(error.message)));
+}
+
+export const commentsFailed = (errmess) => ({
+    type: ActionTypes.COMMENTS_FAILED,
+    payload: errmess
+});
+
+export const addComments = (comments) => ({
+    type: ActionTypes.ADD_COMMENTS,
+    payload: comments
+});
+
+
+//post comment
+export const postComment = (park_id, rating, content) => (dispatch) => {
+
+    const newComment = {
+        park_id: park_id,
+        rating: rating,
+        content: content
+    }
+
+    return fetch(baseUrl + 'parks/comment', {
+        method: 'POST',
+        body: JSON.stringify(newComment),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        }, 
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .catch(error => { console.log('Post comments ', error.message)
+            alert('Your comment could not be posted \nError: ' + error.message) })
+}
+
+
+//post report
+export const postReport = (park_id, content) => (dispatch) => {
+
+    const newReport = {
+        park_id: park_id,
+        content: content
+    }
+
+    return fetch(baseUrl + 'park/report', {
+        method: 'POST',
+        body: JSON.stringify(newReport),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        }, 
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .catch(error => { console.log('Post report ', error.message)
+            alert('Your report could not be posted \nError: ' + error.message) })
+}
