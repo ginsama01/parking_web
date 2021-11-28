@@ -26,7 +26,7 @@ parkRouter.route('/')
     })
     .post((req, res, next) => {
         address = req.body.address;
-        dbConnect.query("SELECT park_id, name, image_url AS image, price, location, (SELECT AVG(rating) FROM comment WHERE rela_id IN " +
+        dbConnect.query("SELECT park_id AS id, name, image_url AS image, price, location, (SELECT AVG(rating) FROM comment WHERE rela_id IN " +
             "(SELECT rela_id FROM park_user WHERE park_id = park.park_id)) AS rate, (SELECT COUNT(rating) FROM comment WHERE" +
             " rela_id IN (SELECT rela_id FROM park_user WHERE park_id = park.park_id)) AS numOfRate FROM park", {
             type: dbConnect.QueryTypes.SELECT
@@ -64,25 +64,28 @@ parkRouter.route('/')
 
 parkRouter.route('/best')
     .get((req, res, next) => {
+        let bestPark = parkObj;
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(parkObj.sort(sortByRate));
+        res.json(bestPark.sort(sortByRate));
     });
 
 
 parkRouter.route('/cheap')
     .get((req, res, next) => {
+        let cheapPark = parkObj;
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(parkObj.sort(sortByPrice));
+        res.json(cheapPark.sort(sortByPrice));
     });
 
 
 parkRouter.route('/near')
     .get((req, res, next) => {
+        let nearPark = parkObj;
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(parkObj.sort(sortByDistance));
+        res.json(nearPark.sort(sortByDistance));
     });
 
 
@@ -98,6 +101,7 @@ parkRouter.route('/status/:parkId')
             start = start.substr(-2, 2) == 'AM' ? Number(start.slice(0, -2)) : Number(start.slice(0, -2)) + 12;
             end = end.substr(-2, 2) == 'AM' ? Number(end.slice(0, -2)) : Number(end.slice(0, -2)) + 12;
             park['isOpen'] = (start <= currentHours && currentHours <= end) ? true : false;
+            for (let i = 0; i <=)
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(park);

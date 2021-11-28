@@ -6,7 +6,7 @@ module.exports.sortByRate = (a, b) => {
 };
 
 module.exports.sortByPrice = (a, b) => {
-    if (a['price'] < b['price']) return -1;
+    if (Number(a['price']) < Number(b['price'])) return -1;
     else return 1;
 };
 

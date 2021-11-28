@@ -3,7 +3,7 @@ const distance = require('google-distance-matrix');
 var origins = ['Trường THPT Lương Tài'];
 var destinations = ['Trường THCS Hàn Thuyên'];
 
-distance.key('AIzaSyBRyDZ_M6ieM1eFQYF89vlz91GtqaGnlx8');
+distance.key('AIzaSyBLWYpgy-LGY0EPmnjHwAmnok06l-0qJzA');
 
 module.exports.calDistance = (origin, destination) => {
     return new Promise((resolve, reject) => {

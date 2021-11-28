@@ -159,11 +159,12 @@ function ParkListTabs(props) {
     useEffect(
         () => {
             if (selectedPark >= 0) {
-            props.fetchParkStatus(selectedPark);
-            props.fetchParkInfo();
-            props.fetchComments();
+                props.fetchParkStatus(selectedPark);
+                props.fetchParkInfo();
+                props.fetchComments();
             }
-        }, [selectedPark])
+        }, [selectedPark]
+    )
 
     return (
         <div className="row">
