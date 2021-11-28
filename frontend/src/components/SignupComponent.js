@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Input, Label, Form, Row, Col } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
+import { postUser } from "../redux/ActionCreators";
+import { connect } from "react-redux";
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -9,6 +11,10 @@ const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val
 const validUsername = (val) => /^[a-zA-Z][a-zA-Z0-9]+$/.test(val);
 //const validPasword = (val) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]$/.test(val);
 const validPasword = (val) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{0,}$/.test(val);
+
+const mapDispatchToProps = dispatch => ({
+    postUser: (username, password, email, firstname, lastname, type) => dispatch(postUser(username, password, email, firstname, lastname, type))
+});
 
 class Register extends Component {
     constructor(props) {
@@ -172,4 +178,4 @@ class Register extends Component {
     }
 }
 
-export default Register;
+export default connect(null, mapDispatchToProps)(Register);

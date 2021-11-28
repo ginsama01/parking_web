@@ -2,8 +2,14 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, FormGroup, Input, Label, Form, Row, Col } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
+import { postLogin } from "../redux/ActionCreators";
+import { connect } from "react-redux";
 
 const required = (val) => val && val.length;
+
+const mapDispatchToProps = dispatch => ({
+    postLogin: (username, password) => dispatch(postLogin(username, password)),
+});
 
 class Login extends Component {
     constructor(props) {
@@ -79,4 +85,4 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default connect(null, mapDispatchToProps)(Login);

@@ -2,11 +2,13 @@ import React, { useEffect } from "react";
 import { AppBar, Tabs, styled, Paper } from "@mui/material";
 import { Media, Row, Col } from "reactstrap";
 import { useTheme } from "@emotion/react";
-import { Tab} from "@mui/material";
+import { Tab } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
 import ParkDetail from "./ParkDetailComponent";
-import { fetchComments, fetchParkInfo, postComment, fetchParkStatus, postReport, fetchBestParks,
-fetchCheapParks, fetchNearParks } from "../redux/ActionCreators";
+import {
+    fetchComments, fetchParkInfo, postComment, fetchParkStatus, postReport, fetchBestParks,
+    fetchCheapParks, fetchNearParks
+} from "../redux/ActionCreators";
 import { useSelector, useDispatch } from "react-redux";
 import { ParkList } from "./RenderParkListComponent";
 
@@ -53,11 +55,10 @@ function allyProps(index) {
 }
 
 function ParkListTabs(props) {
-    
+
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
     const [selectedPark, setSelectedPark] = React.useState(-1);
-
     const handleChange = (event, newValue) => {
         setValue(newValue);
     }
@@ -72,14 +73,15 @@ function ParkListTabs(props) {
     const park_status = useSelector(state => state.park_status)
     const park_info = useSelector(state => state.park_info)
     const comments = useSelector(state => state.comments)
-
     const dispatch = useDispatch()
 
     useEffect(
         () => {
-            dispatch(fetchBestParks());
-            dispatch(fetchCheapParks());
-            dispatch(fetchNearParks());
+            if (selectedPark < 0) {
+                dispatch(fetchBestParks());
+                dispatch(fetchCheapParks());
+                dispatch(fetchNearParks());
+            }
             if (selectedPark >= 0) {
                 dispatch(fetchParkStatus(selectedPark));
                 dispatch(fetchParkInfo(selectedPark));

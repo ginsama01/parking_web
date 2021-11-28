@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import {
     NavItem, NavbarToggler, Nav, Collapse, Navbar,
     NavbarBrand, Button

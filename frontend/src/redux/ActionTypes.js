@@ -23,6 +23,7 @@ export const PARK_INFO_FAILED = 'PARK_INFO_FAILED';
 export const ADD_PARK_INFO = 'ADD_PARK_INFO';
 
 export const ADD_REPORT = "ADD_REPORT";
+
 export const USER_LOADING = 'USER_LOADING';
 export const USER_FAILED = 'USER_FAILED';
 export const ADD_USER = 'ADD_USER';

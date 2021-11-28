@@ -293,11 +293,9 @@ export const postReport = (park_id, content) => (dispatch) => {
             throw errmess;
         })
         .then(response => response.json())
-        // .then(response => dispatch(addComment(response)))
         .catch(error => { console.log('Post report ', error.message)
             alert('Your report could not be posted \nError: ' + error.message) })
 }
-
 
 //Sign up
 export const postUser = (username, password, email, firstname, lastname, type) => (dispatch) => {
