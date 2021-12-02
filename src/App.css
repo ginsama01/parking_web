@@ -61,3 +61,7 @@ p {
 .park-list-tab {
   background-color: #E5E5E5;
 }
+
+.hide{
+  visibility: hidden;
+}

@@ -8,6 +8,12 @@ import { ParkStatus } from './park-status';
 import { ParkInfo } from './park-info';
 import { Comments } from './comments';
 import { reducer as formReducer } from 'redux-form';
+import { InitialSignup } from './signup';
+import { createForms } from 'react-redux-form';
+import { InitialLogin } from './login';
+import { UserList } from './user-list';
+import { OwnerList } from './owner-list';
+import { AllParks } from './all-parks';
 
 export const ConfigureStore = () => {
     const store = createStore(
@@ -18,7 +24,14 @@ export const ConfigureStore = () => {
             park_status: ParkStatus,
             park_info: ParkInfo,
             comments: Comments,
-            form: formReducer
+            user_list: UserList,
+            owner_list: OwnerList,
+            all_parks: AllParks,
+            form: formReducer,
+            ...createForms({
+                signup: InitialSignup,
+                login: InitialLogin
+            })
         }),
         applyMiddleware(thunk, logger)
     );

@@ -18,11 +18,12 @@ class SearchInfo extends Component {
         this.setState({ address });
     };
 
-    handleSelect = address => {
-        geocodeByAddress(address)
+    handleSelect = addr => {
+        geocodeByAddress(addr)
             .then(results => getLatLng(results[0]))
-            .then(latLng => console.log('Success', latLng))
+            .then(latLng => {this.center = latLng;})
             .catch(error => console.error('Error', error));
+        this.setState({ address: addr });
     };
 
     render() {
