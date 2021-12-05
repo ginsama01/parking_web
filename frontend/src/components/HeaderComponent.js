@@ -1,10 +1,47 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
+import { connect } from "react-redux";
 import { NavLink, Link } from "react-router-dom";
 import {
     NavItem, NavbarToggler, Nav, Collapse, Navbar,
     NavbarBrand, Button
 } from "reactstrap";
+import { Logout } from "../redux/ActionCreators";
 
+const mapDispatchToProps = dispatch => ({
+	Logout: () => dispatch(Logout())
+});
+
+function Info(props) {
+    const [login, setLogin] = React.useState(true);
+
+    React.useEffect(() => {
+        setLogin(sessionStorage.getItem('login') || false)
+        function listenStorage() {
+            setLogin(sessionStorage.getItem('login') || false);
+        };
+        window.addEventListener('storagechange', listenStorage);
+    }, []);
+
+
+    return (
+        <NavItem>
+        {!login && 
+        <Link to='/user/login'>
+            <Button outline >
+                <span className="fa fa-sign-in fa-lg"></span> Đăng nhập
+            </Button>
+        </Link>
+        }
+        {login && 
+        <Button outline onClick = {props.Logout}>
+            <span className="fa fa-sign-in fa-lg"></span> Đăng xuất
+        </Button>
+        }
+        </NavItem>
+    )
+}
+
+Info = connect(null, mapDispatchToProps)(Info);
 
 class Header extends Component {
 
@@ -50,13 +87,9 @@ class Header extends Component {
                                     <strong>Nav Example</strong>
                                 </NavLink>
                             </NavItem>
-                            <NavItem>
-                                <Link to='/login'>
-                                    <Button outline>
-                                        <span className="fa fa-sign-in fa-lg"></span> Đăng nhập
-                                    </Button>
-                                </Link>
-                            </NavItem>
+                            
+                            <Info />
+                            
                         </Nav>
                     </Collapse>
                 </Navbar>

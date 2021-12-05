@@ -1,18 +1,60 @@
 var jwt = require('jsonwebtoken');
 const { dbConnect } = require('./connectDB');
+const nodemailer = require('nodemailer');
 var models = require('./models/models');
 var config = require('./config');
 var FacebookTokenStrategy = require('passport-facebook-token');
 var passport = require('passport');
 
 exports.getToken = function(user) {
-    return jwt.sign(user, config.secretKey, {expiresIn: 3600});
+    return jwt.sign(user, config.secretKey, {expiresIn: "2d"});
+}
+
+exports.getCodeVerify = (id) => {
+    return jwt.sign({"id": id}, config.verifyKey, {expiresIn: '1h'});
+}
+
+exports.getIdCode = (code) => {
+    try {
+        var decode = jwt.verify(token, config.secretKey);
+        return decode.id;
+    } catch(error) {
+        return 'Wrong';
+    }
 }
 
 exports.getAccountId = (req) => {
     var token = req.signedCookies.token;
     var id = jwt.verify(token, config.secretKey).id;
     return id;
+}
+
+exports.sendEmail = (url, email, code) => {
+    var email = email;
+    var token = token;
+    var mail = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'parkingwebtest@gmail.com',
+            pass: 'parkingweb123'
+        }
+    });
+
+    var mailOptions = {
+        from: 'parkingwebtest@gmail.com',
+        to: email,
+        subject: 'Park Type - Account verification',
+        html: '<p>You requested for email verification, kindly use this <a href="' + url 
+        + 'verify?token=' + token + '">link</a> to verify your email address</p>'
+    }
+
+    mail.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return error.message;
+        } else {
+            return 'Success';
+        }
+    })
 }
 
 exports.verifyUser = (req, res, next) => {

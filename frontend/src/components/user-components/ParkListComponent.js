@@ -8,9 +8,10 @@ import ParkDetail from "./ParkDetailComponent";
 import {
     fetchComments, fetchParkInfo, postComment, fetchParkStatus, postReport, fetchBestParks,
     fetchCheapParks, fetchNearParks
-} from "../redux/ActionCreators";
-import { useSelector, useDispatch } from "react-redux";
+} from "../../redux/UserActionCreators";
+import { connect } from "react-redux";
 import { ParkList } from "./RenderParkListComponent";
+import Map from "./Map";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -54,8 +55,31 @@ function allyProps(index) {
     };
 }
 
+const mapStateToProps = state => {
+    return {
+        best_parks: state.best_parks,
+        cheap_parks: state.cheap_parks,
+        near_parks: state.near_parks,
+        park_status: state.park_status,
+        park_info: state.park_info,
+        comments: state.comments,
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+    postComment: (park_id, rating, comment) => dispatch(postComment(park_id, rating, comment)),
+    postReport: (park_id, content) => dispatch(postReport(park_id, content)),
+    fetchBestParks: () => dispatch(fetchBestParks()),
+    fetchCheapParks: () => dispatch(fetchCheapParks()),
+    fetchNearParks: () => dispatch(fetchNearParks()),
+    fetchParkStatus: (park_id) => { dispatch(fetchParkStatus(park_id)) },
+    fetchParkInfo: (park_id) => { dispatch(fetchParkInfo(park_id)) },
+    fetchComments: (park_id) => { dispatch(fetchComments(park_id)) }
+});
+
 function ParkListTabs(props) {
 
+    // const [lat, lng] = props;
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
     const [selectedPark, setSelectedPark] = React.useState(-1);
@@ -67,25 +91,17 @@ function ParkListTabs(props) {
         setValue(index);
     }
 
-    const best_parks = useSelector(state => state.best_parks)
-    const cheap_parks = useSelector(state => state.cheap_parks)
-    const near_parks = useSelector(state => state.near_parks)
-    const park_status = useSelector(state => state.park_status)
-    const park_info = useSelector(state => state.park_info)
-    const comments = useSelector(state => state.comments)
-    const dispatch = useDispatch()
-
     useEffect(
         () => {
             if (selectedPark < 0) {
-                dispatch(fetchBestParks());
-                dispatch(fetchCheapParks());
-                dispatch(fetchNearParks());
+                props.fetchBestParks();
+                props.fetchCheapParks();
+                props.fetchNearParks();
             }
             if (selectedPark >= 0) {
-                dispatch(fetchParkStatus(selectedPark));
-                dispatch(fetchParkInfo(selectedPark));
-                dispatch(fetchComments(selectedPark));
+                props.fetchParkStatus(selectedPark);
+                props.fetchParkInfo(selectedPark);
+                props.fetchComments(selectedPark);
             }
         }, [selectedPark]
     )
@@ -116,17 +132,17 @@ function ParkListTabs(props) {
                             >
                                 <TabPanel value={value} index={0} dir={theme.direction}>
                                     <Media list>
-                                        <ParkList parks={best_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
+                                        <ParkList parks={props.best_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
                                     </Media>
                                 </TabPanel>
                                 <TabPanel value={value} index={1} dir={theme.direction}>
                                     <Media list>
-                                        <ParkList parks={cheap_parks} />
+                                        <ParkList parks={props.cheap_parks} />
                                     </Media>
                                 </TabPanel>
                                 <TabPanel value={value} index={2} dir={theme.direction}>
                                     <Media list>
-                                        <ParkList parks={near_parks} />
+                                        <ParkList parks={props.near_parks} />
                                     </Media>
                                 </TabPanel>
                             </SwipeableViews>
@@ -136,19 +152,28 @@ function ParkListTabs(props) {
                 {
                     parseInt(selectedPark) >= 0 && <div>
                         <ParkDetail
-                            park_status={park_status}
-                            park_info={park_info}
-                            comments={comments}
-                            postComment={postComment}
-                            postReport={postReport}
+                            park_status={props.park_status}
+                            park_info={props.park_info}
+                            comments={props.comments}
+                            postComment={props.postComment}
+                            postReport={props.postReport}
                             selectedPark={selectedPark}
                             setSelectedPark={setSelectedPark} />
                     </div>
                 }
+            </Col>
+            <Col sm='8' xs='12'>
+                <Map
+                    googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyCzkaLCFq9tG9uMbwfFRDDz33IDlYN75n4&&callback=initMap&v=weekly`}
+                    loadingElement={<div style={{ height: `100%` }} />}
+                    containerElement={<div style={{ height: `90vh`, margin: `auto` }} />}
+                    mapElement={<div style={{ height: `100%` }} />}
+                    // lat={lat} lng={lng}
+                />
             </Col>
         </Row>
     );
 }
 
 
-export default ParkListTabs;
+export default connect(mapStateToProps, mapDispatchToProps)(ParkListTabs);

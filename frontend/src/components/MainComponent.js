@@ -1,18 +1,9 @@
 import React, { Component } from "react";
-import Header from './HeaderComponent';
-import Footer from './FooterComponent';
-import ParkListTabs from "./ParkListComponent";
-import Start from "./StartComponent"
-import SearchInfo from './SearchInfoComponent';
-import { postUser, postLogin } from "../redux/ActionCreators";
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
-import Login from "./LoginComponent";
-import Register from "./SignupComponent";
-
-const mapDispatchToProps = dispatch => ({
-    postLogin: (username, password) => dispatch(postLogin(username, password)),
-    postUser: (username, password, email, firstname, lastname, type) => dispatch(postUser(username, password, email, firstname, lastname, type))
-});
+import Header from "./HeaderComponent";
+import Footer from "./FooterComponent";
+import MainAdmin from "./admin-components/MainAdminComponent";
+import MainUser from "./user-components/MainUserComponent";
 
 class Main extends Component {
 
@@ -24,20 +15,15 @@ class Main extends Component {
         return (
             <div>
                 <Header />
-                <SearchInfo />
                 <Switch>
-                    <Route exact path="/start" component={() => <Start />} />
-                    <Route exact path="/parks" 
-                        component={ () => <ParkListTabs /> } />
-                    <Route exact path="/login" component={() => <Login />} />
-                    <Route exact path="/register" component= {() => <Register /> } />
-                    <Redirect to="/parks" />
+                    <Route path="/admin"><MainAdmin /></Route>
+                    <Route path="/user"><MainUser /></Route>
+                    <Redirect to="/admin" />
                 </Switch>
                 <Footer />
             </div>
         );
     }
 }
-
 
 export default withRouter(Main);

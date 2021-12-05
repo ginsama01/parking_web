@@ -9,14 +9,14 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var ownRouter = require('./routes/own.router');
-var parkRouter = require('./routes/park.router');
+var parkRouter = require('./routes/park.user.router');
 var authenRouter = require('./routes/authen.router');
 var config = require('./config');
-const { cors } = require('./routes/cors');
+const { cors, corsWithOptions } = require('./routes/cors');
 
 var app = express();
 
-app.use(cors);
+app.use(corsWithOptions);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

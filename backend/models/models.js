@@ -11,6 +11,7 @@ const Comment = require('./comment.model');
 const Parking = require('./parking.model');
 const Pending = require('./pending.model');
 const Report = require('./report.model');
+const Banlist = require('./banlist.model');
 const {dbConnect} = require('../connectDB');
 
 Owner.belongsTo(Account, {
@@ -133,5 +134,6 @@ module.exports = {
     Pending,
     Comment, 
     Favorite,
-    Report
+    Report,
+    Banlist
 }

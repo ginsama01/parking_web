@@ -7,12 +7,6 @@ const Owner = dbConnect.define('owner', {
         primaryKey: true,
         allowNull: false,
     },
-    age: {
-        type: DataTypes.INTEGER
-    },
-    ssid: {
-        type: DataTypes.BIGINT(12)
-    },
     isactivated: {
         type: DataTypes.TINYINT,
         allowNull: false

@@ -1,6 +1,6 @@
 import React from "react";
 import { Rating, CardMedia, CardContent, Box, Card, ButtonBase, CircularProgress } from "@mui/material";
-import { baseUrl } from '../shared/baseUrl';
+import { baseUrl } from '../../shared/baseUrl';
 import { Media, } from "reactstrap";
 
 

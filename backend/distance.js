@@ -1,9 +1,10 @@
 const distance = require('google-distance-matrix');
+const config = require('./config');
 
 var origins = ['Trường THPT Lương Tài'];
 var destinations = ['Trường THCS Hàn Thuyên'];
 
-distance.key('AIzaSyBLWYpgy-LGY0EPmnjHwAmnok06l-0qJzA');
+distance.key(config.googlemapKey);
 
 module.exports.calDistance = (origin, destination) => {
     return new Promise((resolve, reject) => {

@@ -7,12 +7,6 @@ const User = dbConnect.define('user', {
         primaryKey: true,
         allowNull: false,
     },
-    age: {
-        type: DataTypes.INTEGER
-    },
-    ssid: {
-        type: DataTypes.BIGINT(12)
-    },
     isactivated: {
         type: DataTypes.TINYINT,
         allowNull: false

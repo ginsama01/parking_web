@@ -6,7 +6,6 @@ const authenticate = require('../authenticate');
 
 const ownRouter = express.Router();
 
-ownRouter.use(cors.cors);
 ownRouter.use(express.json());
 
 
@@ -28,7 +27,7 @@ ownRouter.route('/')
         models.Park.create(req.body)
             .then((park) => {
                 console.log('Park created ', park);
-                res.statusCode = 200;
+                res.statusCode = 201;
                 res.setHeader('Content-Type', 'application/json');
                 res.json(park);
             }, (err) => next(err))

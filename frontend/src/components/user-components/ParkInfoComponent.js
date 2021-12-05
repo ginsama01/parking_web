@@ -1,6 +1,6 @@
 import { ImageList, ImageListItem, CircularProgress } from "@mui/material";
 import React from "react";
-import { baseUrl } from "../shared/baseUrl";
+import { baseUrl } from "../../shared/baseUrl";
 
 
 function CameraIcon({ hasCamera }) {

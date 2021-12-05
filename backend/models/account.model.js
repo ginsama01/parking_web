@@ -31,7 +31,7 @@ const Account = dbConnect.define('account', {
         type: DataTypes.STRING,
     },
     phone: {
-        type: DataTypes.INTEGER
+        type: DataTypes.STRING
     },
     facebookId: {
         type: DataTypes.STRING

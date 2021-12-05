@@ -33,7 +33,7 @@ const Park = dbConnect.define('park', {
         allowNull: false
     },
     price: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.INTEGER,
         allowNull: false
     }, 
     hasCamera: {

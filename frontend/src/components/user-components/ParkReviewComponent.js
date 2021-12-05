@@ -44,7 +44,7 @@ class CommentForm extends Component {
                 <Modal centered size="lg" isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}>Thêm đánh giá mới</ModalHeader>
                     <ModalBody>
-                        <RenderCommentForm handleSubmitComment={(value) => this.handleSubmitComment(value)} park_name={park_name} />
+                        <RenderCommentForm handleSubmitComment={() => this.handleSubmitComment()} park_name={park_name} />
                     </ModalBody>
                 </Modal>
             </>

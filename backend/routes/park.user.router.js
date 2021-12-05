@@ -10,7 +10,6 @@ const parkRouter = express.Router();
 var address = '';
 var parkObj = [];
 
-parkRouter.use(cors.cors);
 parkRouter.use(express.json());
 
 parkRouter.route('/')
@@ -126,19 +125,9 @@ parkRouter.route('/info/:parkId')
             .catch((err) => next(err));
     });
 
-parkRouter.route('/comment/:parkId')
-    .get((req, res, next) => {
-        dbConnect.query("SELECT c.cmt_id, pu.park_id, c.rating, c.content, c.createdAt AS createTime, "
-            + "(SELECT CONCAT(firstname, ' ', lastname) FROM account WHERE id = pu.user_id) AS author "
-            + "FROM comment c JOIN park_user pu ON c.rela_id = pu.rela_id", {
-            type: dbConnect.QueryTypes.SELECT
-        }).then(result => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json(result);
-        }, (err) => next(err))
-            .catch((err) => next(err));
-    })
+
+//Post comment
+parkRouter.route('/comment')
     .post(authenticate.verifyUser, (req, res, next) => {
         let comment = req.body;
         let user_id = authenticate.getAccountId(req);
@@ -167,9 +156,28 @@ parkRouter.route('/comment/:parkId')
             }
         }, (err) => next(err))
             .catch(err => next(err))
+    })
+
+//Fetch comment list of 1 park
+parkRouter.route('/comment/:parkId')
+    .get((req, res, next) => {
+        dbConnect.query("SELECT c.cmt_id AS id, pu.park_id, c.rating, c.content, c.createdAt AS createTime, "
+            + "(SELECT CONCAT(firstname, ' ', lastname) FROM account WHERE id = pu.user_id) AS author "
+            + "FROM comment c JOIN park_user pu ON c.rela_id = pu.rela_id WHERE pu.park_id = " + req.params.parkId + ";", {
+            type: dbConnect.QueryTypes.SELECT
+        }).then(result => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(result);
+        }, (err) => next(err))
+            .catch((err) => next(err));
+    })
+    .post(authenticate.verifyUser, (req, res, next) => {
+        
     });
 
-parkRouter.route('/report/:parkId')
+//Report park
+parkRouter.route('/report')
     .post(authenticate.verifyUser, (req, res, next) => {
         let report = req.body;
         let user_id = authenticate.getAccountId(req);
@@ -189,11 +197,11 @@ parkRouter.route('/report/:parkId')
                     }, (err) => next(err))
             } else {
                 report['rela_id'] = result[0].rela_id;
-                models.Comment.create(report)
+                models.Report.create(report)
                     .then(report => {
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
-                        res.json({ success: true, status: 'Post comment succesfully!' });
+                        res.json({ success: true, status: 'Post report succesfully!' });
                     }, (err) => next(err))
             }
         }, (err) => next(err))

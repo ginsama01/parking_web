@@ -10,7 +10,6 @@ const { dbConnect } = require('../connectDB');
 
 const accountRouter = express.Router();
 
-accountRouter.use(cors.cors);
 accountRouter.use(express.json());
 
 accountRouter.route('/signup')
@@ -59,6 +58,7 @@ accountRouter.route('/login')
             dbConnect.query("SELECT * FROM account WHERE username = '" + req.body.username +"';", {
                 type: dbConnect.QueryTypes.SELECT
             }) .then((result) => {
+                
                 if (result.length == 0) {
                     var err = new Error('User ' + username + ' does not exist!');
                     err.status = 403;
@@ -74,7 +74,7 @@ accountRouter.route('/login')
                     res.setHeader('Content-Type', 'application/json');
                     var token = authenticate.getToken({id: result[0].id});
                     res.cookie('token', token, {signed: true});
-                    res.json({success: true, status: 'You are successfully logged in!'});
+                    res.json({login: true, username: username});
                 }
             }, (err) => next(err)) 
             .catch((err) => next(err));
@@ -92,5 +92,37 @@ accountRouter.route('/logout')
         }
     });
 
-
+accountRouter.route('/verify')
+    .get((req, res, next) => {
+        var code = req.query.code;
+        var decodeId = authenticate.getIdCode(code);
+        if (decodeId == 'Wrong') {
+            var err = new Error('Can not verify. Maybe code is invalid or time out');
+            err.status = 403;
+            return next(err);
+        }
+        dbConnect.query("SELECT id FROM account WHERE id = " + decodeId + ";", {
+            type: dbConnect.QueryTypes.SELECT
+        }).then(result => {
+            if (result.length == 0) {
+                var err = new Error('Can not verify. Maybe code is invalid or time out');
+                err.status = 403;
+                return next(err);
+            }
+        }, (err) => next(err))
+        .catch(err => next(err));
+    })
+    .post((req, res, next) => {
+        var id = authenticate.getAccountId(code)
+        var mess = authenticate.sendEmail(req.hostname, req.body.email, authenticate.getCodeVerify(id));
+        if (mess == 'Success') {
+            res.statusCode = 201;
+            res.json({success: true, status: 'Please check your email to verify account'});
+        } else {
+            var err = new Error('Can not send verification to your email');
+            err.status = 403;
+            return next(err);
+        }
+    })
+    
 module.exports = accountRouter;

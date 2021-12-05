@@ -15,6 +15,9 @@ const Parking = dbConnect.define('parking', {
     status: {
         type: DataTypes.STRING(20),
         allowNull: false
+    },
+    price: {
+        type: DataTypes.INTEGER
     }
 }, {
     freezeTableName: true

@@ -1,12 +1,11 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
 
+// get all parks for maker
+export const fetchAllParks = () => (dispatch) => {
+    dispatch(allParksLoading(true));
 
-// fetch best parks list
-export const fetchBestParks = () => (dispatch) => {
-    dispatch(bestParksLoading(true));
-
-    return fetch(baseUrl + 'parks/best')
+    return fetch(baseUrl + 'parks')
         .then(response => {
             if (response.ok) {
                 return response;
@@ -16,10 +15,48 @@ export const fetchBestParks = () => (dispatch) => {
                 throw error;
             }
         },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
+        .then(response => response.json())
+        .then(all_parks => dispatch(addAllParks(all_parks)))
+        .catch(error => dispatch(allParksFailed(error.message)));
+}
+
+export const allParksLoading = () => ({
+    type: ActionTypes.ALLPARKS_LOADING
+});
+
+export const allParksFailed = (errmess) => ({
+    type: ActionTypes.ALLPARKS_FAILED,
+    payload: errmess
+});
+
+export const addAllParks = (all_parks) => ({
+    type: ActionTypes.ADD_ALLPARKS,
+    payload: all_parks
+});
+
+
+// fetch best parks list
+export const fetchBestParks = () => (dispatch) => {
+    dispatch(bestParksLoading(true));
+
+    return fetch(baseUrl + 'parks-best', { credentials: 'include' })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
         .then(response => response.json())
         .then(best_parks => dispatch(addBestParks(best_parks)))
         .catch(error => dispatch(bestParksFailed(error.message)));
@@ -44,7 +81,7 @@ export const addBestParks = (best_parks) => ({
 export const fetchCheapParks = () => (dispatch) => {
     dispatch(cheapParksLoading(true));
 
-    return fetch(baseUrl + 'parks/cheap')
+    return fetch(baseUrl + 'parks-cheap', { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -54,10 +91,10 @@ export const fetchCheapParks = () => (dispatch) => {
                 throw error;
             }
         },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
         .then(response => response.json())
         .then(cheap_parks => dispatch(addCheapParks(cheap_parks)))
         .catch(error => dispatch(cheapParksFailed(error.message)));
@@ -82,7 +119,7 @@ export const addCheapParks = (cheap_parks) => ({
 export const fetchNearParks = () => (dispatch) => {
     dispatch(nearParksLoading(true));
 
-    return fetch(baseUrl + 'parks/near')
+    return fetch(baseUrl + 'parks-near', { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -92,10 +129,10 @@ export const fetchNearParks = () => (dispatch) => {
                 throw error;
             }
         },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
         .then(response => response.json())
         .then(near_parks => dispatch(addNearParks(near_parks)))
         .catch(error => dispatch(nearParksFailed(error.message)));
@@ -120,7 +157,7 @@ export const addNearParks = (near_parks) => ({
 export const fetchParkStatus = (park_id) => (dispatch) => {
     dispatch(parkStatusLoading(true));
 
-    return fetch(baseUrl + 'parks/status/' + park_id)
+    return fetch(baseUrl + 'parks-status-' + park_id, { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -130,10 +167,10 @@ export const fetchParkStatus = (park_id) => (dispatch) => {
                 throw error;
             }
         },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
         .then(response => response.json())
         .then(park_status => dispatch(addParkStatus(park_status)))
         .catch(error => dispatch(parkStatusFailed(error.message)));
@@ -158,7 +195,7 @@ export const addParkStatus = (park_status) => ({
 export const fetchParkInfo = (park_id) => (dispatch) => {
     dispatch(parkInfoLoading(true));
 
-    return fetch(baseUrl + 'parks/info/' + park_id)
+    return fetch(baseUrl + 'parks-info-' + park_id, { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -168,10 +205,10 @@ export const fetchParkInfo = (park_id) => (dispatch) => {
                 throw error;
             }
         },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
         .then(response => response.json())
         .then(park_info => dispatch(addParkInfo(park_info)))
         .catch(error => dispatch(parkInfoFailed(error.message)));
@@ -194,7 +231,7 @@ export const addParkInfo = (park_info) => ({
 
 //get comments
 export const fetchComments = (park_id) => (dispatch) => {
-    return fetch(baseUrl + 'parks/comment/' + park_id)
+    return fetch(baseUrl + 'parks-comment-' + park_id, { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -204,11 +241,11 @@ export const fetchComments = (park_id) => (dispatch) => {
                 error.response = response;
                 throw error;
             }
-        }, 
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
         .then(response => response.json())
         .then(comments => dispatch(addComments(comments)))
         .catch(error => dispatch(commentsFailed(error.message)));
@@ -234,13 +271,13 @@ export const postComment = (park_id, rating, content) => (dispatch) => {
         content: content
     }
 
-    return fetch(baseUrl + 'parks/comment', {
+    return fetch(baseUrl + 'parks-comment', {
         method: 'POST',
         body: JSON.stringify(newComment),
         headers: {
             'Content-Type': 'application/json'
         },
-        credentials: 'same-origin'
+        credentials: 'include'
     })
         .then(response => {
             if (response.ok) {
@@ -251,14 +288,16 @@ export const postComment = (park_id, rating, content) => (dispatch) => {
                 error.response = response;
                 throw error;
             }
-        }, 
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
         .then(response => response.json())
-        .catch(error => { console.log('Post comments ', error.message)
-            alert('Your comment could not be posted \nError: ' + error.message) })
+        .catch(error => {
+            console.log('Post comments ', error.message)
+            alert('Your comment could not be posted \nError: ' + error.message)
+        })
 }
 
 
@@ -270,13 +309,13 @@ export const postReport = (park_id, content) => (dispatch) => {
         content: content
     }
 
-    return fetch(baseUrl + 'park/report', {
+    return fetch(baseUrl + 'park-report', {
         method: 'POST',
         body: JSON.stringify(newReport),
         headers: {
             'Content-Type': 'application/json'
         },
-        credentials: 'same-origin'
+        credentials: 'include'
     })
         .then(response => {
             if (response.ok) {
@@ -287,14 +326,16 @@ export const postReport = (park_id, content) => (dispatch) => {
                 error.response = response;
                 throw error;
             }
-        }, 
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
         .then(response => response.json())
-        .catch(error => { console.log('Post report ', error.message)
-            alert('Your report could not be posted \nError: ' + error.message) })
+        .catch(error => {
+            console.log('Post report ', error.message)
+            alert('Your report could not be posted \nError: ' + error.message)
+        })
 }
 
 //Sign up
@@ -307,14 +348,14 @@ export const postUser = (username, password, email, firstname, lastname, type) =
         lastname: lastname,
         type: type
     };
-    return fetch(baseUrl + 'authen/signup', 
+    return fetch(baseUrl + 'authen-signup',
         {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
-              },
+            },
             body: JSON.stringify(newUser),
-            credentials: "same-origin"
+            credentials: "include"
         })
         .then(response => {
             if (response.ok) {
@@ -325,17 +366,17 @@ export const postUser = (username, password, email, firstname, lastname, type) =
                 throw error;
             }
         },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
         .then(response => {
-            alert('Đăng ký thành công'); 
-            window.location.href='/'
+            alert('Đăng ký thành công');
+            window.location.href = '/'
         })
         .then(user => dispatch(addUser(user)))
-        .catch(error =>  { console.log('post user', error.message); alert('Your account could not be posted\nError: '+error.message); });
-    }
+        .catch(error => { console.log('post user', error.message); alert('Your account could not be posted\nError: ' + error.message); });
+}
 
 export const userFailed = (errmess) => ({
     type: ActionTypes.USER_FAILED,
@@ -348,20 +389,20 @@ export const addUser = (user) => ({
 });
 
 
-//Login 
+// Login 
 export const postLogin = (username, password) => (dispatch) => {
     const Login = {
         username: username,
         password: password
     };
-    return fetch(baseUrl + 'authen/login', 
+    return fetch(baseUrl + 'authen-login',
         {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
-              },
+            },
             body: JSON.stringify(Login),
-            credentials: "same-origin"
+            credentials: "include"
         })
         .then(response => {
             if (response.ok) {
@@ -372,14 +413,53 @@ export const postLogin = (username, password) => (dispatch) => {
                 throw error;
             }
         },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
-        .then(response => {
-            alert('Đăng nhập thành công'); 
-            window.location.href='/'
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
+        .then(response => response.json())
+        .then(user => {
+            localStorage.setItem('login', true);
+            localStorage.setItem('username', user['username']);
+            const event = new Event('storagechange');
+            window.dispatchEvent(event);
+            alert('Đăng nhập thành công');
+            window.location.href = '/'
         })
         .then(user => dispatch(addUser(user)))
-        .catch(error =>  { console.log('post user', error.message); alert('Your account could not be posted\nError: '+error.message); });
-    }
+        .catch(error => { console.log('post user', error.message); alert('Your account could not be posted\nError: ' + error.message); });
+}
+
+
+export const Logout = () => (dispatch) => {
+    return fetch(baseUrl + 'authen/logout',
+        {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include"
+        })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
+        .then(response => response.json())
+        .then(user => {
+            sessionStorage.removeItem('login');
+            sessionStorage.removeItem('username');
+            const event = new Event('storagechange');
+            window.dispatchEvent(event);
+            window.location.href = '/'
+        })
+        .catch(error => { console.log('post user', error.message); alert('Your account could not be posted\nError: ' + error.message); });
+}
