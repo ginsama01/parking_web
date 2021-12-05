@@ -1,8 +1,8 @@
 import { useEffect } from "react"
-import RenderUserListTable from "./UserListTableComponent";
+import ListTable from "./ListTableComponent";
 import { connect } from "react-redux";
-import { fetchUserList } from "../../redux/ActionCreators";
-import DashBoard from "./DashboardComponent";
+import { fetchUserList, deleteUser } from "../../redux/AdminActionCreators";
+import SideBar from "./SideBarComponent";
 
 const headCells = [
     {
@@ -18,7 +18,7 @@ const headCells = [
         label: 'Tài Khoản',
     },
     {
-        id: 'isActive',
+        id: 'isActived',
         numeric: false,
         disablePadding: false,
         label: 'Trạng thái',
@@ -62,11 +62,11 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchUserList: () => dispatch(fetchUserList())
+    fetchUserList: () => dispatch(fetchUserList()),
+    deleteUser: (user_id) => dispatch(deleteUser(user_id)),
 });
 
-
-function UserListTable(props) {
+function UserList(props) {
 
     useEffect(
         () => {
@@ -74,22 +74,19 @@ function UserListTable(props) {
         }, []
     )
 
-    const rows = props.user_list.user_list;
-
     return (
-        <div>
-            <RenderUserListTable rows={rows} headCells={headCells} />
-        </div>
-    );
-}
 
-UserListTable = connect(mapStateToProps, mapDispatchToProps)(UserListTable);
-
-export default function UserList() {
-    return(
+        // viet isLoading and errMess
         <div className="row">
-            <div className="col-2"><DashBoard /></div>
-            <div className="col-10"><UserListTable /></div>
+            <div className="col-2"><SideBar /></div>
+            <div className="col-10">
+                <ListTable
+                    rows={props.user_list.user_list}
+                    headCells={headCells}
+                    typeTable="Người dùng" />
+            </div>
         </div>
     );
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserList);

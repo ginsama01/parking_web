@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import ListTable from "./ListTableComponent";
 import { connect } from "react-redux";
-import { fetchOwnerList } from "../../redux/AdminActionCreators";
+import { fetchParkList } from "../../redux/AdminActionCreators";
 import SideBar from "./SideBarComponent";
 
 const headCells = [
@@ -12,10 +12,10 @@ const headCells = [
         label: 'ID',
     },
     {
-        id: 'username',
+        id: 'name',
         numeric: false,
         disablePadding: false,
-        label: 'Tài Khoản',
+        label: 'Tên',
     },
     {
         id: 'isActived',
@@ -24,46 +24,40 @@ const headCells = [
         label: 'Trạng thái',
     },
     {
-        id: 'name',
-        numeric: false,
+        id: 'price',
+        numeric: true,
         disablePadding: false,
-        label: 'Tên',
+        label: 'Giá',
     },
     {
-        id: 'phone',
+        id: 'location',
         numeric: false,
         disablePadding: false,
-        label: 'Điện thoại',
+        label: 'Vị trí',
     },
     {
-        id: 'email',
+        id: 'owner',
         numeric: false,
         disablePadding: false,
-        label: 'Email',
+        label: 'Chủ sở hữu',
     },
-    {
-        id: 'address',
-        numeric: false,
-        disablePadding: false,
-        label: 'Địa chỉ',
-    }
 ];
 
 const mapStateToProps = state => {
     return {
-        owner_list: state.owner_list,
+        park_list: state.park_list,
     }
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchOwnerList: () => dispatch(fetchOwnerList())
+    fetchParkList: () => dispatch(fetchParkList())
 });
 
-function OwnerList(props) {
+function ParkList(props) {
 
     useEffect(
         () => {
-            props.fetchOwnerList()
+            props.fetchParkList()
         }, []
     )
 
@@ -73,10 +67,10 @@ function OwnerList(props) {
         <div className="row">
             <div className="col-2"><SideBar /></div>
             <div className="col-10">
-                <ListTable rows={props.owner_list.owner_list} headCells={headCells} typeTable="Chủ bãi đỗ" />
+                <ListTable rows={props.park_list.park_list} headCells={headCells} typeTable="Bãi đỗ" />
             </div>
         </div>
     );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OwnerList);
+export default connect(mapStateToProps, mapDispatchToProps)(ParkList);

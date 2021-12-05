@@ -263,7 +263,6 @@ export const addComments = (comments) => ({
 
 
 //post comment
-
 export const postComment = (park_id, rating, content) => (dispatch) => {
 
     const newComment = {
@@ -303,7 +302,6 @@ export const postComment = (park_id, rating, content) => (dispatch) => {
 
 
 //post report
-
 export const postReport = (park_id, content) => (dispatch) => {
 
     const newReport = {
@@ -428,77 +426,3 @@ export const postLogin = (username, password) => (dispatch) => {
 }
 
 
-// get user list for admin
-export const fetchUserList = () => (dispatch) => {
-    dispatch(userListLoading(true));
-
-    return fetch(baseUrl + 'user', { credentials: 'include' })
-        .then(response => {
-            if (response.ok) {
-                return response;
-            } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
-        .then(response => response.json())
-        .then(user_list => dispatch(addUserList(user_list)))
-        .catch(error => dispatch(userListFailed(error.message)));
-}
-
-export const userListLoading = () => ({
-    type: ActionTypes.USERLIST_LOADING
-});
-
-export const userListFailed = (errmess) => ({
-    type: ActionTypes.USERLIST_FAILED,
-    payload: errmess
-});
-
-export const addUserList = (user_list) => ({
-    type: ActionTypes.ADD_USERLIST,
-    payload: user_list
-});
-
-
-// get owner list for admin
-export const fetchOwnerList = () => (dispatch) => {
-    dispatch(ownerListLoading(true));
-
-    return fetch(baseUrl + 'owner', { credentials: 'include' })
-        .then(response => {
-            if (response.ok) {
-                return response;
-            } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
-        .then(response => response.json())
-        .then(owner_list => dispatch(addOwnerList(owner_list)))
-        .catch(error => dispatch(ownerListFailed(error.message)));
-}
-
-export const ownerListLoading = () => ({
-    type: ActionTypes.OWNERLIST_LOADING
-});
-
-export const ownerListFailed = (errmess) => ({
-    type: ActionTypes.OWNERLIST_FAILED,
-    payload: errmess
-});
-
-export const addOwnerList = (owner_list) => ({
-    type: ActionTypes.ADD_OWNERLIST,
-    payload: owner_list
-});

@@ -68,7 +68,7 @@ import PlacesAutocomplete, {
   getLatLng,
 } from 'react-places-autocomplete';
 import { useSelector, useDispatch } from "react-redux";
-import { fetchAllParks } from "../../redux/ActionCreators";
+import { fetchAllParks } from "../../redux/UserActionCreators";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => {
@@ -82,9 +82,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 function AllMarker(props) {
-  // const parks = useSelector(state => state.all_parks)
-  // const dispatch = useDispatch();
-  // const markers = [];
 
   const [makers, setMakers] = React.useState([]);
   

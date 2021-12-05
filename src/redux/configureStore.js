@@ -1,19 +1,27 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import logger from "redux-logger";
-import { BestParks } from './best-parks';
-import { CheapParks } from './cheap-parks';
-import { NearParks } from './near-parks'
-import { ParkStatus } from './park-status';
-import { ParkInfo } from './park-info';
-import { Comments } from './comments';
 import { reducer as formReducer } from 'redux-form';
-import { InitialSignup } from './signup';
 import { createForms } from 'react-redux-form';
-import { InitialLogin } from './login';
-import { UserList } from './user-list';
-import { OwnerList } from './owner-list';
-import { AllParks } from './all-parks';
+import { BestParks } from './user/best-parks';
+import { CheapParks } from './user/cheap-parks';
+import { NearParks } from './user/near-parks'
+import { ParkStatus } from './user/park-status';
+import { ParkInfo } from './user/park-info';
+import { Comments } from './user/comments';
+import { InitialSignup } from './user/signup';
+import { InitialLogin } from './user/login';
+import { AllParks } from './user/all-parks';
+
+
+
+import { UserList } from './admin/user-list';
+import { OwnerList } from './admin/owner-list';
+import { ParkList } from './admin/park-list';
+import { UserChart } from './admin/user-chart';
+import { RatingChart } from './admin/rating-chart';
+import { TransChart } from './admin/trans-chart';
+
 
 export const ConfigureStore = () => {
     const store = createStore(
@@ -24,9 +32,17 @@ export const ConfigureStore = () => {
             park_status: ParkStatus,
             park_info: ParkInfo,
             comments: Comments,
+            all_parks: AllParks,
+
+
             user_list: UserList,
             owner_list: OwnerList,
-            all_parks: AllParks,
+            park_list: ParkList,
+            user_chart: UserChart,
+            rating_chart: RatingChart,
+            trans_chart: TransChart,
+            
+            
             form: formReducer,
             ...createForms({
                 signup: InitialSignup,

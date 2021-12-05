@@ -20,66 +20,68 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 
+import Row from './RowComponent';
+
 
 function TablePaginationActions(props) {
-  const theme = useTheme();
-  const { count, page, rowsPerPage, onPageChange } = props;
+    const theme = useTheme();
+    const { count, page, rowsPerPage, onPageChange } = props;
 
-  const handleFirstPageButtonClick = (event) => {
-    onPageChange(event, 0);
-  };
+    const handleFirstPageButtonClick = (event) => {
+        onPageChange(event, 0);
+    };
 
-  const handleBackButtonClick = (event) => {
-    onPageChange(event, page - 1);
-  };
+    const handleBackButtonClick = (event) => {
+        onPageChange(event, page - 1);
+    };
 
-  const handleNextButtonClick = (event) => {
-    onPageChange(event, page + 1);
-  };
+    const handleNextButtonClick = (event) => {
+        onPageChange(event, page + 1);
+    };
 
-  const handleLastPageButtonClick = (event) => {
-    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-  };
+    const handleLastPageButtonClick = (event) => {
+        onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+    };
 
-  return (
-    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-      <IconButton
-        onClick={handleFirstPageButtonClick}
-        disabled={page === 0}
-        aria-label="first page"
-      >
-        {theme.direction === 'rtl' ? <i class="fas fa-angle-double-right"></i> : <i class="fas fa-angle-double-left"></i>}
-      </IconButton>
-      <IconButton
-        onClick={handleBackButtonClick}
-        disabled={page === 0}
-        aria-label="previous page"
-      >
-        {theme.direction === 'rtl' ? <i class="fas fa-angle-right"></i> : <i class="fas fa-angle-left"></i>}
-      </IconButton>
-      <IconButton
-        onClick={handleNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="next page"
-      >
-        {theme.direction === 'rtl' ? <i class="fas fa-angle-left"></i> : <i class="fas fa-angle-right"></i>}
-      </IconButton>
-      <IconButton
-        onClick={handleLastPageButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="last page"
-      >
-        {theme.direction === 'rtl' ? <i class="fas fa-angle-double-left"></i> : <i class="fas fa-angle-double-right"></i>}
-      </IconButton>
-    </Box>
-  );
+    return (
+        <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+            <IconButton
+                onClick={handleFirstPageButtonClick}
+                disabled={page === 0}
+                aria-label="first page"
+            >
+                {theme.direction === 'rtl' ? <i class="fas fa-angle-double-right"></i> : <i class="fas fa-angle-double-left"></i>}
+            </IconButton>
+            <IconButton
+                onClick={handleBackButtonClick}
+                disabled={page === 0}
+                aria-label="previous page"
+            >
+                {theme.direction === 'rtl' ? <i class="fas fa-angle-right"></i> : <i class="fas fa-angle-left"></i>}
+            </IconButton>
+            <IconButton
+                onClick={handleNextButtonClick}
+                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+                aria-label="next page"
+            >
+                {theme.direction === 'rtl' ? <i class="fas fa-angle-left"></i> : <i class="fas fa-angle-right"></i>}
+            </IconButton>
+            <IconButton
+                onClick={handleLastPageButtonClick}
+                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+                aria-label="last page"
+            >
+                {theme.direction === 'rtl' ? <i class="fas fa-angle-double-left"></i> : <i class="fas fa-angle-double-right"></i>}
+            </IconButton>
+        </Box>
+    );
 }
 
 TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
+    count: PropTypes.number.isRequired,
+    onPageChange: PropTypes.func.isRequired,
+    page: PropTypes.number.isRequired,
+    rowsPerPage: PropTypes.number.isRequired,
 };
 
 
@@ -177,7 +179,7 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-    const { numSelected } = props;
+    const { typeTable, numSelected, handleDeleteIcon } = props;
 
     return (
         <Toolbar
@@ -197,7 +199,7 @@ const EnhancedTableToolbar = (props) => {
                     variant="subtitle1"
                     component="div"
                 >
-                    Đã chọn {numSelected} 
+                    Đã chọn {numSelected}
                 </Typography>
             ) : (
                 <Typography
@@ -206,13 +208,13 @@ const EnhancedTableToolbar = (props) => {
                     id="tableTitle"
                     component="div"
                 >
-                    Người dùng
+                    {typeTable}
                 </Typography>
             )}
 
             {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton>
+                <Tooltip title="Xóa">
+                    <IconButton onClick={handleDeleteIcon}>
                         <i class="fas fa-trash-alt"></i>
                     </IconButton>
                 </Tooltip>
@@ -229,9 +231,10 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
+    typeTable: PropTypes.string.isRequired,
 };
 
-function RenderUserListTable(props) {
+function ListTable(props) {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [selected, setSelected] = React.useState([]);
@@ -239,7 +242,8 @@ function RenderUserListTable(props) {
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    const { rows, headCells } = props;
+
+    const { rows, headCells, typeTable, handleDeleteIcon } = props;
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -249,19 +253,19 @@ function RenderUserListTable(props) {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.name);
+            const newSelecteds = rows.map((n) => n.id);
             setSelected(newSelecteds);
             return;
         }
         setSelected([]);
     };
 
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
+    const handleClick = (event, id) => {
+        const selectedIndex = selected.indexOf(id);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
+            newSelected = newSelected.concat(selected, id);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -289,7 +293,7 @@ function RenderUserListTable(props) {
         setDense(event.target.checked);
     };
 
-    const isSelected = (name) => selected.indexOf(name) !== -1;
+    const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
@@ -298,7 +302,10 @@ function RenderUserListTable(props) {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar
+                    numSelected={selected.length}
+                    typeTable={typeTable}
+                    handleDeleteIcon={handleDeleteIcon} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -315,49 +322,18 @@ function RenderUserListTable(props) {
                             headCells={headCells}
                         />
                         <TableBody>
-                            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                 rows.slice().sort(getComparator(order, orderBy)) */}
                             {stableSort(rows, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.name);
+                                    const isItemSelected = isSelected(row.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
-                                        <TableRow
-                                            hover
-                                            onClick={(event) => handleClick(event, row.name)}
-                                            role="checkbox"
-                                            aria-checked={isItemSelected}
-                                            tabIndex={-1}
-                                            key={row.name}
-                                            selected={isItemSelected}
-                                        >
-                                            <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    color="primary"
-                                                    checked={isItemSelected}
-                                                    inputProps={{
-                                                        'aria-labelledby': labelId,
-                                                    }}
-                                                />
-                                            </TableCell>
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                padding="none"
-                                            >
-                                                {row.id}
-                                            </TableCell>
-                                            <TableCell align="left">{row.username}</TableCell>
-                                            <TableCell align="right">{row.isActivated}</TableCell>
-                                            <TableCell align="left">{row.name}</TableCell>
-                                            <TableCell align="right">{row.phone}</TableCell>
-                                            <TableCell align="left">{row.email}</TableCell>
-                                            <TableCell align="left">{row.address}</TableCell>
-                                            <TableCell align="right">{row.age}</TableCell>
-                                        </TableRow>
+                                        <Row row={row}
+                                            isItemSelected={isItemSelected}
+                                            handleClick={handleClick}
+                                            labelId={labelId}
+                                            typeTable={typeTable} />
                                     );
                                 })}
                             {emptyRows > 0 && (
@@ -391,4 +367,4 @@ function RenderUserListTable(props) {
     );
 }
 
-export default RenderUserListTable;
+export default ListTable;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Label, Row, Col } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
-import { postUser } from "../../redux/ActionCreators";
+import { postUser } from "../../redux/UserActionCreators";
 import { connect } from "react-redux";
 
 const required = (val) => val && val.length;

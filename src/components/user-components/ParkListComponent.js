@@ -8,7 +8,7 @@ import ParkDetail from "./ParkDetailComponent";
 import {
     fetchComments, fetchParkInfo, postComment, fetchParkStatus, postReport, fetchBestParks,
     fetchCheapParks, fetchNearParks
-} from "../../redux/ActionCreators";
+} from "../../redux/UserActionCreators";
 import { connect } from "react-redux";
 import { ParkList } from "./RenderParkListComponent";
 import Map from "./Map";

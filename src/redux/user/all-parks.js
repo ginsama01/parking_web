@@ -1,16 +1,16 @@
-import * as ActionTypes from './ActionTypes';
+import * as ActionTypes from '../ActionTypes';
 
-export const BestParks = (state = {
+export const AllParks = (state = {
         isLoading: true,
         errMess: null,
         parks: []
     }, action) => {
     switch (action.type) {
-        case ActionTypes.ADD_BESTPARKS:
+        case ActionTypes.ADD_ALLPARKS:
             return {...state, isLoading: false, errMess: null, parks: action.payload}
-        case ActionTypes.BESTPARKS_LOADING:
+        case ActionTypes.ALLPARKS_LOADING:
             return {...state, isLoading: true, errMess: null, parks: []}
-        case ActionTypes.BESTPARKS_FAILED:
+        case ActionTypes.ALLPARKS_FAILED:
             return {...state, isLoading: false, errMess: action.payload, parks: []}
         default:
             return state;
