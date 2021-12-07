@@ -18,7 +18,6 @@ class Main extends Component {
                 <Switch>
                     <Route path="/admin"><MainAdmin /></Route>
                     <Route path="/user"><MainUser /></Route>
-                    <Redirect to="/admin" />
                 </Switch>
                 <Footer />
             </div>

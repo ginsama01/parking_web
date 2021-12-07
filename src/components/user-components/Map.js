@@ -1,28 +1,57 @@
-import React, { Component } from 'react';
-import { withGoogleMap, GoogleMap, withScriptjs, InfoWindow, Marker } from "react-google-maps";
-import Geocode from "react-geocode";
-import Autocomplete from 'react-google-autocomplete';
-import AllMarker from './Markers';
+import React from 'react'
+import { withGoogleMap, withScriptjs, GoogleMap, Marker } from "react-google-maps"
+import {
+	geocodeByAddress,
+	getLatLng,
+} from 'react-places-autocomplete';
+import { fetchAllParks } from "../../redux/UserActionCreators";
+import { connect } from "react-redux";
 
-class Map extends Component{
+const mapStateToProps = state => {
+	return {
+		all_parks: state.all_parks,
+	}
+}
 
-	constructor(props){
-		super(props);
-		
-	}
+const mapDispatchToProps = dispatch => ({
+	fetchAllParks: () => dispatch(fetchAllParks())
+});
 
-	render(){
-		return (
-			<div>
-			  <GoogleMap
-				  zoom={15}
-				  center={{ lat: 21.0168864, lng: 105.7855574 }}
-				>
-			  <AllMarker/>
-			  </GoogleMap>
-			</div>
-		);
-	}
-	}
-	
-export default withScriptjs(withGoogleMap(Map));
+function Map(props) {
+
+	const [markers, setMarkers] = React.useState([]);
+
+	React.useEffect(() => {
+		props.fetchAllParks();
+	}, []);
+
+	React.useEffect(() => {
+		console.log(props.all_parks.parks);
+		props.all_parks.parks.map(park =>
+			geocodeByAddress(park.location)
+				.then(results => getLatLng(results[0]))
+				.then(latLng => {
+					const data = { lat: latLng.lat, lng: latLng.lng }
+					setMarkers((prev) => [...prev, data]);
+				})
+				.catch(error => console.error('Error', error)));
+		console.log(markers);
+	}, [props.all_parks.parks]);
+
+	return (
+		<div>
+			<GoogleMap
+				defaultZoom={15}
+				defaultCenter={{ lat: 21.0168864, lng: 105.7855574 }}
+			>
+				{markers.map((marker) => {
+					return (
+						<Marker position={{ lat: marker.lat, lng: marker.lng }} />
+					)
+				})}
+			</GoogleMap>
+		</div>
+	);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withScriptjs(withGoogleMap(Map)));

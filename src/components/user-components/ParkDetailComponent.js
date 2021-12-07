@@ -99,7 +99,8 @@ const ParkDetail = (props) => {
                     >
                         <TabPanel value={value} index={0} dir={theme.direction}>
                             <Media list>
-                                <ParkStatus park_status={props.park_status} />
+                                <ParkStatus
+                                    park_status={props.park_status} />
                             </Media>
                         </TabPanel>
                         <TabPanel value={value} index={1} dir={theme.direction}>

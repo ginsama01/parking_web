@@ -12,6 +12,7 @@ import {
 import { connect } from "react-redux";
 import { ParkList } from "./RenderParkListComponent";
 import Map from "./Map";
+import SearchInfo from "./SearchInfoComponent";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -107,71 +108,73 @@ function ParkListTabs(props) {
     )
 
     return (
-        <Row>
-            <Col sm='4' xs='12'>
-                {parseInt(selectedPark) == -1 &&
-                    <div class="park-list-tab">
-                        <AppBar position="static" color="transparent">
-                            <Tabs
-                                value={value}
-                                onChange={handleChange}
-                                indicatorColor="secondary"
-                                textColor="inherit"
-                                variant="fullWidth"
-                                aria-label="full width tabs" >
-                                <AntTab label="Tốt nhất" {...allyProps(0)} />
-                                <AntTab label="Rẻ nhất" {...allyProps(1)} />
-                                <AntTab label="Gần nhất" {...allyProps(2)} />
-                            </Tabs>
-                        </AppBar>
-                        <Paper class="park-list-tab" style={{ maxHeight: 450, overflow: 'auto' }}>
-                            <SwipeableViews
-                                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                                index={value}
-                                onChangeIndex={handleChangeIndex}
-                            >
-                                <TabPanel value={value} index={0} dir={theme.direction}>
-                                    <Media list>
-                                        <ParkList parks={props.best_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
-                                    </Media>
-                                </TabPanel>
-                                <TabPanel value={value} index={1} dir={theme.direction}>
-                                    <Media list>
-                                        <ParkList parks={props.cheap_parks} />
-                                    </Media>
-                                </TabPanel>
-                                <TabPanel value={value} index={2} dir={theme.direction}>
-                                    <Media list>
-                                        <ParkList parks={props.near_parks} />
-                                    </Media>
-                                </TabPanel>
-                            </SwipeableViews>
-                        </Paper>
-                    </div>
-                }
-                {
-                    parseInt(selectedPark) >= 0 && <div>
-                        <ParkDetail
-                            park_status={props.park_status}
-                            park_info={props.park_info}
-                            comments={props.comments}
-                            postComment={props.postComment}
-                            postReport={props.postReport}
-                            selectedPark={selectedPark}
-                            setSelectedPark={setSelectedPark} />
-                    </div>
-                }
-            </Col>
-            <Col sm='8' xs='12'>
-                <Map
-                    googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyCo-YmHUKxhqVQgaBmKNcRpbR86dhLGfd4&&callback=initMap&v=weekly`}
-                    loadingElement={<div style={{ height: `100%` }} />}
-                    containerElement={<div style={{ height: `90vh`, margin: `auto` }} />}
-                    mapElement={<div style={{ height: `100%` }} />}
-                    // lat={lat} lng={lng}
-                />
-            </Col>
-        </Row>
+        <div>
+            <SearchInfo />
+            <Row>
+                <Col sm='4' xs='12'>
+                    {parseInt(selectedPark) == -1 &&
+                        <div class="park-list-tab">
+                            <AppBar position="static" color="transparent">
+                                <Tabs
+                                    value={value}
+                                    onChange={handleChange}
+                                    indicatorColor="secondary"
+                                    textColor="inherit"
+                                    variant="fullWidth"
+                                    aria-label="full width tabs" >
+                                    <AntTab label="Tốt nhất" {...allyProps(0)} />
+                                    <AntTab label="Rẻ nhất" {...allyProps(1)} />
+                                    <AntTab label="Gần nhất" {...allyProps(2)} />
+                                </Tabs>
+                            </AppBar>
+                            <Paper class="park-list-tab" style={{ maxHeight: 450, overflow: 'auto' }}>
+                                <SwipeableViews
+                                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                                    index={value}
+                                    onChangeIndex={handleChangeIndex}
+                                >
+                                    <TabPanel value={value} index={0} dir={theme.direction}>
+                                        <Media list>
+                                            <ParkList parks={props.best_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
+                                        </Media>
+                                    </TabPanel>
+                                    <TabPanel value={value} index={1} dir={theme.direction}>
+                                        <Media list>
+                                            <ParkList parks={props.cheap_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
+                                        </Media>
+                                    </TabPanel>
+                                    <TabPanel value={value} index={2} dir={theme.direction}>
+                                        <Media list>
+                                            <ParkList parks={props.near_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
+                                        </Media>
+                                    </TabPanel>
+                                </SwipeableViews>
+                            </Paper>
+                        </div>
+                    }
+                    {
+                        parseInt(selectedPark) >= 0 && <div>
+                            <ParkDetail
+                                park_status={props.park_status}
+                                park_info={props.park_info}
+                                comments={props.comments}
+                                postComment={props.postComment}
+                                postReport={props.postReport}
+                                selectedPark={selectedPark}
+                                setSelectedPark={setSelectedPark} />
+                        </div>
+                    }
+                </Col>
+                <Col sm='8' xs='12'>
+                    <Map
+                        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyAflMCwfBoUUHO31is12VzGSQcy9Bb0MtM&&callback=initMap&v=weekly`}
+                        loadingElement={<div style={{ height: `100%` }} />}
+                        containerElement={<div style={{ height: `90vh`, margin: `auto` }} />}
+                        mapElement={<div style={{ height: `100%` }} />}
+                    />
+                </Col>
+            </Row>
+        </div>
     );
 }
 

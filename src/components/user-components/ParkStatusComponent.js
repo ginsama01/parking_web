@@ -20,7 +20,8 @@ function RenderOpenTime({ isOpen, openTime }) {
     }
 }
 
-function RenderParkStatus({ park_status }) {
+function RenderParkStatus(props) {
+    const { park_status } = props
     if (park_status != null) {
         return (
             <div style={{marginLeft: "-20px"}}>
@@ -62,7 +63,7 @@ function RenderParkStatus({ park_status }) {
                     </Grid>
                 </Grid>
                 <div className="col offset-4" style={{ marginTop: "20px" }} >
-                    <Button variant="contained" color="success">Đặt chỗ</Button>
+                    <Button variant="contained" color="success" >Đặt chỗ</Button>
                 </div>
             </div>
         );
@@ -86,7 +87,9 @@ const ParkStatus = (props) => {
     }
     else if (props.park_status != null) {
         return (
-            <RenderParkStatus park_status={props.park_status.park_status} />
+            <RenderParkStatus
+                park_status={props.park_status.park_status}
+                />
         );
     }
 }

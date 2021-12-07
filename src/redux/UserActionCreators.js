@@ -5,7 +5,7 @@ import { baseUrl } from '../shared/baseUrl';
 export const fetchAllParks = () => (dispatch) => {
     dispatch(allParksLoading(true));
 
-    return fetch(baseUrl + 'all-parks')
+    return fetch(baseUrl + 'parks')
         .then(response => {
             if (response.ok) {
                 return response;
@@ -15,10 +15,10 @@ export const fetchAllParks = () => (dispatch) => {
                 throw error;
             }
         },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
         .then(response => response.json())
         .then(all_parks => dispatch(addAllParks(all_parks)))
         .catch(error => dispatch(allParksFailed(error.message)));
@@ -294,6 +294,9 @@ export const postComment = (park_id, rating, content) => (dispatch) => {
                 throw errmess;
             })
         .then(response => response.json())
+        .then((newComment) => {
+            alert('Bạn đã thêm đánh giá' + JSON.stringify(newComment))
+        })
         .catch(error => {
             console.log('Post comments ', error.message)
             alert('Your comment could not be posted \nError: ' + error.message)
@@ -332,6 +335,9 @@ export const postReport = (park_id, content) => (dispatch) => {
                 throw errmess;
             })
         .then(response => response.json())
+        .then((newReport) => {
+            alert('Bạn đã thêm report' + JSON.stringify(newReport))
+        })
         .catch(error => {
             console.log('Post report ', error.message)
             alert('Your report could not be posted \nError: ' + error.message)
@@ -417,7 +423,12 @@ export const postLogin = (username, password) => (dispatch) => {
                 var errmess = new Error(error.message);
                 throw errmess;
             })
-        .then(response => {
+        .then(response => response.json())
+        .then(user => {
+            localStorage.setItem('login', true);
+            localStorage.setItem('username', user['username']);
+            const event = new Event('storagechange');
+            window.dispatchEvent(event);
             alert('Đăng nhập thành công');
             window.location.href = '/'
         })
@@ -426,3 +437,105 @@ export const postLogin = (username, password) => (dispatch) => {
 }
 
 
+export const Logout = () => (dispatch) => {
+    return fetch(baseUrl + 'authen/logout',
+        {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include"
+        })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
+        .then(response => response.json())
+        .then(user => {
+            sessionStorage.removeItem('login');
+            sessionStorage.removeItem('username');
+            const event = new Event('storagechange');
+            window.dispatchEvent(event);
+            window.location.href = '/'
+        })
+        .catch(error => { console.log('post user', error.message); alert('Your account could not be posted\nError: ' + error.message); });
+}
+
+
+// fetch search infomation
+export const fetchSearchInfo = () => (dispatch) => {
+
+    return fetch(baseUrl + 'first-search-info')
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
+        .then(response => response.json())
+        .then(search_info => dispatch(addSearchInfo(search_info)))
+        .catch(error => {console.log(error.message)});
+}
+
+export const addSearchInfo = (search_info) => ({
+    type: ActionTypes.ADD_SEARCHINFO,
+    payload: search_info
+});
+
+
+//post search infomation
+export const postSearchInfo = (address, timein, timeout ) => (dispatch) => {
+
+    const newSearchInfo = {
+        address: address,
+        timein: timein,
+        timeout: timeout
+    }
+
+    return fetch(baseUrl + 'search-info', {
+        method: 'POST',
+        body: JSON.stringify(newSearchInfo),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
+        .then(response => response.json())
+        .then((newSearchInfo) => {
+            alert("tìm kiếm với: " + JSON.stringify(newSearchInfo))
+        })
+        .catch(error => {
+            console.log('Post search info ', error.message)
+            alert('Your search info could not be posted \nError: ' + error.message)
+        })
+}

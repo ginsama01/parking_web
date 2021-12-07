@@ -1,114 +1,89 @@
-import { Component } from "react";
-import { FormGroup, Form, Row, Col, Label, Input, Button } from "reactstrap";
-import PlacesAutocomplete, {
-    geocodeByAddress,
-    getLatLng,
-} from 'react-places-autocomplete';
+import React, { Component } from "react";
+import { formValueSelector } from "redux-form";
+import { connect } from "react-redux";
+import { postSearchInfo } from "../../redux/UserActionCreators";
+import { Field, reduxForm } from "redux-form";
+import { DatePicker } from "react-widgets";
+import "react-widgets/styles.css";
 
+import { LocationSearchInput } from "./LocationSearchInput";
+
+const renderDateTimePicker = ({ input: { onChange, value } }) =>
+    <DatePicker
+        onChange={onChange}
+        value={!value ? null : new Date(value)}
+        minDate={new Date()}
+        defaultValue={new Date()}
+        includeTime
+    />
+
+
+let SearchInfoBar = props => {
+    const { handleSubmit } = props;
+    return (
+        <form onSubmit={handleSubmit} className="searchInfoBar">
+            <div className="row">
+                <div className="col-5">
+                    <Field name="address" component={LocationSearchInput} />
+                </div>
+                <div className="col-3">
+                    <Field
+                        name="timein"
+                        component={renderDateTimePicker}
+                    />
+                </div>
+                <div className="col-3">
+                    <Field
+                        name="timeout"
+                        component={renderDateTimePicker}
+                    />
+                </div>
+                <div className="col-1">
+                    <button type="submit" style={{ color: "white", backgroundColor: "#2e7d32" }}>Tìm kiếm</button>
+                </div>
+            </div>
+        </form>
+
+    );
+}
+
+SearchInfoBar = reduxForm({
+    form: "searchinfoBar-form"
+})(SearchInfoBar);
+
+
+const mapDispatchToProps = dispatch => ({
+    postSearchInfo: (address, timein, timeout) => dispatch(postSearchInfo(address, timein, timeout))
+});
 
 class SearchInfo extends Component {
 
     constructor(props) {
         super(props)
 
-        this.state = { address: '' };
+        this.handleSubmitSearch = this.handleSubmitSearch.bind(this)
     }
 
-    handleChange = address => {
-        this.setState({ address });
-    };
-
-    handleSelect = addr => {
-        geocodeByAddress(addr)
-            .then(results => getLatLng(results[0]))
-            .then(latLng => {this.center = latLng;})
-            .catch(error => console.error('Error', error));
-        this.setState({ address: addr });
-    };
+    handleSubmitSearch() {
+        this.props.postSearchInfo(this.props.address, this.props.timein, this.props.timeout);
+    }
 
     render() {
         return (
-            <div style={{ margin: "5px 20px" }}>
-                <Form>
-                    <Row className="form-group">
-                        <Col md={2}>
-                            <FormGroup>
-                                <div>
-                                    <PlacesAutocomplete
-                                        value={this.state.address}
-                                        onChange={this.handleChange}
-                                        onSelect={this.handleSelect}
-                                    >
-                                        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-                                            <div>
-                                                <input
-                                                    {...getInputProps({
-                                                        placeholder: 'Vị trí gửi xe',
-                                                        className: 'location-search-input',
-                                                    })}
-                                                />
-                                                <div className="autocomplete-dropdown-container">
-                                                    {loading && <div>Loading...</div>}
-                                                    {suggestions.map(suggestion => {
-                                                        const className = suggestion.active
-                                                            ? 'suggestion-item--active'
-                                                            : 'suggestion-item';
-                                                        // inline style for demonstration purpose
-                                                        const style = suggestion.active
-                                                            ? { backgroundColor: '#fafafa', cursor: 'pointer' }
-                                                            : { backgroundColor: '#ffffff', cursor: 'pointer' };
-                                                        return (
-                                                            <div
-                                                                {...getSuggestionItemProps(suggestion, {
-                                                                    className,
-                                                                    style,
-                                                                })}
-                                                            >
-                                                                <span>{suggestion.description}</span>
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </PlacesAutocomplete>
-                                </div>
-                            </FormGroup>
-                        </Col>
-                        <Col md={4}>
-                            <FormGroup>
-                                <Row>
-                                    <Col md={7}>
-                                        <Input id="entrance-date" name="entrance-time" type="date" />
-                                    </Col>
-                                    <Col md={5}>
-                                        <Input id="entrance-time" name="entrance-time" type="time" />
-                                    </Col>
-                                </Row>
-                            </FormGroup>
-                        </Col>
-                        <Col md={4}>
-                            <FormGroup>
-                                <Row>
-                                    <Col md={7}>
-                                        <Input id="exit-date" name="exit-time" type="date" />
-                                    </Col>
-                                    <Col md={5}>
-                                        <Input id="exit-time" name="exit-time" type="time" />
-                                    </Col>
-                                </Row>
-                            </FormGroup>
-                        </Col>
-                        <Col md={2}>
-                            <Button type="submit" color="success">
-                                Tìm kiếm
-                            </Button>
-                        </Col>
-                    </Row>
-                </Form>
+            <div>
+                <SearchInfoBar handleSubmit={this.handleSubmitSearch} />
             </div>
         );
     }
 }
 
-export default SearchInfo;
+const searchinfoBar_selector = formValueSelector("searchinfoBar-form")
+
+export default connect(state => {
+    const { address, timein, timeout } = searchinfoBar_selector(state, 'address', 'timein', 'timeout');
+    return {
+        address,
+        timein,
+        timeout
+    }
+}, mapDispatchToProps)(SearchInfo);
