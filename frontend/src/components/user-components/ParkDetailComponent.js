@@ -113,7 +113,8 @@ const ParkDetail = (props) => {
                                     park_id={props.park_status.park_status.park_id}
                                     park_name={props.park_status.park_status.park_name}
                                     postComment={props.postComment}
-                                    postReport={props.postReport} />
+                                    postReport={props.postReport}
+                                    setIsPostComment={props.setIsPostComment}/>
                             </Media>
                         </TabPanel>
                     </SwipeableViews>

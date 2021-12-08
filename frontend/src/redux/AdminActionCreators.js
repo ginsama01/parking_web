@@ -5,7 +5,7 @@ import { baseUrl } from '../shared/baseUrl';
 export const fetchUserList = () => (dispatch) => {
     dispatch(userListLoading(true));
 
-    return fetch(baseUrl + 'user', { credentials: 'include' })
+    return fetch(baseUrl + 'admin/accounts/userinfo', { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -43,7 +43,7 @@ export const addUserList = (user_list) => ({
 export const fetchOwnerList = () => (dispatch) => {
     dispatch(ownerListLoading(true));
 
-    return fetch(baseUrl + 'owner', { credentials: 'include' })
+    return fetch(baseUrl + 'admin/accounts/ownerinfo', { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -81,7 +81,7 @@ export const addOwnerList = (owner_list) => ({
 export const fetchParkList = () => (dispatch) => {
     dispatch(parkListLoading(true));
 
-    return fetch(baseUrl + 'parks', { credentials: 'include' })
+    return fetch(baseUrl + 'admin/parks', { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -119,7 +119,7 @@ export const addParkList = (park_list) => ({
 export const fetchUserChart = () => (dispatch) => {
     dispatch(userChartLoading(true));
 
-    return fetch(baseUrl + 'user-number', { credentials: 'include' })
+    return fetch(baseUrl + 'admin/charts/user-number', { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -157,7 +157,7 @@ export const addUserChart = (user_chart) => ({
 export const fetchRatingChart = () => (dispatch) => {
     dispatch(ratingChartLoading(true));
 
-    return fetch(baseUrl + 'rating-count', { credentials: 'include' })
+    return fetch(baseUrl + 'admin/charts/rating-count', { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -195,7 +195,7 @@ export const addRatingChart = (rating_chart) => ({
 export const fetchTransChart = () => (dispatch) => {
     dispatch(transChartLoading(true));
 
-    return fetch(baseUrl + 'transaction', { credentials: 'include' })
+    return fetch(baseUrl + 'admin/charts/transaction', { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;

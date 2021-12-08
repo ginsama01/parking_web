@@ -74,7 +74,7 @@ class Login extends Component {
                             <p>Quên mật khẩu?</p>
                             <Button type="submit" value="submit" color="primary">Đăng nhập</Button>
                             <p>Bạn chưa có tài khoản?</p>
-                            <Link to="/register">
+                            <Link to="/user/register">
                                 <Button>Đăng ký</Button>
                             </Link>
                         </LocalForm>

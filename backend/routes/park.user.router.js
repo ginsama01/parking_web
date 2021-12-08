@@ -23,8 +23,11 @@ parkRouter.route('/')
         }, (err) => next(err))
         .catch(err => next(err))
     })
+
+parkRouter.route('/search')
     .post((req, res, next) => {
-        address = req.body.address;
+        address = req.body.address.name;
+        models.Search.create();
         dbConnect.query("SELECT park_id AS id, name, image_url AS image, price, location, (SELECT AVG(rating) FROM comment WHERE rela_id IN " +
             "(SELECT rela_id FROM park_user WHERE park_id = park.park_id)) AS rate, (SELECT COUNT(rating) FROM comment WHERE" +
             " rela_id IN (SELECT rela_id FROM park_user WHERE park_id = park.park_id)) AS numOfRate FROM park", {
@@ -43,14 +46,14 @@ parkRouter.route('/')
             }
             Promise.all(promises)
                 .then(() => {
-                    console.log(parkObj);
+                    
                     for (let i = parkObj.length - 1; i >= 0; --i){
                         parkObj[i]['rate'] = parkObj[i]['rate'] === null ? 0 : parkObj[i]['rate'];
                         parkObj[i]['image'] = parkObj[i]['image'].split(',')[0];
                         if (Number(parkObj[i]['distance'].slice(0, -3)) > 10)
                             parkObj.splice(i, 1);
                     } 
-                    
+                    console.log(parkObj);
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
                     res.json(parkObj);
@@ -91,7 +94,7 @@ parkRouter.route('/near')
 parkRouter.route('/status/:parkId')
     .get((req, res, next) => {
         dbConnect.query("SELECT park_id, name, price, location, total_space AS totalSpace, total_space - total_in"
-            + " AS totalFreeSpace, active_time AS OpenTime FROM park WHERE park_id = " + req.params.parkId + ";", {
+            + " AS totalFreeSpace, open_time AS OpenTime FROM park WHERE park_id = " + req.params.parkId + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then(async result => {
             let park = result[0];
@@ -100,7 +103,12 @@ parkRouter.route('/status/:parkId')
             start = start.substr(-2, 2) == 'AM' ? Number(start.slice(0, -2)) : Number(start.slice(0, -2)) + 12;
             end = end.substr(-2, 2) == 'AM' ? Number(end.slice(0, -2)) : Number(end.slice(0, -2)) + 12;
             park['isOpen'] = (start <= currentHours && currentHours <= end) ? true : false;
-            //for (let i = 0; i <=)
+            for (let i = 0; i < parkObj.length; ++i) {
+                if (parkObj[i]['id'] == park['park_id']) {
+                    park['distance'] = parkObj[i]['distance'];
+                    break;
+                }
+            }
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(park);

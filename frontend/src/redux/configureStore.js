@@ -12,7 +12,7 @@ import { Comments } from './user/comments';
 import { InitialSignup } from './user/signup';
 import { InitialLogin } from './user/login';
 import { AllParks } from './user/all-parks';
-
+import { SearchInfo } from './user/search-info';
 
 
 import { UserList } from './admin/user-list';
@@ -33,7 +33,7 @@ export const ConfigureStore = () => {
             park_info: ParkInfo,
             comments: Comments,
             all_parks: AllParks,
-
+            search_info: SearchInfo,
 
             user_list: UserList,
             owner_list: OwnerList,

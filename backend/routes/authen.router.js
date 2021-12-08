@@ -65,16 +65,34 @@ accountRouter.route('/login')
                     return next(err);
                 } 
                 else if (result[0].password !== password) {
-                    var err = new Error('Your password is incorrect!');
-                    err.status = 403;
-                    return next(err);
+                    // var err = new Error('Your password is incorrect!');
+                    // err.status = 403;
+                    // return next(err);
+                    res.statusCode = 403;
+                    res.json({message: "Your password is incorrect!"});
                 }
                 else if (result[0].username === username && result[0].password === password) {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
                     var token = authenticate.getToken({id: result[0].id});
                     res.cookie('token', token, {signed: true});
-                    res.json({login: true, username: username});
+                    dbConnect.query("SELECT * FROM user WHERE user_id = " + result[0].id + ";", {
+                        type: dbConnect.QueryTypes.SELECT
+                    }).then(result1 => {
+                        if (result1.length != 0) {
+                            res.json({login: true, username: username, role: 'user'});
+                        } else {
+                            dbConnect.query("SELECT * FROM owner WHERE own_id = " + result[0].id + ";", {
+                                type: dbConnect.QueryTypes.SELECT
+                            }).then(resu => {
+                                if (resu.length != 0) {
+                                    res.json({login: true, username: username, role: 'owner'});
+                                } else {
+                                    res.json({login: true, username: username, role: 'admin'});
+                                }
+                            }, err => next(err))
+                        }
+                    }, err => next(err))
                 }
             }, (err) => next(err)) 
             .catch((err) => next(err));
@@ -113,16 +131,10 @@ accountRouter.route('/verify')
         .catch(err => next(err));
     })
     .post((req, res, next) => {
-        var id = authenticate.getAccountId(code)
-        var mess = authenticate.sendEmail(req.hostname, req.body.email, authenticate.getCodeVerify(id));
-        if (mess == 'Success') {
-            res.statusCode = 201;
-            res.json({success: true, status: 'Please check your email to verify account'});
-        } else {
-            var err = new Error('Can not send verification to your email');
-            err.status = 403;
-            return next(err);
-        }
+        var id = authenticate.getAccountId(req)
+        authenticate.sendEmail(req.hostname, req.body.email, authenticate.getCodeVerify(id));
+        res.statusCode = 201;
+        res.json({success: true, status: 'Please check your email to verify account'});
     })
     
 module.exports = accountRouter;

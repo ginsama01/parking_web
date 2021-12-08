@@ -9,7 +9,10 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var ownRouter = require('./routes/own.router');
-var parkRouter = require('./routes/park.user.router');
+var parkUserRouter = require('./routes/park.user.router');
+var parkAdminRouter = require('./routes/park.admin.router');
+var accountAdminRouter = require('./routes/account.admin.router');
+var chartRouter = require('./routes/chart.admin.router');
 var authenRouter = require('./routes/authen.router');
 var config = require('./config');
 const { cors, corsWithOptions } = require('./routes/cors');
@@ -32,12 +35,13 @@ app.use('/', indexRouter);
 app.use('/authen', authenRouter);
 
 
-
-
-
 app.use('/users', usersRouter);
 app.use('/own', ownRouter)
-app.use('/parks', parkRouter);
+app.use('/parks', parkUserRouter);
+app.use('/admin/parks', parkAdminRouter);
+app.use('/admin/accounts', accountAdminRouter);
+app.use('/admin/charts', chartRouter);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

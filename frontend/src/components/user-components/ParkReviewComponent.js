@@ -27,9 +27,11 @@ class CommentForm extends Component {
         });
     }
 
-    handleSubmitComment() {
+    async handleSubmitComment(event) {
         this.toggleModal();
-        this.props.postComment(this.props.park_id, this.props.rating, this.props.content);
+        event.preventDefault();
+        await this.props.postComment(this.props.park_id, this.props.rating, this.props.content);
+        this.props.setIsPostComment(true);
     }
 
     render() {
@@ -44,7 +46,7 @@ class CommentForm extends Component {
                 <Modal centered size="lg" isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}>Thêm đánh giá mới</ModalHeader>
                     <ModalBody>
-                        <RenderCommentForm handleSubmitComment={() => this.handleSubmitComment()} park_name={park_name} />
+                        <RenderCommentForm handleSubmitComment={this.handleSubmitComment} park_name={park_name} />
                     </ModalBody>
                 </Modal>
             </>
@@ -81,8 +83,9 @@ class ReportForm extends Component {
         });
     }
 
-    handleSubmitReport() {
+    handleSubmitReport(event) {
         this.toggleModal();
+        event.preventDefault();
         this.props.postReport(this.props.park_id, this.props.content);
     }
 
@@ -98,7 +101,7 @@ class ReportForm extends Component {
                 <Modal centered size="lg" isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}>Thêm report mới</ModalHeader>
                     <ModalBody>
-                        <RenderReportForm handleSubmitReport={(value) => this.handleSubmitReport(value)} park_name={park_name} />
+                        <RenderReportForm handleSubmitReport={this.handleSubmitReport} park_name={park_name} />
                     </ModalBody>
                 </Modal>
             </>
@@ -115,7 +118,7 @@ ReportForm = connect(state => {
     }
 })(ReportForm);
 
-function RenderParkReview({ comments, park_id, park_name, postComment, postReport }) {
+function RenderParkReview({ comments, park_id, park_name, postComment, postReport, setIsPostComment }) {
     if (comments != null) {
         return (
             <div>
@@ -146,7 +149,7 @@ function RenderParkReview({ comments, park_id, park_name, postComment, postRepor
                     </List>
                 </Paper>
                 <Stack spacing={3} direction="row" justifyContent="center" style={{marginTop: "10px"}} >
-                    <CommentForm park_id={park_id} park_name={park_name} postComment={postComment} />
+                    <CommentForm park_id={park_id} park_name={park_name} postComment={postComment} setIsPostComment={setIsPostComment} />
                     <ReportForm park_id={park_id} park_name={park_name} postReport={postReport} />
                 </Stack>
             </div>
@@ -168,7 +171,8 @@ const ParkReview = (props) => {
                 park_id={props.park_id}
                 park_name={props.park_name}
                 postComment={props.postComment}
-                postReport={props.postReport} />
+                postReport={props.postReport}
+                setIsPostComment={props.setIsPostComment} />
         );
     }
 }

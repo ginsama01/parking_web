@@ -50,6 +50,7 @@ exports.sendEmail = (url, email, code) => {
 
     mail.sendMail(mailOptions, (error, info) => {
         if (error) {
+            console.log(error);
             return error.message;
         } else {
             return 'Success';

@@ -21,7 +21,7 @@ module.exports.calDistance = (origin, destination) => {
                     resolve(distance123);
                 } else {
                     console.log(destination + ' is not reachable by land from ' + origin);
-                    resolve("100 km");
+                    resolve("100000 km");
                 }
             }
         });

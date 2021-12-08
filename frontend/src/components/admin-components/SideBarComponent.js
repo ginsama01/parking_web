@@ -1,9 +1,19 @@
 import { List, ListItem, ListItemIcon, ListItemText, Box, Divider } from "@mui/material";
 import { useHistory, useRouteMatch } from "react-router-dom";
+import { Logout } from "../../redux/UserActionCreators";
+import { connect } from "react-redux";
 
-function SideBar() {
+const mapDispatchToProps = dispatch => ({
+    Logout: () => dispatch(Logout())
+});
+
+function SideBar(props) {
     let { path, url } = useRouteMatch()
     const history = useHistory();
+    function handleOnClickLogout(e) {
+        props.Logout();
+        history.push("/");
+    }
     return (
         <>
             <Box sx={{ width: 200 }} role="presentation">
@@ -38,7 +48,7 @@ function SideBar() {
                 </List>
                 <Divider />
                 <List>
-                    <ListItem button onClick={()=> history.push("/")}>
+                    <ListItem button onClick={handleOnClickLogout}>
                         <ListItemIcon>
                             <i class="fas fa-cogs"></i>
                         </ListItemIcon>
@@ -50,4 +60,4 @@ function SideBar() {
     );
 }
 
-export default SideBar;
+export default connect(null, mapDispatchToProps)(SideBar);

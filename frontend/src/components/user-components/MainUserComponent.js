@@ -12,12 +12,10 @@ function MainUser() {
             <Switch>
                 <Route exact path={`${url}/start`}><Start /></Route>
                 <Route exact path={`${url}/parks`}>
-                    <SearchInfo />
                     <ParkListTabs />
                 </Route>
                 <Route exact path={`${url}/login`}><Login /></Route>
                 <Route exact path={`${url}/register`}><Register /></Route>
-                <Redirect to={`${url}/start`} />
             </Switch>
         </div>
     );

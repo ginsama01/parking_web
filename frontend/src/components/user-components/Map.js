@@ -31,12 +31,16 @@ function Map(props) {
 			geocodeByAddress(park.location)
 				.then(results => getLatLng(results[0]))
 				.then(latLng => {
-					const data = { lat: latLng.lat, lng: latLng.lng }
+					const data = { park_id: park.park_id, lat: latLng.lat, lng: latLng.lng }
 					setMarkers((prev) => [...prev, data]);
 				})
 				.catch(error => console.error('Error', error)));
 		console.log(markers);
 	}, [props.all_parks.parks]);
+
+	const handleClickMarker = (event, value) => {
+		props.setSelectedPark(value);
+	}
 
 	return (
 		<div>
@@ -46,7 +50,7 @@ function Map(props) {
 			>
 				{markers.map((marker) => {
 					return (
-						<Marker position={{ lat: marker.lat, lng: marker.lng }} />
+						<Marker position={{ lat: marker.lat, lng: marker.lng }} onClick={(event) => handleClickMarker(event, marker.park_id)} />
 					)
 				})}
 			</GoogleMap>

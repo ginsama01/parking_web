@@ -5,10 +5,10 @@ import {
     NavItem, NavbarToggler, Nav, Collapse, Navbar,
     NavbarBrand, Button
 } from "reactstrap";
-import { Logout } from "../redux/ActionCreators";
+import { Logout } from "../redux/UserActionCreators";
 
 const mapDispatchToProps = dispatch => ({
-	Logout: () => dispatch(Logout())
+    Logout: () => dispatch(Logout())
 });
 
 function Info(props) {
@@ -25,18 +25,25 @@ function Info(props) {
 
     return (
         <NavItem>
-        {!login && 
-        <Link to='/user/login'>
-            <Button outline >
-                <span className="fa fa-sign-in fa-lg"></span> Đăng nhập
-            </Button>
-        </Link>
-        }
-        {login && 
-        <Button outline onClick = {props.Logout}>
-            <span className="fa fa-sign-in fa-lg"></span> Đăng xuất
-        </Button>
-        }
+            {!login &&
+                <Link to='/user/login'>
+                    <Button outline >
+                        <span className="fa fa-sign-in fa-lg"></span> Đăng nhập
+                    </Button>
+                </Link>
+            }
+            {login && sessionStorage.getItem('role') == 'user' &&
+                <Button outline onClick={props.Logout}>
+                    <span className="fa fa-sign-in fa-lg"></span> Đăng xuất
+                </Button>
+            }
+            {login && sessionStorage.getItem('role') == 'admin' &&
+                <Link to='/admin/dashboard'>
+                    <Button outline>
+                        <span className="fa fa-sign-in fa-lg"></span> Quản lý
+                    </Button>
+                </Link>
+            }
         </NavItem>
     )
 }
@@ -87,9 +94,9 @@ class Header extends Component {
                                     <strong>Nav Example</strong>
                                 </NavLink>
                             </NavItem>
-                            
+
                             <Info />
-                            
+
                         </Nav>
                     </Collapse>
                 </Navbar>
