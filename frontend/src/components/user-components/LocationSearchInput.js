@@ -28,7 +28,7 @@ export const LocationSearchInput = props => {
         <div className="autocomplete-root">
             <input {...getInputProps({
                 placeholder: 'Vị trí gửi xe',
-                className: 'location-search-input',
+                className: 'location-search-input'
             })} />
             <div className="autocomplete-dropdown-container">
                 {loading && <div>Loading...</div>}

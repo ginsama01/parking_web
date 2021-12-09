@@ -77,7 +77,7 @@ const ParkDetail = (props) => {
                             <i class="fas fa-arrow-circle-left"></i>
                         </IconButton>
                     </div>
-                    <h3 style={{ margin: "auto", color: "#3E7C17", fontFamily: 'Fredoka One' }}>{props.park_status.park_status.park_name}</h3>
+                    <h3 style={{ margin: "auto", color: "#3E7C17", fontFamily: 'Fredoka One' }}>{props.park_status.park_status.name}</h3>
                 </div>
                 <AppBar position="static" color="transparent">
                     <Tabs

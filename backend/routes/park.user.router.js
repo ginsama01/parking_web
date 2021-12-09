@@ -25,6 +25,7 @@ parkRouter.route('/')
     })
 
 parkRouter.route('/search')
+    //.get('/search')
     .post((req, res, next) => {
         address = req.body.address.name;
         models.Search.create();
@@ -94,12 +95,12 @@ parkRouter.route('/near')
 parkRouter.route('/status/:parkId')
     .get((req, res, next) => {
         dbConnect.query("SELECT park_id, name, price, location, total_space AS totalSpace, total_space - total_in"
-            + " AS totalFreeSpace, open_time AS OpenTime FROM park WHERE park_id = " + req.params.parkId + ";", {
+            + " AS totalFreeSpace, open_time AS openTime FROM park WHERE park_id = " + req.params.parkId + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then(async result => {
             let park = result[0];
             let currentHours = new Date().getHours();
-            let [start, end] = park['OpenTime'].split(" - ");
+            let [start, end] = park['openTime'].split(" - ");
             start = start.substr(-2, 2) == 'AM' ? Number(start.slice(0, -2)) : Number(start.slice(0, -2)) + 12;
             end = end.substr(-2, 2) == 'AM' ? Number(end.slice(0, -2)) : Number(end.slice(0, -2)) + 12;
             park['isOpen'] = (start <= currentHours && currentHours <= end) ? true : false;

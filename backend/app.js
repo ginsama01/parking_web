@@ -8,12 +8,14 @@ var FileStore = require('session-file-store')(session);
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var ownRouter = require('./routes/own.router');
+var ownRouter = require('./routes/park.owner.router');
 var parkUserRouter = require('./routes/park.user.router');
 var parkAdminRouter = require('./routes/park.admin.router');
 var accountAdminRouter = require('./routes/account.admin.router');
+var accountUserRouter = require('./routes/account.user.router');
 var chartRouter = require('./routes/chart.admin.router');
 var authenRouter = require('./routes/authen.router');
+var uploadRouter = require('./routes/upload.park.image.router');
 var config = require('./config');
 const { cors, corsWithOptions } = require('./routes/cors');
 
@@ -29,18 +31,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cookieParser(config.cookieKey));
-app.use(express.static(path.join(__dirname, 'public')));
+
 app.use('/', indexRouter);
 
 app.use('/authen', authenRouter);
 
 
 app.use('/users', usersRouter);
-app.use('/own', ownRouter)
+app.use('/owner', ownRouter);
 app.use('/parks', parkUserRouter);
+app.use('/accounts', accountUserRouter);
 app.use('/admin/parks', parkAdminRouter);
 app.use('/admin/accounts', accountAdminRouter);
 app.use('/admin/charts', chartRouter);
+app.use('/upload/parks', uploadRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -50,6 +54,7 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+  console.log(err);
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 

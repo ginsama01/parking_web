@@ -91,7 +91,7 @@ exports.verifyUser = (req, res, next) => {
 
 exports.verifyOwner = (req, res, next) => {
     if (!req.signedCookies.token) {
-        var err = new Error('You are not login!');
+        var err = new Error('Cần đăng nhập tài khoản chủ bãi đỗ để thực hiện chức năng này');
         err.status = 401;
         return next(err);
     }
@@ -100,7 +100,7 @@ exports.verifyOwner = (req, res, next) => {
         try {
             var decode = jwt.verify(token, config.secretKey).id;
         } catch(error) {
-            var err = new Error('Token wrong!');
+            var err = new Error('Bạn');
             err.status = 403;
             return next(err);
         }

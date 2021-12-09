@@ -2,6 +2,7 @@ const express = require('express');
 const models = require('../models/models');
 const { dbConnect } = require('../connectDB');
 const authenticate = require('../authenticate');
+const { response } = require('../app');
 
 const accountRouter = express.Router();
 
@@ -41,10 +42,11 @@ accountRouter.route('/info')
     })
 
 //Fetch Parking History
-accountRouter.route('/history')
+accountRouter.route('/parking')
     .get(authenticate.verifyUser, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
-        dbConnect.query("SELECT p.name, p.location, pkg.parking_id, pkg.createdAt AS open, pkg.price, pkg.status, (SELECT phone FROM account WHERE id = p.own_id) AS phone, " 
+        dbConnect.query("SELECT p.name, p.location, pkg.parking_id, pkg.createdAt AS open, pkg.status, (SELECT phone FROM account WHERE id = p.own_id) AS phone, " 
+        + "(SELECT email FROM account WHERE id = p.own_id) AS email, "
         + "(SELECT AVG(rating) FROM comment WHERE rela_id = pu.rela_id) AS rating FROM parking pkg JOIN park_user pu ON pkg.rela_id = pu.rela_id "
         + "JOIN park p ON pu.park_id = p.park_id WHERE pu.user_id = " + user_id + ";", {
             type: dbConnect.QueryTypes.SELECT
@@ -61,6 +63,7 @@ accountRouter.route('/favorite')
     .get(authenticate.verifyUser, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
         dbConnect.query("SELECT p.name, p.location, p.description, p.price, f.flist_id, (SELECT phone FROM account WHERE id = p.own_id) AS phone, "
+        + "(SELECT email FROM account WHERE id = p.own_id) AS email, "
         + "(SELECT AVG(rating) FROM comment WHERE rela_id = pu.rela_id) AS rating FROM favorite f JOIN park_user pu ON f.rela_id = pu.rela_id  "
         + "JOIN park p ON pu.park_id = p.park_id WHERE pu.user_id = " + user_id + ";", {
             type: dbConnect.QueryTypes.SELECT 
@@ -119,7 +122,8 @@ accountRouter.route('/favorite/:flistid')
 accountRouter.route('/pending')
     .get(authenticate.verifyUser, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
-        dbConnect.query("SELECT p.name, p.location, p.description, p.price, pe.time_start, pe.time_end"
+        dbConnect.query("SELECT p.name, p.location, p.description, p.price, pe.time_start, "
+        + "(SELECT email FROM account WHERE id = p.own_id) AS email, "
         + "(SELECT AVG(rating) FROM comment WHERE rela_id = pu.rela_id) AS rating FROM pending pe JOIN park_user pu ON pe.rela_id = pu.rela_id  "
         + "JOIN park p ON pu.park_id = p.park_id WHERE pu.user_id = " + user_id + ";", {
             type: dbConnect.QueryTypes.SELECT 
@@ -130,6 +134,20 @@ accountRouter.route('/pending')
         }, (err) => next(err))
         .catch(err => next(err));
     })
+    .post(authenticate.verifyUser, (req, res, next) => {
+        let user_id = authenticate.getAccountId(req);
+        dbConnect.query("SELECT isActivated FROM user WHERE user_id = " + user_id + ";", {
+            type: dbConnect.QueryTypes.SELECT
+        }).then(result => {
+            if (result[0].isAtivated == false) {
+                res.statusCode = 403;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({message: "Bạn cần xác minh tài khoản trước khi sử dụng chức năng này"});
+            } else {
+                
+            }
+        })
+    });
 
 accountRouter.route('/pending/:pendingid')
     .delete(authenticate.verifyUser, (req, res, next) => {
@@ -144,3 +162,6 @@ accountRouter.route('/pending/:pendingid')
         }, (err) => next(err))
         .catch(err => next(err));
     })
+
+
+module.exports = accountRouter;
