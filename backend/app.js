@@ -38,7 +38,7 @@ app.use('/authen', authenRouter);
 
 
 app.use('/users', usersRouter);
-app.use('/owner', ownRouter);
+app.use('/owner/parks', ownRouter);
 app.use('/parks', parkUserRouter);
 app.use('/accounts', accountUserRouter);
 app.use('/admin/parks', parkAdminRouter);

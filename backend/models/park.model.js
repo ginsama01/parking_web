@@ -29,9 +29,9 @@ const Park = dbConnect.define('park', {
         allowNull: false
     },
     isActivated: {
-        type: DataTypes.STRING,
+        type: DataTypes.TINYINT,
         allowNull: false,
-        defaultValue: 'unactive'
+        defaultValue: 0
     },
     location: {
         type: DataTypes.STRING,
