@@ -71,8 +71,8 @@ class Start extends Component {
 
     async handleSubmitSearch(event) {
         event.preventDefault();
-        await this.props.postSearchInfo(this.props.address, this.props.timein);
-        this.props.history.push('/user/parks')
+        var success = await this.props.postSearchInfo(this.props.address, this.props.timein);
+        if (success) this.props.history.push('/user/parks')
     }
 
     render() {

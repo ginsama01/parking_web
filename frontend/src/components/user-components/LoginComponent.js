@@ -17,7 +17,7 @@ class Login extends Component {
     }
 
     handleSubmit(values) {
-        this.props.postLogin(values.username, values.password)
+        this.props.postLogin(values.username, values.password);
     }
 
     render() {

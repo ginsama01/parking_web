@@ -431,7 +431,8 @@ export const postLogin = (username, password) => (dispatch) => {
             const event = new Event('storagechange');
             window.dispatchEvent(event);
             alert('Đăng nhập thành công');
-            window.location.href = '/'
+            window.location.href = '/';
+            return user;
         })
         .catch(error => {
             error.json().then(body => {
@@ -478,7 +479,7 @@ export const Logout = () => (dispatch) => {
 // fetch search infomation
 export const fetchSearchInfo = () => (dispatch) => {
 
-    return fetch(baseUrl + 'first-search-info')
+    return fetch(baseUrl + 'parks/search')
         .then(response => {
             if (response.ok) {
                 return response;
@@ -525,18 +526,13 @@ export const postSearchInfo = (address, timein) => (dispatch) => {
                 return response;
             }
             else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
+        })
         .then(response => response.json())
         .then((newSearchInfo) => {
-            alert("Tìm kiếm với: " + JSON.stringify(newSearchInfo));
+            //alert("Tìm kiếm với: " + JSON.stringify(newSearchInfo));
+            return newSearchInfo;
         })
         .catch(error => {
             error.json().then(body => {
@@ -547,13 +543,14 @@ export const postSearchInfo = (address, timein) => (dispatch) => {
 
 
 // post booking
-export const postBooking = (park_id) => (dispatch) => {
+export const postBooking = (park_id, timein) => (dispatch) => {
 
     const newBooking = {
-        park_id
+        park_id: park_id,
+        timein: timein,
     }
 
-    return fetch(baseUrl + 'parks/booking', {
+    return fetch(baseUrl + 'accounts/pending', {
         method: 'POST',
         body: JSON.stringify(newBooking),
         headers: {
@@ -567,15 +564,9 @@ export const postBooking = (park_id) => (dispatch) => {
                 return response;
             }
             else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
+        })
         .then(response => response.json())
         .then((newBooking) => {
             alert("Đặt trước: " + JSON.stringify(newBooking));
@@ -596,7 +587,7 @@ export const postMark = (park_id, isMark) => (dispatch) => {
         isMark
     }
 
-    return fetch(baseUrl + 'parks/mark', {
+    return fetch(baseUrl + 'accounts/favorite', {
         method: 'POST',
         body: JSON.stringify(newMark),
         headers: {
@@ -610,6 +601,29 @@ export const postMark = (park_id, isMark) => (dispatch) => {
                 return response;
             }
             else {
+                throw response;
+            }
+        }) 
+        .then(response => response.json())
+        .then((newMark) => {
+            //alert("Thêm vào yêu thích " + JSON.stringify(newMark));
+        })
+        .catch(error => {
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
+}
+
+export const fetchMark = (park_id) => (dispatch) => {
+
+    return fetch(baseUrl + 'parks/mark/' + park_id, {
+        credentials: 'include'
+    })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
                 var error = new Error('Error ' + response.status + ': ' + response.statusText);
                 error.response = response;
                 throw error;
@@ -620,12 +634,11 @@ export const postMark = (park_id, isMark) => (dispatch) => {
                 throw errmess;
             })
         .then(response => response.json())
-        .then((newMark) => {
-            alert("Thêm vào yêu thích " + JSON.stringify(newMark));
-        })
-        .catch(error => {
-            error.json().then(body => {
-                alert(body.message);
-            })
-        });
+        .then(favo_mark => dispatch(addFavoMark(favo_mark)))
+        .catch(error => { console.log(error.message) });
 }
+
+export const addFavoMark = (favo_mark) => ({
+    type: ActionTypes.ADD_FAVOMARK,
+    payload: favo_mark
+});

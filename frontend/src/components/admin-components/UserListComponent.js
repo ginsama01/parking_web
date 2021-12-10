@@ -3,6 +3,8 @@ import ListTable from "./ListTableComponent";
 import { connect } from "react-redux";
 import { fetchUserList, deleteUsers } from "../../redux/AdminActionCreators";
 import SideBar from "./SideBarComponent";
+import SearchToolbar from "./SearchToolBar";
+
 
 const headCells = [
     {
@@ -66,9 +68,31 @@ const mapDispatchToProps = dispatch => ({
     deleteUsers: (users_delete) => dispatch(deleteUsers(users_delete)),
 });
 
+function escapeRegExp(value) {
+    return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
+
 function UserList(props) {
 
     const [isUsersChange, setIsUsersChange] = React.useState(false)
+    const [searched, setSearched] = React.useState("");
+    const users_rows = props.user_list.user_list;
+    const [rows, setRows] = React.useState(users_rows);
+
+    const requestSearch = (searchValue) => {
+        setSearched(searchValue);
+        const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
+        const filteredRows = users_rows.filter((row) => {
+            return Object.keys(row).some((field) => {
+                return searchRegex.test(row[field].toString());
+            });
+        });
+        setRows(filteredRows);
+    };
+
+    React.useEffect(() => {
+        setRows(users_rows)
+    }, [users_rows])
 
     useEffect(
         () => {
@@ -87,11 +111,17 @@ function UserList(props) {
         <div className="row">
             <div className="col-2"><SideBar /></div>
             <div className="col-10">
+                <div align="right">
+                    <SearchToolbar
+                        value={searched}
+                        onChange={(event) => requestSearch(event.target.value)}
+                        clearSearch={() => requestSearch('')} />
+                </div>
                 <ListTable
-                    rows={props.user_list.user_list}
+                    rows={rows}
                     headCells={headCells}
                     typeTable="Người dùng"
-                    handleDeleteSelected={props.deleteUser}
+                    deleteSelected={props.deleteUsers}
                     setIsListChange={setIsUsersChange} />
             </div>
         </div>

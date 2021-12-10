@@ -123,9 +123,11 @@ accountRouter.route('/verify')
             type: dbConnect.QueryTypes.SELECT
         }).then(result => {
             if (result.length == 0) {
-                var err = new Error('Can not verify. Maybe code is invalid or time out');
-                err.status = 403;
-                return next(err);
+                // var err = new Error('Can not verify. Maybe code is invalid or time out');
+                // err.status = 403;
+                // return next(err);
+                res.status = 403;
+                res.json({message: 'Không thể xác nhận'});
             }
         }, (err) => next(err))
         .catch(err => next(err));

@@ -16,10 +16,6 @@ const Pending = dbConnect.define('pending', {
         type: DataTypes.DATE,
         allowNull: false
     },
-    time_end:{
-        type: DataTypes.DATE,
-        allowNull: false
-    },
     status: {
         type: DataTypes.STRING(20),
         allowNull: false

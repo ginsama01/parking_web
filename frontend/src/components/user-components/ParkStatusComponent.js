@@ -24,10 +24,14 @@ function RenderOpenTime({ isOpen, openTime }) {
 
 
 function RenderParkStatus(props) {
-    const { park_status, postBooking, timein } = props;
+    const { park_status, postBooking, search_info } = props;
 
     const handleSubmitBooking = (event) => {
-        postBooking(park_status.park_id)
+        postBooking(park_status.park_id, search_info.timein)
+    }
+    function convertTime(time) {
+        var date = new Date(Date.parse(time));
+        return(date.getHours() + ':' + date.getMinutes() + ' ngày ' + date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear());
     }
 
     if (park_status != null) {
@@ -69,7 +73,7 @@ function RenderParkStatus(props) {
                 <div className="col offset-4" style={{ marginTop: "20px" }} >
                     <AlertDialog
                         title={"Xác định đặt chỗ"}
-                        content={"Bạn chắc chắn muốn đặt chỗ tại bãi đỗ " + park_status.name + " vào lúc " + timein}
+                        content={"Bạn chắc chắn muốn đặt chỗ tại bãi đỗ " + park_status.name + " vào lúc " + convertTime(search_info.timein)}
                         label={"Đặt chỗ"}
                         color={"success"}
                         handleAction={handleSubmitBooking} />
@@ -99,7 +103,7 @@ const ParkStatus = (props) => {
             <RenderParkStatus
                 park_status={props.park_status.park_status}
                 postBooking={props.postBooking}
-                timein={props.timein}
+                search_info={props.search_info}
             />
         );
     }

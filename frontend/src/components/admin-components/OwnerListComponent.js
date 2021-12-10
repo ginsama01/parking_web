@@ -3,6 +3,7 @@ import ListTable from "./ListTableComponent";
 import { connect } from "react-redux";
 import { deleteOwners, fetchOwnerList } from "../../redux/AdminActionCreators";
 import SideBar from "./SideBarComponent";
+import SearchToolbar from "./SearchToolBar";
 
 const headCells = [
     {
@@ -60,9 +61,31 @@ const mapDispatchToProps = dispatch => ({
     deleteOwners: (owners_delete) => dispatch(deleteOwners(owners_delete))
 });
 
+function escapeRegExp(value) {
+    return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
+
 function OwnerList(props) {
 
     const [isOwnersChange, setIsOwnersChange] = React.useState(false)
+    const [searched, setSearched] = React.useState("");
+    const owners_rows = props.owner_list.owner_list;
+    const [rows, setRows] = React.useState(owners_rows);
+
+    const requestSearch = (searchValue) => {
+        setSearched(searchValue);
+        const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
+        const filteredRows = owners_rows.filter((row) => {
+            return Object.keys(row).some((field) => {
+                return searchRegex.test(row[field]);
+            });
+        });
+        setRows(filteredRows);
+    };
+
+    React.useEffect(() => {
+        setRows(owners_rows)
+    }, [owners_rows])
 
     useEffect(
         () => {
@@ -81,11 +104,17 @@ function OwnerList(props) {
         <div className="row">
             <div className="col-2"><SideBar /></div>
             <div className="col-10">
+                <div align="right">
+                    <SearchToolbar
+                        value={searched}
+                        onChange={(event) => requestSearch(event.target.value)}
+                        clearSearch={() => requestSearch('')} />
+                </div>
                 <ListTable
-                    rows={props.owner_list.owner_list}
+                    rows={rows}
                     headCells={headCells}
                     typeTable="Chủ bãi đỗ"
-                    handleDeleteSelected={props.deleteOwners}
+                    deleteSelected={props.deleteOwners}
                     setIsListChange={setIsOwnersChange} />
             </div>
         </div>

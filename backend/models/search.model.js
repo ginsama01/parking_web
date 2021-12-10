@@ -6,6 +6,19 @@ const Search = dbConnect.define('search', {
         primaryKey: true,
         allowNull: false,
         autoIncrement: true
+    },
+    address: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    timein: {
+        type: DataTypes.DATE
+    },
+    lat: {
+        type: DataTypes.FLOAT
+    },
+    lng: {
+        type: DataTypes.FLOAT
     }
 }, {
     freezeTableName: true

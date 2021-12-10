@@ -7,7 +7,7 @@ import SwipeableViews from "react-swipeable-views";
 import ParkDetail from "./ParkDetailComponent";
 import {
     fetchComments, fetchParkInfo, postComment, fetchParkStatus, postReport, fetchBestParks,
-    fetchCheapParks, fetchNearParks, fetchSearchInfo, fetchAllParks, postBooking, postMark
+    fetchCheapParks, fetchNearParks, fetchSearchInfo, fetchAllParks, postBooking, postMark, fetchMark
 } from "../../redux/UserActionCreators";
 import { connect } from "react-redux";
 import { ParkList } from "./RenderParkListComponent";
@@ -72,7 +72,8 @@ const mapStateToProps = state => {
         comments: state.comments,
         address,
         timein,
-        search_info: state.search_info
+        search_info: state.search_info,
+        favo_mark: state.favo_mark
     }
 }
 
@@ -87,8 +88,9 @@ const mapDispatchToProps = dispatch => ({
     fetchComments: (park_id) => { dispatch(fetchComments(park_id)) },
     postSearchInfo: (address, timein, timeout) => dispatch(postSearchInfo(address, timein, timeout)),
     fetchSearchInfo: () => dispatch(fetchSearchInfo()),
-    postBooking: (park_id) => dispatch(postBooking(park_id)),
-    postMark: (park_id, isMark) => dispatch(postMark(park_id, isMark))
+    postBooking: (park_id, timein) => dispatch(postBooking(park_id, timein)),
+    postMark: (park_id, isMark) => dispatch(postMark(park_id, isMark)),
+    fetchMark: (park_id) => dispatch(fetchMark(park_id))
 });
 
 function ParkListTabs(props) {
@@ -108,7 +110,8 @@ function ParkListTabs(props) {
 
     const handleSubmitSearch = async (event) => {
         event.preventDefault();
-        await props.postSearchInfo(props.address, props.timein);
+        var success = await props.postSearchInfo(props.address, props.timein);
+        if (!success) return;
         if (selectedPark == -1) {
             props.fetchBestParks();
             props.fetchCheapParks();
@@ -116,6 +119,7 @@ function ParkListTabs(props) {
         } else {
             setSelectedPark(-1);
         }
+        props.fetchSearchInfo();
     }
 
     useEffect(
@@ -133,9 +137,7 @@ function ParkListTabs(props) {
 
     useEffect(() => {
         if (isPostMark == true) {
-            props.fetchParkStatus(selectedPark);
-            props.fetchParkInfo(selectedPark);
-            props.fetchComments(selectedPark);
+            props.fetchMark(selectedPark);
             setIsPostMark(false);
         }
     }, [isPostMark])
@@ -151,6 +153,7 @@ function ParkListTabs(props) {
                 props.fetchParkStatus(selectedPark);
                 props.fetchParkInfo(selectedPark);
                 props.fetchComments(selectedPark);
+                props.fetchMark(selectedPark);
             }
         }, [selectedPark]
     )
@@ -203,9 +206,11 @@ function ParkListTabs(props) {
                         parseInt(selectedPark) >= 0 && <div>
                             <ParkDetail
                                 park_status={props.park_status}
+                                favo_mark={props.favo_mark}
                                 postMark={props.postMark}
                                 setIsPostMark={setIsPostMark}
                                 timein={props.timein}
+                                search_info={props.search_info.search_info}
                                 park_info={props.park_info}
                                 comments={props.comments}
                                 postComment={props.postComment}
@@ -220,7 +225,7 @@ function ParkListTabs(props) {
                     <SearchInfoBar handleSubmit={handleSubmitSearch}
                         search_info={props.search_info.search_info} />
                     <Map
-                        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyAflMCwfBoUUHO31is12VzGSQcy9Bb0MtM&&callback=initMap&v=weekly`}
+                        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyDY5t54cQ-rO-7lC_Yjty5jGbo4t0MHH9I&&callback=initMap&v=weekly`}
                         loadingElement={<div style={{ height: `90%` }} />}
                         containerElement={<div style={{ height: `90vh`, margin: `auto` }} />}
                         mapElement={<div style={{ height: `90%` }} />}

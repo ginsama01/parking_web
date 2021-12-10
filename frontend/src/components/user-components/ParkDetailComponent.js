@@ -69,7 +69,7 @@ const ParkDetail = (props) => {
 
     const handleChangeMark = (value) => {
         postMark(props.park_status.park_status.park_id, value);
-        setIsPostMark(false);
+        setIsPostMark(true);
     }
 
     return (
@@ -84,12 +84,12 @@ const ParkDetail = (props) => {
                     </div>
                     <h3 style={{ margin: "10px", color: "#3E7C17", fontFamily: 'Nunito' }}>{props.park_status.park_status.name}</h3>
                     <div>
-                        {!props.park_status.park_status.isMark &&
+                        {!props.favo_mark.mark.isMark &&
                             <IconButton color="success" aria-label="close" size="large"
                                 onClick={() => handleChangeMark(true)} >
                                 <i class="far fa-star"></i>
                             </IconButton>}
-                        {props.park_status.park_status.isMark &&
+                        {props.favo_mark.mark.isMark &&
                             <IconButton color="success" aria-label="close" size="large"
                                 onClick={() => handleChangeMark(false)} >
                                 <i class="fas fa-star"></i>
@@ -119,7 +119,7 @@ const ParkDetail = (props) => {
                                 <ParkStatus
                                     park_status={props.park_status}
                                     postBooking={props.postBooking}
-                                    timein={props.timein} />
+                                    search_info={props.search_info} />
                             </Media>
                         </TabPanel>
                         <TabPanel value={value} index={1} dir={theme.direction}>

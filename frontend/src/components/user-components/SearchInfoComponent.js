@@ -5,6 +5,7 @@ import "react-widgets/styles.css";
 
 import { LocationSearchInput } from "./LocationSearchInput";
 
+
 const renderDateTimePicker = ({ label, input: { onChange, value } }) =>
     <DatePicker
         onChange={onChange}
@@ -16,6 +17,10 @@ const renderDateTimePicker = ({ label, input: { onChange, value } }) =>
 
 function SearchInfoBar(props) {
     const { handleSubmit, search_info } = props;
+    function convertTime(time) {
+        var date = new Date(Date.parse(time));
+        return(date.getHours() + ':' + date.getMinutes() + ', ' + date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear());
+    }
     return (
         <form onSubmit={handleSubmit} className="searchInfoBar">
             <div className="row">
@@ -26,7 +31,7 @@ function SearchInfoBar(props) {
                     <Field
                         name="timein"
                         component={renderDateTimePicker}
-                        label={search_info.timein}
+                        label={convertTime(search_info.timein)}
                     />
                 </div>
                 <div className="col-2">
