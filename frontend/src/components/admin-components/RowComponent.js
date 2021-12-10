@@ -9,10 +9,16 @@ import Checkbox from '@mui/material/Checkbox';
 import TableHead from '@mui/material/TableHead';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
+import { Button } from '@mui/material';
 
 function Row(props) {
-    const { row, isItemSelected, handleClick, labelId, typeTable } = props;
+    const { row, isItemSelected, handleClick, labelId, typeTable, handleActive, setIsListChange } = props;
     const [open, setOpen] = React.useState(false);
+
+    const verifiedPark = (park_id) => {
+        handleActive(park_id);
+        setIsListChange(true)
+    }
 
     return (
         <React.Fragment>
@@ -50,10 +56,17 @@ function Row(props) {
                 {typeTable != "Bãi đỗ" && <TableCell align="left">{row.address}</TableCell>}
                 {typeTable == "Người dùng" && <TableCell align="right">{row.penalty}</TableCell>}
                 {typeTable == "Bãi đỗ" && <TableCell align="left">{row.name}</TableCell>}
-                {typeTable == "Bãi đỗ" && <TableCell align="left">{row.isActived}</TableCell>}
+                {typeTable == "Bãi đỗ" && <TableCell align="left">{row.isActivated}</TableCell>}
                 {typeTable == "Bãi đỗ" && <TableCell align="right">{row.price}</TableCell>}
                 {typeTable == "Bãi đỗ" && <TableCell align="left">{row.location}</TableCell>}
-                {typeTable == "Bãi đỗ" && <TableCell align="left">{row.owner_id} {row.owner}</TableCell>}
+                {typeTable == "Bãi đỗ" && <TableCell align="left">ID: {row.owner_id}<br></br>Tên: {row.owner}</TableCell>}
+                {typeTable == "Bãi đỗ" &&
+                    <TableCell align="center">
+                        {row.isActivated == false &&
+                            <Button variant="contained" color="success" size="small" onClick={() => verifiedPark(row.id)}>Xác minh</Button>}
+                        {row.isActivated == true &&
+                            <Button variant="contained" size="small" disableElevation>Đã xác minh</Button>}
+                    </TableCell>}
                 {typeTable != "Người dùng" &&
                     <TableCell>
                         <IconButton

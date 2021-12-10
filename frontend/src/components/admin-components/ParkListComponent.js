@@ -1,7 +1,7 @@
-import { useEffect } from "react"
+import React, { useEffect } from "react"
 import ListTable from "./ListTableComponent";
 import { connect } from "react-redux";
-import { fetchParkList } from "../../redux/AdminActionCreators";
+import { deleteParks, fetchParkList, verifiedPark } from "../../redux/AdminActionCreators";
 import SideBar from "./SideBarComponent";
 
 const headCells = [
@@ -50,10 +50,14 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchParkList: () => dispatch(fetchParkList())
+    fetchParkList: () => dispatch(fetchParkList()),
+    deleteParks: (parks_delete) => dispatch(deleteParks(parks_delete)),
+    verifiedPark: (park_id) => dispatch(verifiedPark(park_id))
 });
 
 function ParkList(props) {
+
+    const [isParksChange, setIsParksChange] = React.useState(false);
 
     useEffect(
         () => {
@@ -61,13 +65,24 @@ function ParkList(props) {
         }, []
     )
 
-    return (
+    useEffect(() => {
+        if (isParksChange == true) {
+            props.fetchParkList();
+            setIsParksChange(false);
+        }
+    }, [isParksChange])
 
-        // viet isLoading and errMess
+    return (
         <div className="row">
             <div className="col-2"><SideBar /></div>
             <div className="col-10">
-                <ListTable rows={props.park_list.park_list} headCells={headCells} typeTable="Bãi đỗ" />
+                <ListTable
+                    rows={props.park_list.park_list}
+                    headCells={headCells}
+                    typeTable="Bãi đỗ"
+                    handleDeleteSelected={props.deleteParks}
+                    handleActive={props.verifiedPark}
+                    setIsListChange={setIsParksChange} />
             </div>
         </div>
     );

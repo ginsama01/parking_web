@@ -60,27 +60,23 @@ exports.sendEmail = (url, email, code) => {
 
 exports.verifyUser = (req, res, next) => {
     if (!req.signedCookies.token) {
-        var err = new Error('You are not login!');
-        err.status = 401;
-        return next(err);
-        
+        res.statusCode = 401;
+        res.json({message: 'Bạn chưa đăng nhập tài khoản người dùng'});
     }
     else {
         var token = req.signedCookies.token;
         try {
             var decode = jwt.verify(token, config.secretKey).id;
         } catch(error) {
-            var err = new Error('Token wrong!');
-            err.status = 403;
-            return next(err);
+            res.statusCode = 401;
+            res.json({message: 'Bạn chưa đăng nhập tài khoản người dùng'});
         }
         dbConnect.query("SELECT * FROM user WHERE user_id = '" + decode +"';", {
             type: dbConnect.QueryTypes.SELECT
         }) .then((result) => {
             if (result.length == 0) {
-                var err = new Error('Token wrong!');
-                err.status = 403;
-                return next(err);
+                res.statusCode = 401;
+                res.json({message: 'Bạn chưa đăng nhập tài khoản người dùng'});
             } else {
                 return next();
             }
@@ -91,26 +87,23 @@ exports.verifyUser = (req, res, next) => {
 
 exports.verifyOwner = (req, res, next) => {
     if (!req.signedCookies.token) {
-        var err = new Error('Cần đăng nhập tài khoản chủ bãi đỗ để thực hiện chức năng này');
-        err.status = 401;
-        return next(err);
+        res.statusCode = 401;
+        res.json({message: 'Bạn chưa đăng nhập tài khoản chủ bãi đỗ'});
     }
     else {
         var token = req.signedCookies.token;
         try {
             var decode = jwt.verify(token, config.secretKey).id;
         } catch(error) {
-            var err = new Error('Bạn');
-            err.status = 403;
-            return next(err);
+            res.statusCode = 401;
+            res.json({message: 'Bạn chưa đăng nhập tài khoản chủ bãi đỗ'});
         }
         dbConnect.query("SELECT * FROM owner WHERE own_id = '" + decode +"';", {
             type: dbConnect.QueryTypes.SELECT
         }) .then((result) => {
             if (result.length == 0) {
-                var err = new Error('Token wrong!');
-                err.status = 403;
-                return next(err);
+                res.statusCode = 401;
+                res.json({message: 'Bạn chưa đăng nhập tài khoản chủ bãi đỗ'});
             } else {
                 return next();
             }
@@ -120,26 +113,23 @@ exports.verifyOwner = (req, res, next) => {
 
 exports.verifyAdmin = (req, res, next) => {
     if (!req.signedCookies.token) {
-        var err = new Error('You are not login!');
-        err.status = 401;
-        return next(err);
+        res.statusCode = 401;
+        res.json({message: 'Bạn không phải là quản trị viên'});
     }
     else {
         var token = req.signedCookies.token;
         try {
             var decode = jwt.verify(token, config.secretKey).id;
         } catch(error) {
-            var err = new Error('Token wrong!');
-            err.status = 403;
-            return next(err);
+            res.statusCode = 401;
+            res.json({message: 'Bạn không phải là quản trị viên'});
         }
         dbConnect.query("SELECT * FROM admin WHERE admin_id = '" + decode +"';", {
             type: dbConnect.QueryTypes.SELECT
         }) .then((result) => {
             if (result.length == 0) {
-                var err = new Error('Token wrong!');
-                err.status = 403;
-                return next(err);
+                res.statusCode = 401;
+                res.json({message: 'Bạn không phải là quản trị viên'});
             } else {
                 return next();
             }

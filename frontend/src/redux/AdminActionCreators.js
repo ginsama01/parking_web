@@ -230,11 +230,12 @@ export const addTransChart = (trans_chart) => ({
 
 
 // method delete user for admin
-export const deleteUser = (user_id) => (dispatch) => {
+export const deleteUsers = (users_delete) => (dispatch) => {
 
-    return fetch(baseUrl + user_id,
+    return fetch(baseUrl + "users/delete",
         {
             method: 'DELETE',
+            body: JSON.stringify(users_delete),
             credentials: "include"
         })
         .then(response => {
@@ -254,15 +255,20 @@ export const deleteUser = (user_id) => (dispatch) => {
             alert('Đã xóa');
             window.location.href = '/'
         })
-        .catch(error => { console.log(error.message) });
+        .catch(error => {
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
 }
 
 // method delete owner for admin
-export const deleteOwner = (owner_id) => (dispatch) => {
+export const deleteOwners = (owners_delete) => (dispatch) => {
 
-    return fetch(baseUrl + owner_id,
+    return fetch(baseUrl + "owners/delete",
         {
             method: 'DELETE',
+            body: JSON.stringify(owners_delete),
             credentials: "include"
         })
         .then(response => {
@@ -282,15 +288,20 @@ export const deleteOwner = (owner_id) => (dispatch) => {
             alert('Đã xóa');
             window.location.href = '/'
         })
-        .catch(error => { console.log(error.message) });
+        .catch(error => {
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
 }
 
 // method delete park for admin
-export const deletePark = (park_id) => (dispatch) => {
+export const deleteParks = (parks_delete) => (dispatch) => {
 
-    return fetch(baseUrl + park_id,
+    return fetch(baseUrl + "admin/parks",
         {
             method: 'DELETE',
+            body: JSON.stringify(parks_delete),
             credentials: "include"
         })
         .then(response => {
@@ -310,5 +321,44 @@ export const deletePark = (park_id) => (dispatch) => {
             alert('Đã xóa');
             window.location.href = '/'
         })
-        .catch(error => { console.log(error.message) });
+        .catch(error => {
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
+}
+
+
+// post verified park
+export const verifiedPark = (park_id) => (dispatch) => {
+
+    const verifiedPark= { park_id: park_id }
+
+    return fetch(baseUrl + "admin/parks/verify",
+        {
+            method: 'POST',
+            body: JSON.stringify(verifiedPark),
+            credentials: "include"
+        })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
+        .then(verifiedPark => {
+            alert('Verify ' + JSON.stringify(verifiedPark));
+        })
+        .catch(error => {
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
 }

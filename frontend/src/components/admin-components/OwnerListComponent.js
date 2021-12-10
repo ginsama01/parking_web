@@ -1,7 +1,7 @@
-import { useEffect } from "react"
+import React, { useEffect } from "react"
 import ListTable from "./ListTableComponent";
 import { connect } from "react-redux";
-import { fetchOwnerList } from "../../redux/AdminActionCreators";
+import { deleteOwners, fetchOwnerList } from "../../redux/AdminActionCreators";
 import SideBar from "./SideBarComponent";
 
 const headCells = [
@@ -56,10 +56,13 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchOwnerList: () => dispatch(fetchOwnerList())
+    fetchOwnerList: () => dispatch(fetchOwnerList()),
+    deleteOwners: (owners_delete) => dispatch(deleteOwners(owners_delete))
 });
 
 function OwnerList(props) {
+
+    const [isOwnersChange, setIsOwnersChange] = React.useState(false)
 
     useEffect(
         () => {
@@ -67,13 +70,23 @@ function OwnerList(props) {
         }, []
     )
 
-    return (
+    useEffect(() => {
+        if (isOwnersChange == true) {
+            props.fetchOwnerList();
+            setIsOwnersChange(false);
+        }
+    }, [isOwnersChange])
 
-        // viet isLoading and errMess
+    return (
         <div className="row">
             <div className="col-2"><SideBar /></div>
             <div className="col-10">
-                <ListTable rows={props.owner_list.owner_list} headCells={headCells} typeTable="Chủ bãi đỗ" />
+                <ListTable
+                    rows={props.owner_list.owner_list}
+                    headCells={headCells}
+                    typeTable="Chủ bãi đỗ"
+                    handleDeleteSelected={props.deleteOwners}
+                    setIsListChange={setIsOwnersChange} />
             </div>
         </div>
     );

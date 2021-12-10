@@ -19,9 +19,8 @@ import Checkbox from '@mui/material/Checkbox';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-
 import Row from './RowComponent';
-
+import AlertDialog from '../DialogComponent';
 
 function TablePaginationActions(props) {
     const theme = useTheme();
@@ -179,7 +178,7 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-    const { typeTable, numSelected, handleDeleteIcon } = props;
+    const { typeTable, numSelected, deleteSelected } = props;
 
     return (
         <Toolbar
@@ -214,9 +213,12 @@ const EnhancedTableToolbar = (props) => {
 
             {numSelected > 0 ? (
                 <Tooltip title="Xóa">
-                    <IconButton onClick={handleDeleteIcon}>
-                        <i class="fas fa-trash-alt"></i>
-                    </IconButton>
+                    <AlertDialog
+                        title={"Xóa "}
+                        content={"Bạn chắc chắn muốn xóa " + numSelected + " " + typeTable}
+                        label={"Xóa"}
+                        color={"warning"}
+                        handleAction={deleteSelected} />
                 </Tooltip>
             ) : (
                 <Tooltip title="Filter list">
@@ -243,13 +245,18 @@ function ListTable(props) {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
 
-    const { rows, headCells, typeTable, handleDeleteIcon } = props;
+    const { rows, headCells, typeTable, handleDeleteSelected, handleActive, setIsListChange } = props;
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
+
+    const deleteSelected = (event) => {
+        handleDeleteSelected(selected);
+        setIsListChange(true);
+    }
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
@@ -305,7 +312,7 @@ function ListTable(props) {
                 <EnhancedTableToolbar
                     numSelected={selected.length}
                     typeTable={typeTable}
-                    handleDeleteIcon={handleDeleteIcon} />
+                    deleteSelected={deleteSelected} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -333,7 +340,9 @@ function ListTable(props) {
                                             isItemSelected={isItemSelected}
                                             handleClick={handleClick}
                                             labelId={labelId}
-                                            typeTable={typeTable} />
+                                            typeTable={typeTable}
+                                            handleActive={handleActive}
+                                            setIsListChange={setIsListChange} />
                                     );
                                 })}
                             {emptyRows > 0 && (

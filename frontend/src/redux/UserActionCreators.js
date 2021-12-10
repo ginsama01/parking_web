@@ -295,12 +295,13 @@ export const postComment = (park_id, rating, content) => (dispatch) => {
             })
         .then(response => response.json())
         .then((newComment) => {
-            alert('Bạn đã thêm đánh giá' + JSON.stringify(newComment))
+            alert(JSON.stringify(newComment));
         })
         .catch(error => {
-            console.log('Post comments ', error.message)
-            alert('Your comment could not be posted \nError: ' + error.message)
-        })
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
 }
 
 
@@ -339,9 +340,10 @@ export const postReport = (park_id, content) => (dispatch) => {
             alert('Bạn đã thêm report' + JSON.stringify(newReport))
         })
         .catch(error => {
-            console.log('Post report ', error.message)
-            alert('Your report could not be posted \nError: ' + error.message)
-        })
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
 }
 
 //Sign up
@@ -381,7 +383,11 @@ export const postUser = (username, password, email, firstname, lastname, type) =
             window.location.href = '/'
         })
         .then(user => dispatch(addUser(user)))
-        .catch(error => { console.log('post user', error.message); alert('Your account could not be posted\nError: ' + error.message); });
+        .catch(error => {
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
 }
 
 export const userFailed = (errmess) => ({
@@ -425,11 +431,11 @@ export const postLogin = (username, password) => (dispatch) => {
             const event = new Event('storagechange');
             window.dispatchEvent(event);
             alert('Đăng nhập thành công');
-            window.location.href = '/'
+            window.location.href = '/';
+            return user;
         })
-        .catch(error => { 
+        .catch(error => {
             error.json().then(body => {
-                console.log(body.message);
                 alert(body.message);
             })
         });
@@ -473,7 +479,7 @@ export const Logout = () => (dispatch) => {
 // fetch search infomation
 export const fetchSearchInfo = () => (dispatch) => {
 
-    return fetch(baseUrl + 'first-search-info')
+    return fetch(baseUrl + 'parks/search')
         .then(response => {
             if (response.ok) {
                 return response;
@@ -489,7 +495,7 @@ export const fetchSearchInfo = () => (dispatch) => {
             })
         .then(response => response.json())
         .then(search_info => dispatch(addSearchInfo(search_info)))
-        .catch(error => {console.log(error.message)});
+        .catch(error => { console.log(error.message) });
 }
 
 export const addSearchInfo = (search_info) => ({
@@ -499,12 +505,11 @@ export const addSearchInfo = (search_info) => ({
 
 
 //post search infomation
-export const postSearchInfo = (address, timein, timeout ) => (dispatch) => {
+export const postSearchInfo = (address, timein) => (dispatch) => {
 
     const newSearchInfo = {
         address: address,
-        timein: timein,
-        timeout: timeout
+        timein: timein
     }
 
     return fetch(baseUrl + 'parks/search', {
@@ -521,6 +526,104 @@ export const postSearchInfo = (address, timein, timeout ) => (dispatch) => {
                 return response;
             }
             else {
+                throw response;
+            }
+        })
+        .then(response => response.json())
+        .then((newSearchInfo) => {
+            //alert("Tìm kiếm với: " + JSON.stringify(newSearchInfo));
+            return newSearchInfo;
+        })
+        .catch(error => {
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
+}
+
+
+// post booking
+export const postBooking = (park_id, timein) => (dispatch) => {
+
+    const newBooking = {
+        park_id: park_id,
+        timein: timein,
+    }
+
+    return fetch(baseUrl + 'accounts/pending', {
+        method: 'POST',
+        body: JSON.stringify(newBooking),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
+        .then(response => {
+            console.log(response);
+            if (response.ok) {
+                return response;
+            }
+            else {
+                throw response;
+            }
+        })
+        .then(response => response.json())
+        .then((newBooking) => {
+            alert("Đặt trước: " + JSON.stringify(newBooking));
+        })
+        .catch(error => {
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
+}
+
+
+// post is mark
+export const postMark = (park_id, isMark) => (dispatch) => {
+
+    const newMark = {
+        park_id,
+        isMark
+    }
+
+    return fetch(baseUrl + 'accounts/favorite', {
+        method: 'POST',
+        body: JSON.stringify(newMark),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
+        .then(response => {
+            console.log(response);
+            if (response.ok) {
+                return response;
+            }
+            else {
+                throw response;
+            }
+        }) 
+        .then(response => response.json())
+        .then((newMark) => {
+            //alert("Thêm vào yêu thích " + JSON.stringify(newMark));
+        })
+        .catch(error => {
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
+}
+
+export const fetchMark = (park_id) => (dispatch) => {
+
+    return fetch(baseUrl + 'parks/mark/' + park_id, {
+        credentials: 'include'
+    })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
                 var error = new Error('Error ' + response.status + ': ' + response.statusText);
                 error.response = response;
                 throw error;
@@ -531,11 +634,11 @@ export const postSearchInfo = (address, timein, timeout ) => (dispatch) => {
                 throw errmess;
             })
         .then(response => response.json())
-        .then((newSearchInfo) => {
-            alert("Tìm kiếm với: " + JSON.stringify(newSearchInfo));
-        })
-        .catch(error => {
-            console.log('Post search info ', error.message)
-            alert('Your search info could not be posted \nError: ' + error.message)
-        })
+        .then(favo_mark => dispatch(addFavoMark(favo_mark)))
+        .catch(error => { console.log(error.message) });
 }
+
+export const addFavoMark = (favo_mark) => ({
+    type: ActionTypes.ADD_FAVOMARK,
+    payload: favo_mark
+});

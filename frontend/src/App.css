@@ -19,7 +19,7 @@
 }
 
 .searchInfoBar {
-  margin: 20px;
+  margin: 10px;
 }
 
 .footer {
@@ -65,6 +65,7 @@ p {
 
 .park-list-tab {
   background-color: #E5E5E5;
+  margin-top: 20px;
 }
 
 .hide{

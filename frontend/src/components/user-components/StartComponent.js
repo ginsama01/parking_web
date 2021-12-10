@@ -44,16 +44,6 @@ let SearchForm = props => {
                         />
                     </div>
                 </div>
-                <div className="row row-margin">
-                    <label className="col-2">Thời gian trả</label>
-                    <div className="col-6">
-                        <Field
-                            name="timeout"
-                            showTime={false}
-                            component={renderDateTimePicker}
-                        />
-                    </div>
-                </div>
                 <div className="row-margin" style={{marginLeft: "30%"}}>
                     <button type="submit" style={{color: "white", backgroundColor: "#2e7d32"}}>Tìm kiếm</button>
                 </div>
@@ -68,7 +58,7 @@ SearchForm = reduxForm({
 
 
 const mapDispatchToProps = dispatch => ({
-    postSearchInfo: (address, timein, timeout) => dispatch(postSearchInfo(address, timein, timeout))
+    postSearchInfo: (address, timein) => dispatch(postSearchInfo(address, timein))
 });
 
 class Start extends Component {
@@ -81,8 +71,8 @@ class Start extends Component {
 
     async handleSubmitSearch(event) {
         event.preventDefault();
-        await this.props.postSearchInfo(this.props.address, this.props.timein, this.props.timeout);
-        this.props.history.push('/user/parks')
+        var success = await this.props.postSearchInfo(this.props.address, this.props.timein);
+        if (success) this.props.history.push('/user/parks')
     }
 
     render() {
@@ -97,10 +87,9 @@ class Start extends Component {
 const searchinfo_selector = formValueSelector("searchinfo-form")
 
 export default withRouter(connect(state => {
-    const { address, timein, timeout } = searchinfo_selector(state, 'address', 'timein', 'timeout');
+    const { address, timein } = searchinfo_selector(state, 'address', 'timein');
     return {
         address,
-        timein,
-        timeout
+        timein
     }
 }, mapDispatchToProps)(Start));

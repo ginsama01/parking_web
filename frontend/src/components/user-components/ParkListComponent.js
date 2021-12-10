@@ -7,7 +7,7 @@ import SwipeableViews from "react-swipeable-views";
 import ParkDetail from "./ParkDetailComponent";
 import {
     fetchComments, fetchParkInfo, postComment, fetchParkStatus, postReport, fetchBestParks,
-    fetchCheapParks, fetchNearParks
+    fetchCheapParks, fetchNearParks, fetchSearchInfo, fetchAllParks, postBooking, postMark, fetchMark
 } from "../../redux/UserActionCreators";
 import { connect } from "react-redux";
 import { ParkList } from "./RenderParkListComponent";
@@ -15,6 +15,7 @@ import Map from "./Map";
 import SearchInfoBar from "./SearchInfoComponent";
 import { formValueSelector } from "redux-form";
 import { postSearchInfo } from "../../redux/UserActionCreators";
+
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -61,7 +62,7 @@ function allyProps(index) {
 const searchinfoBar_selector = formValueSelector("searchinfoBar-form")
 
 const mapStateToProps = state => {
-    const { address, timein, timeout } = searchinfoBar_selector(state, 'address', 'timein', 'timeout');
+    const { address, timein } = searchinfoBar_selector(state, 'address', 'timein');
     return {
         best_parks: state.best_parks,
         cheap_parks: state.cheap_parks,
@@ -71,7 +72,8 @@ const mapStateToProps = state => {
         comments: state.comments,
         address,
         timein,
-        timeout
+        search_info: state.search_info,
+        favo_mark: state.favo_mark
     }
 }
 
@@ -84,16 +86,20 @@ const mapDispatchToProps = dispatch => ({
     fetchParkStatus: (park_id) => { dispatch(fetchParkStatus(park_id)) },
     fetchParkInfo: (park_id) => { dispatch(fetchParkInfo(park_id)) },
     fetchComments: (park_id) => { dispatch(fetchComments(park_id)) },
-    postSearchInfo: (address, timein, timeout) => dispatch(postSearchInfo(address, timein, timeout))
+    postSearchInfo: (address, timein, timeout) => dispatch(postSearchInfo(address, timein, timeout)),
+    fetchSearchInfo: () => dispatch(fetchSearchInfo()),
+    postBooking: (park_id, timein) => dispatch(postBooking(park_id, timein)),
+    postMark: (park_id, isMark) => dispatch(postMark(park_id, isMark)),
+    fetchMark: (park_id) => dispatch(fetchMark(park_id))
 });
 
 function ParkListTabs(props) {
 
-    // const [lat, lng] = props;
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
     const [selectedPark, setSelectedPark] = React.useState(-1);
     const [isPostComment, setIsPostComment] = React.useState(false);
+    const [isPostMark, setIsPostMark] = React.useState(false);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     }
@@ -104,7 +110,8 @@ function ParkListTabs(props) {
 
     const handleSubmitSearch = async (event) => {
         event.preventDefault();
-        await props.postSearchInfo(props.address, props.timein, props.timeout);
+        var success = await props.postSearchInfo(props.address, props.timein);
+        if (!success) return;
         if (selectedPark == -1) {
             props.fetchBestParks();
             props.fetchCheapParks();
@@ -112,14 +119,28 @@ function ParkListTabs(props) {
         } else {
             setSelectedPark(-1);
         }
+        props.fetchSearchInfo();
     }
 
-    useEffect( () => {
+    useEffect(
+        () => {
+            props.fetchSearchInfo();
+        }, []
+    )
+
+    useEffect(() => {
         if (isPostComment == true) {
             props.fetchComments(selectedPark);
             setIsPostComment(false);
         }
     }, [isPostComment])
+
+    useEffect(() => {
+        if (isPostMark == true) {
+            props.fetchMark(selectedPark);
+            setIsPostMark(false);
+        }
+    }, [isPostMark])
 
     useEffect(
         () => {
@@ -132,13 +153,13 @@ function ParkListTabs(props) {
                 props.fetchParkStatus(selectedPark);
                 props.fetchParkInfo(selectedPark);
                 props.fetchComments(selectedPark);
+                props.fetchMark(selectedPark);
             }
         }, [selectedPark]
     )
 
     return (
         <div>
-            <SearchInfoBar handleSubmit = {handleSubmitSearch}/>
             <Row>
                 <Col sm='4' xs='12'>
                     {parseInt(selectedPark) == -1 &&
@@ -156,7 +177,7 @@ function ParkListTabs(props) {
                                     <AntTab label="Gần nhất" {...allyProps(2)} />
                                 </Tabs>
                             </AppBar>
-                            <Paper class="park-list-tab" style={{ maxHeight: 450, overflow: 'auto' }}>
+                            <Paper class="park-list-tab" style={{ maxHeight: 500, overflow: 'auto' }}>
                                 <SwipeableViews
                                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                                     index={value}
@@ -185,23 +206,31 @@ function ParkListTabs(props) {
                         parseInt(selectedPark) >= 0 && <div>
                             <ParkDetail
                                 park_status={props.park_status}
+                                favo_mark={props.favo_mark}
+                                postMark={props.postMark}
+                                setIsPostMark={setIsPostMark}
+                                timein={props.timein}
+                                search_info={props.search_info.search_info}
                                 park_info={props.park_info}
                                 comments={props.comments}
                                 postComment={props.postComment}
                                 postReport={props.postReport}
+                                postBooking={props.postBooking}
                                 setIsPostComment={setIsPostComment}
-                                selectedPark={selectedPark}
                                 setSelectedPark={setSelectedPark} />
                         </div>
                     }
                 </Col>
                 <Col sm='8' xs='12'>
+                    <SearchInfoBar handleSubmit={handleSubmitSearch}
+                        search_info={props.search_info.search_info} />
                     <Map
-                        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyAflMCwfBoUUHO31is12VzGSQcy9Bb0MtM&&callback=initMap&v=weekly`}
-                        loadingElement={<div style={{ height: `100%` }} />}
+                        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyDY5t54cQ-rO-7lC_Yjty5jGbo4t0MHH9I&&callback=initMap&v=weekly`}
+                        loadingElement={<div style={{ height: `90%` }} />}
                         containerElement={<div style={{ height: `90vh`, margin: `auto` }} />}
-                        mapElement={<div style={{ height: `100%` }} />}
+                        mapElement={<div style={{ height: `90%` }} />}
                         setSelectedPark={setSelectedPark}
+                        search_info={props.search_info.search_info}
                     />
                 </Col>
             </Row>

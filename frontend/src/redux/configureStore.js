@@ -21,6 +21,7 @@ import { ParkList } from './admin/park-list';
 import { UserChart } from './admin/user-chart';
 import { RatingChart } from './admin/rating-chart';
 import { TransChart } from './admin/trans-chart';
+import { FavoriteMark } from './user/favorite-mark';
 
 
 export const ConfigureStore = () => {
@@ -34,6 +35,7 @@ export const ConfigureStore = () => {
             comments: Comments,
             all_parks: AllParks,
             search_info: SearchInfo,
+            favo_mark: FavoriteMark,
 
             user_list: UserList,
             owner_list: OwnerList,

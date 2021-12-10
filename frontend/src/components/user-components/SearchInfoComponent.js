@@ -1,44 +1,40 @@
-import React, { Component } from "react";
-import { formValueSelector } from "redux-form";
-import { connect } from "react-redux";
-import { postSearchInfo } from "../../redux/UserActionCreators";
+import React from "react";
 import { Field, reduxForm } from "redux-form";
 import { DatePicker } from "react-widgets";
 import "react-widgets/styles.css";
 
 import { LocationSearchInput } from "./LocationSearchInput";
 
-const renderDateTimePicker = ({ input: { onChange, value } }) =>
+
+const renderDateTimePicker = ({ label, input: { onChange, value } }) =>
     <DatePicker
         onChange={onChange}
         value={!value ? null : new Date(value)}
-        minDate={new Date()}
-        defaultValue={new Date()}
+        placeholder={label}
         includeTime
     />
 
 
-let SearchInfoBar = props => {
-    const { handleSubmit } = props;
+function SearchInfoBar(props) {
+    const { handleSubmit, search_info } = props;
+    function convertTime(time) {
+        var date = new Date(Date.parse(time));
+        return(date.getHours() + ':' + date.getMinutes() + ', ' + date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear());
+    }
     return (
         <form onSubmit={handleSubmit} className="searchInfoBar">
             <div className="row">
-                <div className="col-5">
-                    <Field name="address" component={LocationSearchInput} />
+                <div className="col-6">
+                    <Field name="address" component={LocationSearchInput} label={search_info.address} />
                 </div>
-                <div className="col-3">
+                <div className="col-4">
                     <Field
                         name="timein"
                         component={renderDateTimePicker}
+                        label={convertTime(search_info.timein)}
                     />
                 </div>
-                <div className="col-3">
-                    <Field
-                        name="timeout"
-                        component={renderDateTimePicker}
-                    />
-                </div>
-                <div className="col-1">
+                <div className="col-2">
                     <button type="submit" style={{ color: "white", backgroundColor: "#2e7d32" }}>Tìm kiếm</button>
                 </div>
             </div>
@@ -50,42 +46,3 @@ let SearchInfoBar = props => {
 export default reduxForm({
     form: "searchinfoBar-form"
 })(SearchInfoBar);
-
-
-// const mapDispatchToProps = dispatch => ({
-//     postSearchInfo: (address, timein, timeout) => dispatch(postSearchInfo(address, timein, timeout))
-// });
-
-// class SearchInfo extends Component {
-
-//     constructor(props) {
-//         super(props)
-
-//         this.handleSubmitSearch = this.handleSubmitSearch.bind(this)
-//     }
-
-//     handleSubmitSearch(event) {
-//         event.preventDefault();
-//         this.props.postSearchInfo(this.props.address, this.props.timein, this.props.timeout);
-//     }
-
-//     render() {
-//         return (
-//             <div>
-//                 <SearchInfoBar handleSubmit={this.handleSubmitSearch} />
-//             </div>
-//         );
-//     }
-// }
-
-// const searchinfoBar_selector = formValueSelector("searchinfoBar-form")
-
-/*export default connect(state => {
-    const { address, timein, timeout } = searchinfoBar_selector(state, 'address', 'timein', 'timeout');
-    return {
-        address,
-        timein,
-        timeout
-    }
-}, mapDispatchToProps)(SearchInfo);
-*/

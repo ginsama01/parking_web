@@ -21,12 +21,13 @@ function Map(props) {
 
 	const [markers, setMarkers] = React.useState([]);
 
+	const { search_info } = props
+
 	React.useEffect(() => {
 		props.fetchAllParks();
 	}, []);
 
 	React.useEffect(() => {
-		console.log(props.all_parks.parks);
 		props.all_parks.parks.map(park =>
 			geocodeByAddress(park.location)
 				.then(results => getLatLng(results[0]))
@@ -35,7 +36,6 @@ function Map(props) {
 					setMarkers((prev) => [...prev, data]);
 				})
 				.catch(error => console.error('Error', error)));
-		console.log(markers);
 	}, [props.all_parks.parks]);
 
 	const handleClickMarker = (event, value) => {
@@ -46,7 +46,7 @@ function Map(props) {
 		<div>
 			<GoogleMap
 				defaultZoom={15}
-				defaultCenter={{ lat: 21.0168864, lng: 105.7855574 }}
+				center={{ lat: search_info.lat, lng: search_info.lng }}
 			>
 				{markers.map((marker) => {
 					return (

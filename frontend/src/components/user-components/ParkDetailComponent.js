@@ -54,7 +54,7 @@ const ParkDetail = (props) => {
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
 
-    const { selectedPark, setSelectedPark } = props;
+    const { setSelectedPark, postMark, setIsPostMark } = props;
     const handleCloseParkDetail = () => {
         setSelectedPark(-1);
     }
@@ -67,9 +67,14 @@ const ParkDetail = (props) => {
         setValue(index);
     }
 
+    const handleChangeMark = (value) => {
+        postMark(props.park_status.park_status.park_id, value);
+        setIsPostMark(true);
+    }
+
     return (
         <div>
-            <div style={{ backgroundColor: "#E5E5E5" }}>
+            <div style={{ backgroundColor: "#E5E5E5", marginTop: "20px" }}>
                 <div style={{ display: "flex" }}>
                     <div>
                         <IconButton color="success" aria-label="close" size="large"
@@ -77,7 +82,19 @@ const ParkDetail = (props) => {
                             <i class="fas fa-arrow-circle-left"></i>
                         </IconButton>
                     </div>
-                    <h3 style={{ margin: "auto", color: "#3E7C17", fontFamily: 'Fredoka One' }}>{props.park_status.park_status.name}</h3>
+                    <h3 style={{ margin: "10px", color: "#3E7C17", fontFamily: 'Nunito' }}>{props.park_status.park_status.name}</h3>
+                    <div>
+                        {!props.favo_mark.mark.isMark &&
+                            <IconButton color="success" aria-label="close" size="large"
+                                onClick={() => handleChangeMark(true)} >
+                                <i class="far fa-star"></i>
+                            </IconButton>}
+                        {props.favo_mark.mark.isMark &&
+                            <IconButton color="success" aria-label="close" size="large"
+                                onClick={() => handleChangeMark(false)} >
+                                <i class="fas fa-star"></i>
+                            </IconButton>}
+                    </div>
                 </div>
                 <AppBar position="static" color="transparent">
                     <Tabs
@@ -91,7 +108,7 @@ const ParkDetail = (props) => {
                         <AntTab label="Đánh giá" {...allyProps(2)} />
                     </Tabs>
                 </AppBar>
-                <Paper style={{ maxHeight: 385, overflow: 'auto', backgroundColor: "#E5E5E5", margin: "10px 10px 0px 0px" }}>
+                <Paper style={{ maxHeight: 500, overflow: 'auto', backgroundColor: "#E5E5E5", margin: "10px 10px 0px 0px" }}>
                     <SwipeableViews
                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                         index={value}
@@ -99,7 +116,10 @@ const ParkDetail = (props) => {
                     >
                         <TabPanel value={value} index={0} dir={theme.direction}>
                             <Media list>
-                                <ParkStatus park_status={props.park_status} />
+                                <ParkStatus
+                                    park_status={props.park_status}
+                                    postBooking={props.postBooking}
+                                    search_info={props.search_info} />
                             </Media>
                         </TabPanel>
                         <TabPanel value={value} index={1} dir={theme.direction}>
@@ -114,7 +134,7 @@ const ParkDetail = (props) => {
                                     park_name={props.park_status.park_status.park_name}
                                     postComment={props.postComment}
                                     postReport={props.postReport}
-                                    setIsPostComment={props.setIsPostComment}/>
+                                    setIsPostComment={props.setIsPostComment} />
                             </Media>
                         </TabPanel>
                     </SwipeableViews>

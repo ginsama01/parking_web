@@ -1,7 +1,7 @@
-import { useEffect } from "react"
+import React, { useEffect } from "react"
 import ListTable from "./ListTableComponent";
 import { connect } from "react-redux";
-import { fetchUserList, deleteUser } from "../../redux/AdminActionCreators";
+import { fetchUserList, deleteUsers } from "../../redux/AdminActionCreators";
 import SideBar from "./SideBarComponent";
 
 const headCells = [
@@ -63,10 +63,12 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
     fetchUserList: () => dispatch(fetchUserList()),
-    deleteUser: (user_id) => dispatch(deleteUser(user_id)),
+    deleteUsers: (users_delete) => dispatch(deleteUsers(users_delete)),
 });
 
 function UserList(props) {
+
+    const [isUsersChange, setIsUsersChange] = React.useState(false)
 
     useEffect(
         () => {
@@ -74,16 +76,23 @@ function UserList(props) {
         }, []
     )
 
-    return (
+    useEffect(() => {
+        if (isUsersChange == true) {
+            props.fetchUserList();
+            setIsUsersChange(false);
+        }
+    }, [isUsersChange])
 
-        // viet isLoading and errMess
+    return (
         <div className="row">
             <div className="col-2"><SideBar /></div>
             <div className="col-10">
                 <ListTable
                     rows={props.user_list.user_list}
                     headCells={headCells}
-                    typeTable="Người dùng" />
+                    typeTable="Người dùng"
+                    handleDeleteSelected={props.deleteUser}
+                    setIsListChange={setIsUsersChange} />
             </div>
         </div>
     );

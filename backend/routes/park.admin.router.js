@@ -18,6 +18,19 @@ parkRouter.route('/')
             res.json(result);
         }, (err) => next(err))
         .catch(err => next(err))
-    });
+    })
+    .delete(authenticate.verifyAdmin, (req, res, next) => {
+        console.log(req.body);
+        res.statusCode = 201;
+        res.json({sucess: true});
+    })
+
+parkRouter.route('/verify')
+    .post(authenticate.verifyAdmin, (req, res, next) => {
+        console.log(req.body);
+        res.statusCode = 201;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({sucess: true});
+    })
 
 module.exports = parkRouter;
