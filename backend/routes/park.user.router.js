@@ -35,6 +35,7 @@ parkRouter.route('/search')
             type: dbConnect.QueryTypes.SELECT
         }).then((parks) => {
             parkObj = parks;
+            console.log(parkObj);
             const promises = [];
             for (let i = 0; i < parkObj.length; ++i) {
                 promises.push(
@@ -50,6 +51,7 @@ parkRouter.route('/search')
                     
                     for (let i = parkObj.length - 1; i >= 0; --i){
                         parkObj[i]['rate'] = parkObj[i]['rate'] === null ? 0 : parkObj[i]['rate'];
+                        parkObj[i]['image'] = parkObj[i]['image'] === null ? '' : parkObj[i]['image'];
                         parkObj[i]['image'] = parkObj[i]['image'].split(',')[0];
                         if (Number(parkObj[i]['distance'].slice(0, -3)) > 10)
                             parkObj.splice(i, 1);
