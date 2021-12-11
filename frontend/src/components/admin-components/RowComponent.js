@@ -12,11 +12,11 @@ import TableBody from '@mui/material/TableBody';
 import { Button } from '@mui/material';
 
 function Row(props) {
-    const { row, isItemSelected, handleClick, labelId, typeTable, handleActive, setIsListChange } = props;
+    const { row, isItemSelected, handleClick, labelId, typeTable, postVerify, setIsListChange } = props;
     const [open, setOpen] = React.useState(false);
 
-    const verifiedPark = (park_id) => {
-        handleActive(park_id);
+    const handleVerify = (event) => {
+        postVerify(row.id);
         setIsListChange(true)
     }
 
@@ -63,7 +63,7 @@ function Row(props) {
                 {typeTable == "Bãi đỗ" &&
                     <TableCell align="center">
                         {row.isActivated == false &&
-                            <Button variant="contained" color="success" size="small" onClick={() => verifiedPark(row.id)}>Xác minh</Button>}
+                            <Button variant="contained" color="success" size="small" onClick={handleVerify}>Xác minh</Button>}
                         {row.isActivated == true &&
                             <Button variant="contained" size="small" disableElevation>Đã xác minh</Button>}
                     </TableCell>}

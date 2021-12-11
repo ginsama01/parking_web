@@ -1,8 +1,9 @@
 import React, { useEffect } from "react"
 import ListTable from "./ListTableComponent";
 import { connect } from "react-redux";
-import { deleteParks, fetchParkList, verifiedPark } from "../../redux/AdminActionCreators";
+import { deleteParks, fetchParkList, postVerify } from "../../redux/AdminActionCreators";
 import SideBar from "./SideBarComponent";
+import SearchToolbar from "./SearchToolBar";
 
 const headCells = [
     {
@@ -52,12 +53,34 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     fetchParkList: () => dispatch(fetchParkList()),
     deleteParks: (parks_delete) => dispatch(deleteParks(parks_delete)),
-    verifiedPark: (park_id) => dispatch(verifiedPark(park_id))
+    postVerify: (park_id) => dispatch(postVerify(park_id))
 });
+
+function escapeRegExp(value) {
+    return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
 
 function ParkList(props) {
 
     const [isParksChange, setIsParksChange] = React.useState(false);
+    const [searched, setSearched] = React.useState("");
+    const parks_rows = props.park_list.park_list;
+    const [rows, setRows] = React.useState(parks_rows);
+
+    const requestSearch = (searchValue) => {
+        setSearched(searchValue);
+        const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
+        const filteredRows = parks_rows.filter((row) => {
+            return Object.keys(row).some((field) => {
+                return searchRegex.test(row[field].toString());
+            });
+        });
+        setRows(filteredRows);
+    };
+
+    React.useEffect(() => {
+        setRows(parks_rows)
+    }, [parks_rows])
 
     useEffect(
         () => {
@@ -76,12 +99,18 @@ function ParkList(props) {
         <div className="row">
             <div className="col-2"><SideBar /></div>
             <div className="col-10">
+                <div align="right">
+                    <SearchToolbar
+                        value={searched}
+                        onChange={(event) => requestSearch(event.target.value)}
+                        clearSearch={() => requestSearch('')} />
+                </div>
                 <ListTable
-                    rows={props.park_list.park_list}
+                    rows={rows}
                     headCells={headCells}
                     typeTable="Bãi đỗ"
-                    handleDeleteSelected={props.deleteParks}
-                    handleActive={props.verifiedPark}
+                    deleteSelected={props.deleteParks}
+                    postVerify={props.postVerify}
                     setIsListChange={setIsParksChange} />
             </div>
         </div>

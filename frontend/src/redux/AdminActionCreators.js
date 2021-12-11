@@ -232,10 +232,15 @@ export const addTransChart = (trans_chart) => ({
 // method delete user for admin
 export const deleteUsers = (users_delete) => (dispatch) => {
 
-    return fetch(baseUrl + "users/delete",
+    const users = { users_delete: users_delete }
+
+    return fetch(baseUrl + "admin/accounts/userinfo",
         {
             method: 'DELETE',
-            body: JSON.stringify(users_delete),
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(users),
             credentials: "include"
         })
         .then(response => {
@@ -251,9 +256,8 @@ export const deleteUsers = (users_delete) => (dispatch) => {
                 var errmess = new Error(error.message);
                 throw errmess;
             })
-        .then(response => {
-            alert('Đã xóa');
-            window.location.href = '/'
+        .then(users => {
+            alert('Đã xóa ' + JSON.stringify(users));
         })
         .catch(error => {
             error.json().then(body => {
@@ -265,10 +269,15 @@ export const deleteUsers = (users_delete) => (dispatch) => {
 // method delete owner for admin
 export const deleteOwners = (owners_delete) => (dispatch) => {
 
-    return fetch(baseUrl + "owners/delete",
+    const owners = { owners_delete: owners_delete }
+
+    return fetch(baseUrl + "admin/accounts/ownerinfo",
         {
             method: 'DELETE',
-            body: JSON.stringify(owners_delete),
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(owners),
             credentials: "include"
         })
         .then(response => {
@@ -284,9 +293,8 @@ export const deleteOwners = (owners_delete) => (dispatch) => {
                 var errmess = new Error(error.message);
                 throw errmess;
             })
-        .then(response => {
-            alert('Đã xóa');
-            window.location.href = '/'
+        .then(owners => {
+            alert('Đã xóa ' + JSON.stringify(owners));
         })
         .catch(error => {
             error.json().then(body => {
@@ -298,10 +306,15 @@ export const deleteOwners = (owners_delete) => (dispatch) => {
 // method delete park for admin
 export const deleteParks = (parks_delete) => (dispatch) => {
 
+    const parks = { parks_delete: parks_delete }
+
     return fetch(baseUrl + "admin/parks",
         {
             method: 'DELETE',
-            body: JSON.stringify(parks_delete),
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(parks),
             credentials: "include"
         })
         .then(response => {
@@ -317,9 +330,8 @@ export const deleteParks = (parks_delete) => (dispatch) => {
                 var errmess = new Error(error.message);
                 throw errmess;
             })
-        .then(response => {
-            alert('Đã xóa');
-            window.location.href = '/'
+        .then(parks => {
+            alert('Đã xóa ' + JSON.stringify(parks));
         })
         .catch(error => {
             error.json().then(body => {
@@ -330,13 +342,16 @@ export const deleteParks = (parks_delete) => (dispatch) => {
 
 
 // post verified park
-export const verifiedPark = (park_id) => (dispatch) => {
+export const postVerify = (park_id) => (dispatch) => {
 
-    const verifiedPark= { park_id: park_id }
+    const verifiedPark= { park_id: park_id };
 
     return fetch(baseUrl + "admin/parks/verify",
         {
             method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify(verifiedPark),
             credentials: "include"
         })

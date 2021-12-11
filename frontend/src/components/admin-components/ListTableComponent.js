@@ -178,7 +178,13 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-    const { typeTable, numSelected, deleteSelected } = props;
+    const { typeTable, numSelected, selected, deleteSelected, setIsListChange, setSelected } = props;
+
+    const handleDelete = (event) => {
+        deleteSelected(selected);
+        setSelected([]);
+        setIsListChange(true)
+    }
 
     return (
         <Toolbar
@@ -218,7 +224,7 @@ const EnhancedTableToolbar = (props) => {
                         content={"Bạn chắc chắn muốn xóa " + numSelected + " " + typeTable}
                         label={"Xóa"}
                         color={"warning"}
-                        handleAction={deleteSelected} />
+                        handleAction={handleDelete} />
                 </Tooltip>
             ) : (
                 <Tooltip title="Filter list">
@@ -244,19 +250,13 @@ function ListTable(props) {
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-
-    const { rows, headCells, typeTable, handleDeleteSelected, handleActive, setIsListChange } = props;
+    const { rows, headCells, typeTable, deleteSelected, postVerify, setIsListChange } = props;
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
-
-    const deleteSelected = (event) => {
-        handleDeleteSelected(selected);
-        setIsListChange(true);
-    }
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
@@ -312,7 +312,10 @@ function ListTable(props) {
                 <EnhancedTableToolbar
                     numSelected={selected.length}
                     typeTable={typeTable}
-                    deleteSelected={deleteSelected} />
+                    selected={selected}
+                    deleteSelected={deleteSelected}
+                    setIsListChange={setIsListChange}
+                    setSelected={setSelected} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -341,7 +344,7 @@ function ListTable(props) {
                                             handleClick={handleClick}
                                             labelId={labelId}
                                             typeTable={typeTable}
-                                            handleActive={handleActive}
+                                            postVerify={postVerify}
                                             setIsListChange={setIsListChange} />
                                     );
                                 })}

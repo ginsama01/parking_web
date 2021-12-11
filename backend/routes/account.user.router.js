@@ -38,7 +38,7 @@ accountRouter.route('/info')
     })
     .delete(authenticate.verifyUser, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
-        //models.Account.delete
+        
     })
 
 //Fetch Parking History
@@ -56,6 +56,18 @@ accountRouter.route('/parking')
             res.json(result);
         }, (err) => next(err))
             .catch(err => next(err));
+    })
+    .delete(authenticate.verifyUser, (req, res, next) => {
+        models.Parking.destroy({
+            where: {
+                parking_id: req.body.parking_list
+            }
+        }).then(() => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({ success: true, status: 'Delete parking succesfully!' });
+        }, (err) => next(err))
+        .catch(err => next(err));
     })
 
 //Fetch Favourite Park
@@ -125,7 +137,7 @@ accountRouter.route('/favorite')
     .delete(authenticate.verifyUser, (req, res, next) => {
         models.Favorite.destroy({
             where: {
-                flist_id: flist_list
+                flist_id: req.body.flist_list
             }
         }).then(() => {
             res.statusCode = 200;
@@ -204,9 +216,9 @@ accountRouter.route('/pending')
         .catch(err => next(err));
     })
     .delete(authenticate.verifyUser, (req, res, next) => {
-        models.Pending.destroy({
+        models.Pending.update({status: 'Đã hủy'}, {
             where: {
-                pending_id: pending_list
+                pending_id: req.body.pending_list
             }
         }).then(() => {
             res.statusCode = 200;
