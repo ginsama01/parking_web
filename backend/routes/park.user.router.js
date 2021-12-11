@@ -17,6 +17,7 @@ parkRouter.use(express.json());
 
 parkRouter.route('/')
     .get((req, res, next) => {
+        console.log(req.headers.origin);
         dbConnect.query("SELECT park_id, location FROM park", {
             type: dbConnect.QueryTypes.SELECT
         }).then((result) => {

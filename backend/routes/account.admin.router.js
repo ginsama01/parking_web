@@ -29,7 +29,6 @@ accountRouter.route('/ownerinfo')
         }).then(result => {
             const promises = [];
             var resObj = result;
-            console.log(resObj[0]);
             for (let i = 0; i < resObj.length; ++i) {
                 promises.push(
                     dbConnect.query("SELECT park_id AS id, name, location FROM park WHERE own_id = " + resObj[i]['id'] + ";", {

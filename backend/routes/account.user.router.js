@@ -122,6 +122,19 @@ accountRouter.route('/favorite')
             })
         }
     })
+    .delete(authenticate.verifyUser, (req, res, next) => {
+        models.Favorite.destroy({
+            where: {
+                flist_id: flist_list
+            }
+        }).then(() => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({ success: true, status: 'Delete favorite succesfully!' });
+        }, (err) => next(err))
+        .catch(err => next(err));
+    })
+
 
 //Create and delete favorite park
 accountRouter.route('/favorite/:flistid')
@@ -131,7 +144,7 @@ accountRouter.route('/favorite/:flistid')
                 flist_id: req.params.flistid
             }
         }).then(() => {
-            res.statusCode = 204;
+            res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json({ success: true, status: 'Delete favorite park succesfully!' });
         }, (err) => next(err))
@@ -141,7 +154,7 @@ accountRouter.route('/favorite/:flistid')
 accountRouter.route('/pending')
     .get(authenticate.verifyUser, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
-        dbConnect.query("SELECT p.name, p.location, p.description, p.price, pe.time_start, "
+        dbConnect.query("SELECT pe.pending_id, p.name, p.location, p.description, p.price, pe.time_start, (SELECT phone FROM account WHERE id = p.own_id) AS phone, "
             + "(SELECT email FROM account WHERE id = p.own_id) AS email, "
             + "(SELECT AVG(rating) FROM comment WHERE rela_id = pu.rela_id) AS rating FROM pending pe JOIN park_user pu ON pe.rela_id = pu.rela_id  "
             + "JOIN park p ON pu.park_id = p.park_id WHERE pu.user_id = " + user_id + ";", {
@@ -189,7 +202,19 @@ accountRouter.route('/pending')
             }
         }, err => next(err))
         .catch(err => next(err));
-    });
+    })
+    .delete(authenticate.verifyUser, (req, res, next) => {
+        models.Pending.destroy({
+            where: {
+                pending_id: pending_list
+            }
+        }).then(() => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({ success: true, status: 'Delete pending succesfully!' });
+        }, (err) => next(err))
+        .catch(err => next(err));
+    })
 
 accountRouter.route('/pending/:pendingid')
     .delete(authenticate.verifyUser, (req, res, next) => {
@@ -198,7 +223,7 @@ accountRouter.route('/pending/:pendingid')
                 pending_id: req.params.pendingid
             }
         }).then(() => {
-            res.statusCode = 204;
+            res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json({ success: true, status: 'Delete pending succesfully!' });
         }, (err) => next(err))
