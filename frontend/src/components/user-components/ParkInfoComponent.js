@@ -27,8 +27,8 @@ function RoofIcon({ hasRoof }) {
     }
 }
 
-function ReserveIcon({ allowReserve }) {
-    if (allowReserve) {
+function ReserveIcon({ allowBooking }) {
+    if (allowBooking) {
         return (
             <div><span class="iconify" data-icon="cib:hatena-bookmark"></span> Đặt trước</div>
         );
@@ -58,7 +58,7 @@ function RenderParkInfo({ park_info }) {
                 <div style={{ paddingTop: "15px", display: "inline-flex" }}>
                     <div style={{ marginRight: "10px" }}><CameraIcon hasCamera={park_info.hasCamera} /></div>
                     <div style={{ marginRight: "10px" }}><RoofIcon hasRoof={park_info.hasRoof} /></div>
-                    <div style={{ marginRight: "10px" }}><ReserveIcon allowReserve={park_info.allowReserve} /></div>
+                    <div style={{ marginRight: "10px" }}><ReserveIcon allowBooking={park_info.allowBooking} /></div>
                     <div><OvernightIcon allowOvernight={park_info.allowOvernight} /></div>
                 </div>
                 <div style={{ marginTop: "20px" }}>

@@ -80,14 +80,14 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     postComment: (park_id, rating, comment) => dispatch(postComment(park_id, rating, comment)),
     postReport: (park_id, content) => dispatch(postReport(park_id, content)),
-    fetchBestParks: () => dispatch(fetchBestParks()),
-    fetchCheapParks: () => dispatch(fetchCheapParks()),
-    fetchNearParks: () => dispatch(fetchNearParks()),
-    fetchParkStatus: (park_id) => { dispatch(fetchParkStatus(park_id)) },
+    fetchBestParks: (search_id) => dispatch(fetchBestParks(search_id)),
+    fetchCheapParks: (search_id) => dispatch(fetchCheapParks(search_id)),
+    fetchNearParks: (search_id) => dispatch(fetchNearParks(search_id)),
+    fetchParkStatus: (park_id, search_id) => { dispatch(fetchParkStatus(park_id, search_id)) },
     fetchParkInfo: (park_id) => { dispatch(fetchParkInfo(park_id)) },
     fetchComments: (park_id) => { dispatch(fetchComments(park_id)) },
     postSearchInfo: (address, timein, timeout) => dispatch(postSearchInfo(address, timein, timeout)),
-    fetchSearchInfo: () => dispatch(fetchSearchInfo()),
+    fetchSearchInfo: (search_id) => dispatch(fetchSearchInfo(search_id)),
     postBooking: (park_id, timein) => dispatch(postBooking(park_id, timein)),
     postMark: (park_id, isMark) => dispatch(postMark(park_id, isMark)),
     fetchMark: (park_id) => dispatch(fetchMark(park_id))
@@ -111,20 +111,24 @@ function ParkListTabs(props) {
     const handleSubmitSearch = async (event) => {
         event.preventDefault();
         var success = await props.postSearchInfo(props.address, props.timein);
-        if (!success) return;
+        if (!success) {
+            return;
+        } else {
+            sessionStorage.setItem('search_id', success.search_id);
+        }
         if (selectedPark == -1) {
-            props.fetchBestParks();
-            props.fetchCheapParks();
-            props.fetchNearParks();
+            props.fetchBestParks(sessionStorage.getItem('search_id'));
+            props.fetchCheapParks(sessionStorage.getItem('search_id'));
+            props.fetchNearParks(sessionStorage.getItem('search_id'));
         } else {
             setSelectedPark(-1);
         }
-        props.fetchSearchInfo();
+        props.fetchSearchInfo(sessionStorage.getItem('search_id'));
     }
 
     useEffect(
         () => {
-            props.fetchSearchInfo();
+            props.fetchSearchInfo(sessionStorage.getItem('search_id'));
         }, []
     )
 
@@ -145,12 +149,12 @@ function ParkListTabs(props) {
     useEffect(
         () => {
             if (selectedPark < 0) {
-                props.fetchBestParks();
-                props.fetchCheapParks();
-                props.fetchNearParks();
+                props.fetchBestParks(sessionStorage.getItem('search_id'));
+                props.fetchCheapParks(sessionStorage.getItem('search_id'));
+                props.fetchNearParks(sessionStorage.getItem('search_id'));
             }
             if (selectedPark >= 0) {
-                props.fetchParkStatus(selectedPark);
+                props.fetchParkStatus(selectedPark, sessionStorage.getItem('search_id'));
                 props.fetchParkInfo(selectedPark);
                 props.fetchComments(selectedPark);
                 props.fetchMark(selectedPark);
@@ -225,11 +229,12 @@ function ParkListTabs(props) {
                     <SearchInfoBar handleSubmit={handleSubmitSearch}
                         search_info={props.search_info.search_info} />
                     <Map
-                        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyDY5t54cQ-rO-7lC_Yjty5jGbo4t0MHH9I&&callback=initMap&v=weekly`}
+                        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyDFOk5Vvai-PKsIMWPWqJcT23U5zMKaaCQ&&callback=initMap&v=weekly`}
                         loadingElement={<div style={{ height: `90%` }} />}
                         containerElement={<div style={{ height: `90vh`, margin: `auto` }} />}
                         mapElement={<div style={{ height: `90%` }} />}
                         setSelectedPark={setSelectedPark}
+                        selectedPark={selectedPark}
                         search_info={props.search_info.search_info}
                     />
                 </Col>

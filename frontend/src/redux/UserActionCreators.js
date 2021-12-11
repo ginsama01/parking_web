@@ -40,10 +40,10 @@ export const addAllParks = (all_parks) => ({
 
 
 // fetch best parks list
-export const fetchBestParks = () => (dispatch) => {
+export const fetchBestParks = (search_id) => (dispatch) => {
     dispatch(bestParksLoading(true));
 
-    return fetch(baseUrl + 'parks/best', { credentials: 'include' })
+    return fetch(baseUrl + 'parks/best?search_id=' + search_id, { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -78,10 +78,10 @@ export const addBestParks = (best_parks) => ({
 
 
 // fetch cheap parks list
-export const fetchCheapParks = () => (dispatch) => {
+export const fetchCheapParks = (search_id) => (dispatch) => {
     dispatch(cheapParksLoading(true));
 
-    return fetch(baseUrl + 'parks/cheap', { credentials: 'include' })
+    return fetch(baseUrl + 'parks/cheap?search_id=' + search_id, { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -116,10 +116,10 @@ export const addCheapParks = (cheap_parks) => ({
 
 
 // fetch near parks list
-export const fetchNearParks = () => (dispatch) => {
+export const fetchNearParks = (search_id) => (dispatch) => {
     dispatch(nearParksLoading(true));
 
-    return fetch(baseUrl + 'parks/near', { credentials: 'include' })
+    return fetch(baseUrl + 'parks/near?search_id=' + search_id, { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -154,10 +154,10 @@ export const addNearParks = (near_parks) => ({
 
 
 // park-status
-export const fetchParkStatus = (park_id) => (dispatch) => {
+export const fetchParkStatus = (park_id, search_id) => (dispatch) => {
     dispatch(parkStatusLoading(true));
 
-    return fetch(baseUrl + 'parks/status/' + park_id, { credentials: 'include' })
+    return fetch(baseUrl + 'parks/status/' + park_id + "?search_id=" + search_id, { credentials: 'include' })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -477,9 +477,8 @@ export const Logout = () => (dispatch) => {
 }
 
 // fetch search infomation
-export const fetchSearchInfo = () => (dispatch) => {
-
-    return fetch(baseUrl + 'parks/search')
+export const fetchSearchInfo = (search_id) => (dispatch) => {
+    return fetch(baseUrl + 'parks/search?search_id=' + search_id)
         .then(response => {
             if (response.ok) {
                 return response;

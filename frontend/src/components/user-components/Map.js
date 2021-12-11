@@ -20,13 +20,24 @@ const mapDispatchToProps = dispatch => ({
 function Map(props) {
 
 	const [markers, setMarkers] = React.useState([]);
-
-	const { search_info } = props
+	const [coordinate, setCoordinate] = React.useState({lat: '', lng: ''});
+	const { search_info, selectedPark } = props
 
 	React.useEffect(() => {
 		props.fetchAllParks();
 	}, []);
 
+	React.useEffect(() => {
+		setCoordinate({lat: search_info.lat, lng: search_info.lng});
+	}, [search_info]);
+
+	React.useEffect(() => {
+		markers.map(marker => {
+			if (marker.park_id == selectedPark) {
+				setCoordinate({lat: marker.lat, lng: marker.lng});
+			}
+		})
+	}, [selectedPark])
 	React.useEffect(() => {
 		props.all_parks.parks.map(park =>
 			geocodeByAddress(park.location)
@@ -38,19 +49,20 @@ function Map(props) {
 				.catch(error => console.error('Error', error)));
 	}, [props.all_parks.parks]);
 
-	const handleClickMarker = (event, value) => {
+	const handleClickMarker = (event, value, lat, lng) => {
 		props.setSelectedPark(value);
+		setCoordinate({lat: lat, lng: lng});
 	}
 
 	return (
 		<div>
 			<GoogleMap
 				defaultZoom={15}
-				center={{ lat: search_info.lat, lng: search_info.lng }}
+				center={{ lat: coordinate.lat, lng: coordinate.lng }}
 			>
 				{markers.map((marker) => {
 					return (
-						<Marker position={{ lat: marker.lat, lng: marker.lng }} onClick={(event) => handleClickMarker(event, marker.park_id)} />
+						<Marker position={{ lat: marker.lat, lng: marker.lng }} onClick={(event) => handleClickMarker(event, marker.park_id, marker.lat, marker.lng)} />
 					)
 				})}
 			</GoogleMap>
@@ -58,4 +70,4 @@ function Map(props) {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withScriptjs(withGoogleMap(Map)));
+export default connect(mapStateToProps, mapDispatchToProps)(withScriptjs(withGoogleMap(React.memo(Map))));
