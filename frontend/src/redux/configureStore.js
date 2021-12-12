@@ -13,7 +13,7 @@ import { InitialSignup } from './user/signup';
 import { InitialLogin } from './user/login';
 import { AllParks } from './user/all-parks';
 import { SearchInfo } from './user/search-info';
-
+import { FavoriteMark } from './user/favorite-mark';
 
 import { UserList } from './admin/user-list';
 import { OwnerList } from './admin/owner-list';
@@ -21,8 +21,16 @@ import { ParkList } from './admin/park-list';
 import { UserChart } from './admin/user-chart';
 import { RatingChart } from './admin/rating-chart';
 import { TransChart } from './admin/trans-chart';
-import { FavoriteMark } from './user/favorite-mark';
 
+import { LoveParks } from './account/love-parks';
+import { OrderParks } from './account/order-parks';
+import { HistoryParks } from './account/history-parks';
+import { InfoUser } from './account/info-user';
+import { InitialChangInfo } from './account/change-info';
+import { InitialDeleteUser} from './account/delete-user';
+import { InitialDeleteLovepark } from './account/delete-lovepark';
+import { InitialDeleteHistorypark } from './account/delete-historypark';
+import { InitialDeleteOrderpark } from './account/delete-orderpark';
 
 export const ConfigureStore = () => {
     const store = createStore(
@@ -44,11 +52,20 @@ export const ConfigureStore = () => {
             rating_chart: RatingChart,
             trans_chart: TransChart,
             
-            
+            love_parks: LoveParks,
+            order_parks: OrderParks,
+            history_parks: HistoryParks,
+            info_user: InfoUser,
+
             form: formReducer,
             ...createForms({
                 signup: InitialSignup,
-                login: InitialLogin
+                login: InitialLogin,
+                changeinfo: InitialChangInfo,
+                deleteUser: InitialDeleteUser,
+                deleteLovepark: InitialDeleteLovepark,
+                deleteHistorypark: InitialDeleteHistorypark,
+                deleteOrderpark: InitialDeleteOrderpark
             })
         }),
         applyMiddleware(thunk, logger)

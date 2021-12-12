@@ -10,9 +10,9 @@ accountRouter.use(express.json());
 
 //Fetch User Info
 accountRouter.route('/info')
-    .get(authenticate.verifyUser, (req, res, next) => {
+    .get(authenticate.verifyUserOrOwner, (req, res, next) => {
         let id = authenticate.getAccountId(req);
-        dbConnect.query("SELECT username, firstname, lastname, address, phone, email, (SELECT isActivated FROM user WHERE user_id = id) AS isActivated"
+        dbConnect.query("SELECT username, firstname, lastname, address, phone, email, (SELECT isactivated FROM user WHERE user_id = id) AS isActivated"
             + " FROM account WHERE id = " + id + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then(result => {
@@ -22,7 +22,7 @@ accountRouter.route('/info')
         }, (err) => next(err))
             .catch(err => next(err));
     })
-    .put(authenticate.verifyUser, (req, res, next) => {
+    .put(authenticate.verifyUserOrOwner, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
         let infoObj = req.body;
         models.Account.update(infoObj, {
@@ -166,7 +166,7 @@ accountRouter.route('/favorite/:flistid')
 accountRouter.route('/pending')
     .get(authenticate.verifyUser, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
-        dbConnect.query("SELECT pe.pending_id, p.name, p.location, p.description, p.price, pe.time_start, (SELECT phone FROM account WHERE id = p.own_id) AS phone, "
+        dbConnect.query("SELECT pe.pending_id, p.name, p.location, p.description, p.price, pe.time_start, pe.status, (SELECT phone FROM account WHERE id = p.own_id) AS phone, "
             + "(SELECT email FROM account WHERE id = p.own_id) AS email, "
             + "(SELECT AVG(rating) FROM comment WHERE rela_id = pu.rela_id) AS rating FROM pending pe JOIN park_user pu ON pe.rela_id = pu.rela_id  "
             + "JOIN park p ON pu.park_id = p.park_id WHERE pu.user_id = " + user_id + ";", {

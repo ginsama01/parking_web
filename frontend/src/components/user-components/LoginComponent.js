@@ -4,11 +4,14 @@ import { Button, Label, Row, Col } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { postLogin } from "../../redux/UserActionCreators";
 import { connect } from "react-redux";
+import { fetchInfoUser} from "../../redux/AccountActionCreators";
+import { withRouter } from 'react-router-dom'
 
 const required = (val) => val && val.length;
 
 const mapDispatchToProps = dispatch => ({
     postLogin: (username, password) => dispatch(postLogin(username, password)),
+    fetchInfoUser: () => dispatch(fetchInfoUser())
 });
 
 class Login extends Component {
@@ -16,8 +19,12 @@ class Login extends Component {
         super(props);
     }
 
-    handleSubmit(values) {
-        this.props.postLogin(values.username, values.password);
+    async handleSubmit(values) {
+        var result = await this.props.postLogin(values.username, values.password);
+        if (result) {
+            await this.props.fetchInfoUser();
+            this.props.history.push('/');
+        }
     }
 
     render() {
@@ -85,4 +92,4 @@ class Login extends Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(Login);
+export default withRouter(connect(null, mapDispatchToProps)(Login));

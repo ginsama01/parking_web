@@ -33,9 +33,11 @@ function Info(props) {
                 </Link>
             }
             {login && sessionStorage.getItem('role') == 'user' &&
-                <Button outline onClick={props.Logout}>
-                    <span className="fa fa-sign-in fa-lg"></span> Đăng xuất
-                </Button>
+                <Link to='/account/info'>
+                    <Button outline>
+                        <span className="fa fa-sign-in fa-lg"></span> Quản lý tài khoản
+                    </Button>
+                </Link>
             }
             {login && sessionStorage.getItem('role') == 'admin' &&
                 <Link to='/admin/dashboard'>

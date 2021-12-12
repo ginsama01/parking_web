@@ -431,7 +431,6 @@ export const postLogin = (username, password) => (dispatch) => {
             const event = new Event('storagechange');
             window.dispatchEvent(event);
             alert('Đăng nhập thành công');
-            window.location.href = '/';
             return user;
         })
         .catch(error => {
@@ -471,7 +470,6 @@ export const Logout = () => (dispatch) => {
             sessionStorage.removeItem('role');
             const event = new Event('storagechange');
             window.dispatchEvent(event);
-            window.location.href = '/'
         })
         .catch(error => { console.log('post user', error.message); alert('Your account could not be posted\nError: ' + error.message); });
 }

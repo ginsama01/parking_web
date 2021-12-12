@@ -111,6 +111,40 @@ exports.verifyOwner = (req, res, next) => {
     }
 }
 
+exports.verifyUserOrOwner = (req, res, next) => {
+    if (!req.signedCookies.token) {
+        res.statusCode = 401;
+        res.json({message: 'Bạn chưa đăng nhập tài khoản chủ bãi đỗ hoặc tài khoản người dùng'});
+    }
+    else {
+        var token = req.signedCookies.token;
+        try {
+            var decode = jwt.verify(token, config.secretKey).id;
+        } catch(error) {
+            res.statusCode = 401;
+            res.json({message: 'Bạn chưa đăng nhập tài khoản chủ bãi đỗ hoặc tài khoản người dùng'});
+        }
+        dbConnect.query("SELECT * FROM owner WHERE own_id = '" + decode +"';", {
+            type: dbConnect.QueryTypes.SELECT
+        }) .then((result) => {
+            if (result.length == 0) {
+                dbConnect.query("SELECT * FROM user WHERE user_id = " + decode + ";", {
+                    type: dbConnect.QueryTypes.SELECT
+                }).then(result => {
+                    if (result.length == 0) {
+                        res.statusCode = 401;
+                        res.json({message: 'Bạn chưa đăng nhập tài khoản chủ bãi đỗ hoặc tài khoản người dùng'});
+                    } else {
+                        next();
+                    }
+                })
+                
+            } else {
+                return next();
+            }
+        })
+    }
+}
 exports.verifyAdmin = (req, res, next) => {
     if (!req.signedCookies.token) {
         res.statusCode = 401;

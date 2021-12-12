@@ -4,6 +4,7 @@ import Header from "./HeaderComponent";
 import Footer from "./FooterComponent";
 import MainAdmin from "./admin-components/MainAdminComponent";
 import MainUser from "./user-components/MainUserComponent";
+import MainAccountComponent from "./account-components/MainAccountComponent";
 
 class Main extends Component {
 
@@ -18,7 +19,8 @@ class Main extends Component {
                 <Switch>
                     <Route path="/admin"><MainAdmin /></Route>
                     <Route path="/user"><MainUser /></Route>
-                    <Redirect to="/admin" />
+                    <Route path="/account"><MainAccountComponent /></Route>
+                    <Redirect to="/user/start" />
                 </Switch>
                 <Footer />
             </div>
