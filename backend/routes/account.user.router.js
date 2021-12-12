@@ -10,7 +10,7 @@ accountRouter.use(express.json());
 
 //Fetch User Info
 accountRouter.route('/info')
-    .get(authenticate.verifyUser, (req, res, next) => {
+    .get(authenticate.verifyUserOrOwner, (req, res, next) => {
         let id = authenticate.getAccountId(req);
         dbConnect.query("SELECT username, firstname, lastname, address, phone, email, (SELECT isactivated FROM user WHERE user_id = id) AS isActivated"
             + " FROM account WHERE id = " + id + ";", {
@@ -22,10 +22,9 @@ accountRouter.route('/info')
         }, (err) => next(err))
             .catch(err => next(err));
     })
-    .put(authenticate.verifyUser, (req, res, next) => {
+    .put(authenticate.verifyUserOrOwner, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
         let infoObj = req.body;
-        console.log(infoObj);
         models.Account.update(infoObj, {
             where: {
                 id: user_id
@@ -39,9 +38,8 @@ accountRouter.route('/info')
     })
     .delete(authenticate.verifyUser, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
-        //models.Account.delete
+        
     })
-    
 
 //Fetch Parking History
 accountRouter.route('/parking')
@@ -137,7 +135,6 @@ accountRouter.route('/favorite')
         }
     })
     .delete(authenticate.verifyUser, (req, res, next) => {
-        console.log(req.body);
         models.Favorite.destroy({
             where: {
                 flist_id: req.body.flist_list
@@ -230,7 +227,6 @@ accountRouter.route('/pending')
         }, (err) => next(err))
         .catch(err => next(err));
     })
-
 
 accountRouter.route('/pending/:pendingid')
     .delete(authenticate.verifyUser, (req, res, next) => {

@@ -19,6 +19,10 @@ const Search = dbConnect.define('search', {
     },
     lng: {
         type: DataTypes.FLOAT
+    },
+    parks: {
+        type: DataTypes.JSON,
+        allowNull: false
     }
 }, {
     freezeTableName: true

@@ -30,9 +30,22 @@ parkRouter.route('/')
 
 parkRouter.route('/search')
     .get((req, res, next) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json({ address: address, lat: lat, lng: lng, timein: timein })
+        if (req.query.search_id == 'null') {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({ address: '', lat: '', lng: '', timein: '' })
+        } else {
+            dbConnect.query("SELECT address, lat, lng, timein FROM search WHERE search_id = " + req.query.search_id + ";", {
+                type: dbConnect.QueryTypes.SELECT
+            }).then(result => {
+                var search = result[0];
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({ address: search.address, lat: search.lat, lng: search.lng, timein: search.timein })
+            }, err => next(err))
+                .catch(err => next(err));
+        }
+
     })
     .post((req, res, next) => {
         if (!req.body.address) {
@@ -44,12 +57,11 @@ parkRouter.route('/search')
             res.setHeader('Content-Type', 'application/json');
             res.json({ message: 'Bạn chưa nhập thời gian' });
         } else {
+            console.log(req.body);
             address = req.body.address.name;
             timein = req.body.timein;
             lat = req.body.address.location.lat;
             lng = req.body.address.location.lng;
-            console.log(timein);
-            //models.Search.create({address: address, timein: timein, lat: lat, lng: lng});
             dbConnect.query("SELECT park_id AS id, name, image_url AS image, price, location, (SELECT AVG(rating) FROM comment WHERE rela_id IN " +
                 "(SELECT rela_id FROM park_user WHERE park_id = park.park_id)) AS rate, (SELECT COUNT(rating) FROM comment WHERE" +
                 " rela_id IN (SELECT rela_id FROM park_user WHERE park_id = park.park_id)) AS numOfRate FROM park", {
@@ -75,9 +87,14 @@ parkRouter.route('/search')
                             if (Number(parkObj[i]['distance'].slice(0, -3)) > 10)
                                 parkObj.splice(i, 1);
                         }
-                        res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json({success: true});
+               
+                        models.Search.create({ address: address, timein: timein, lat: lat, lng: lng, parks: parkObj })
+                            .then(result => {
+                                res.statusCode = 200;
+                                res.setHeader('Content-Type', 'application/json');
+                                res.json({ success: true, search_id: result.dataValues.search_id });
+                            }, err => next(err));
+
                     }, (err) => next(err))
                     .catch(err => next(err));
             }, (err) => next(err))
@@ -85,31 +102,65 @@ parkRouter.route('/search')
         }
     });
 
-
 parkRouter.route('/best')
     .get((req, res, next) => {
-        let bestPark = parkObj;
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(bestPark.sort(sortByRate));
+        if (req.query.search_id == 'null') {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json([]);
+        } else {
+            dbConnect.query("SELECT parks FROM search WHERE search_id = " + req.query.search_id + ";", {
+                type: dbConnect.QueryTypes.SELECT
+            }).then(result => {
+                var bestPark = eval(result[0].parks);
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(bestPark.sort(sortByRate));
+            }, err => next(err))
+            .catch(err => next(err));
+        }
     });
 
 
 parkRouter.route('/cheap')
     .get((req, res, next) => {
-        let cheapPark = parkObj;
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(cheapPark.sort(sortByPrice));
+        if (req.query.search_id == 'null') {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json([]);
+        } else {
+            dbConnect.query("SELECT parks FROM search WHERE search_id = " + req.query.search_id + ";", {
+                type: dbConnect.QueryTypes.SELECT
+            }).then(result => {
+                var cheapPark = eval(result[0].parks);
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(cheapPark.sort(sortByPrice));
+            }, err => next(err))
+            .catch(err => next(err));
+        }
+        
     });
 
 
 parkRouter.route('/near')
     .get((req, res, next) => {
-        let nearPark = parkObj;
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(nearPark.sort(sortByDistance));
+        if (req.query.search_id == 'null') {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json([]);
+        } else {
+            dbConnect.query("SELECT parks FROM search WHERE search_id = " + req.query.search_id + ";", {
+                type: dbConnect.QueryTypes.SELECT
+            }).then(result => {
+                var nearPark = eval(result[0].parks);
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(nearPark.sort(sortByDistance));
+            }, err => next(err))
+            .catch(err => next(err));
+        }
+        
     });
 
 parkRouter.route('/mark/:parkId')
@@ -132,8 +183,9 @@ parkRouter.route('/mark/:parkId')
             }
         }
     })
+
 parkRouter.route('/status/:parkId')
-    .get((req, res, next) => {
+    .get(async (req, res, next) => {
         dbConnect.query("SELECT park_id, name, price, location, total_space AS totalSpace, total_space - total_in"
             + " AS totalFreeSpace, open_time AS openTime FROM park WHERE park_id = " + req.params.parkId + ";", {
             type: dbConnect.QueryTypes.SELECT
@@ -164,11 +216,19 @@ parkRouter.route('/status/:parkId')
                 }
                 park['isOpen'] = startBool && endBool;
             }
-            for (let i = 0; i < parkObj.length; ++i) {
-                if (parkObj[i]['id'] == park['park_id']) {
-                    park['distance'] = parkObj[i]['distance'];
-                    break;
-                }
+            // for (let i = 0; i < parkObj.length; ++i) {
+            //     if (parkObj[i]['id'] == park['park_id']) {
+            //         park['distance'] = parkObj[i]['distance'];
+            //         break;
+            //     }
+            // }
+            if (req.query.search_id == 'null') {
+                park['distance'] = '';
+            } else {
+                var address = await dbConnect.query("SELECT address FROM search WHERE search_id = " + req.query.search_id + ";", {
+                    type: dbConnect.QueryTypes.SELECT
+                });
+                park['distance'] = await calDistance(address[0].address, park.location);
             }
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');

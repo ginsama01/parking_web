@@ -20,6 +20,24 @@ accountRouter.route('/userinfo')
         }, (err) => next(err))
         .catch(err => next(err))
     })
+    .delete(authenticate.verifyAdmin, (req, res, next) => {
+        console.log(req.body);
+        models.User.destroy({
+            where: {
+                user_id: req.body.users_delete
+            }
+        }).then(() => {
+            models.Account.destroy({
+                where: {
+                    id: req.body.users_delete
+                }
+            }).then(() => {
+                res.statusCode = 200;
+                res.json({sucess: true});
+            }, err => next(err))
+        }, err => next(err))
+        .catch(err => next(err));  
+    })
 
 accountRouter.route('/ownerinfo')
     .get(authenticate.verifyAdmin, (req, res, next) => {
@@ -48,6 +66,24 @@ accountRouter.route('/ownerinfo')
             .catch(err => next(err));
         }, (err) => next(err))
         .catch(err => next(err))
+    })
+    .delete(authenticate.verifyAdmin, (req, res, next) => {
+        console.log(req.body);
+        models.Owner.destroy({
+            where: {
+                own_id: req.body.owners_delete
+            }
+        }).then(() => {
+            models.Account.destroy({
+                where: {
+                    id: req.body.owners_delete
+                }
+            }).then(() => {
+                res.statusCode = 200;
+                res.json({sucess: true});
+            }, err => next(err))
+        }, err => next(err))
+        .catch(err => next(err));  
     })
     
 module.exports = accountRouter;
