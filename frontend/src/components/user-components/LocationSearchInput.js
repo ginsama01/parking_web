@@ -55,15 +55,13 @@ export const LocationSearchInput = props => {
         </div>
     );
 
-    const {
-        input: { value }
-    } = props;
+    const { input: { value }, defaultValue} = props;
 
     return (
         <PlacesAutocomplete
             onChange={handleChange}
             onSelect={handleSelect}
-            value={value ? value.name : ""}
+            value={ value ? value.name : defaultValue}
         >
             {SuggestionsList}
         </PlacesAutocomplete>

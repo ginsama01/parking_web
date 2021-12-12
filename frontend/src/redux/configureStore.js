@@ -3,6 +3,8 @@ import thunk from 'redux-thunk';
 import logger from "redux-logger";
 import { reducer as formReducer } from 'redux-form';
 import { createForms } from 'react-redux-form';
+
+
 import { BestParks } from './user/best-parks';
 import { CheapParks } from './user/cheap-parks';
 import { NearParks } from './user/near-parks'
@@ -13,6 +15,7 @@ import { InitialSignup } from './user/signup';
 import { InitialLogin } from './user/login';
 import { AllParks } from './user/all-parks';
 import { SearchInfo } from './user/search-info';
+import { FavoriteMark } from './user/favorite-mark';
 
 
 import { UserList } from './admin/user-list';
@@ -21,12 +24,20 @@ import { ParkList } from './admin/park-list';
 import { UserChart } from './admin/user-chart';
 import { RatingChart } from './admin/rating-chart';
 import { TransChart } from './admin/trans-chart';
-import { FavoriteMark } from './user/favorite-mark';
 
+
+import { OwnerParks } from './owner/owner-parks';
+import { OwnerParkInfo } from './owner/park-info';
+import { OwnerParkReview } from './owner/park-review';
+
+import { Snackbar } from './snackbar';
 
 export const ConfigureStore = () => {
     const store = createStore(
         combineReducers({
+
+            snackbar: Snackbar,
+
             best_parks: BestParks,
             cheap_parks: CheapParks,
             near_parks: NearParks,
@@ -44,7 +55,10 @@ export const ConfigureStore = () => {
             rating_chart: RatingChart,
             trans_chart: TransChart,
             
-            
+            owner_parks: OwnerParks,
+            owner_park_info: OwnerParkInfo,
+            owner_park_review: OwnerParkReview,
+
             form: formReducer,
             ...createForms({
                 signup: InitialSignup,

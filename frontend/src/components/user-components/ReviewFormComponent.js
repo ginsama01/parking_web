@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import { Field, reduxForm } from "redux-form";
 import { Rating, Stack, TextField } from "@mui/material";
 
-const renderTextField = ({label, input, ...custom}) => (
+const renderTextField = ({ label, input, ...custom }) => (
     <TextField
+        variant="outlined"
         multiline
         rows={4}
-        placeholder={label}
-        sx={{width: '500px'}}
+        label={label}
+        sx={{ width: '500px' }}
         {...input}
         {...custom}
     />
@@ -47,7 +48,7 @@ class RenderCommentForm extends Component {
                         </div>
                     </div>
                     <div style={{ marginLeft: "auto", marginRight: "auto" }}>
-                        <button type="submit" style={{color: "white", backgroundColor: "#2e7d32"}}>Đăng đánh giá</button>
+                        <button type="submit" style={{ color: "white", backgroundColor: "#2e7d32" }}>Đăng đánh giá</button>
                     </div>
                 </Stack>
             </form>

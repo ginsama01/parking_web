@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import { Field, reduxForm } from "redux-form";
 import { Stack, TextField } from "@mui/material";
 
-const renderTextField = ({label, input, ...custom}) => (
+const renderTextField = ({ label, input, ...custom }) => (
     <TextField
+        variant="outlined"
         multiline
         rows={5}
-        placeholder={label}
-        sx={{width: '600px'}}
+        label={label}
+        sx={{ width: '600px' }}
         {...input}
         {...custom}
     />
@@ -32,7 +33,7 @@ class RenderReportForm extends Component {
                         </div>
                     </div>
                     <div style={{ marginLeft: "auto", marginRight: "auto" }}>
-                        <button type="submit" style={{color: "white", backgroundColor: "#ed6c02"}}>Gửi report</button>
+                        <button type="submit" style={{ color: "white", backgroundColor: "#ed6c02" }}>Gửi report</button>
                     </div>
                 </Stack>
             </form>

@@ -6,32 +6,28 @@ import "react-widgets/styles.css";
 import { LocationSearchInput } from "./LocationSearchInput";
 
 
-const renderDateTimePicker = ({ label, input: { onChange, value } }) =>
+const renderDateTimePicker = ({ input: { onChange, value }, defaultValue }) =>
     <DatePicker
         onChange={onChange}
-        value={!value ? null : new Date(value)}
-        placeholder={label}
+        value={ !value ? defaultValue : new Date(value)}
         includeTime
     />
 
 
 function SearchInfoBar(props) {
     const { handleSubmit, search_info } = props;
-    function convertTime(time) {
-        var date = new Date(Date.parse(time));
-        return(date.getHours() + ':' + date.getMinutes() + ', ' + date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear());
-    }
+    
     return (
         <form onSubmit={handleSubmit} className="searchInfoBar">
             <div className="row">
                 <div className="col-6">
-                    <Field name="address" component={LocationSearchInput} label={search_info.address} />
+                    <Field name="address" component={LocationSearchInput} defaultValue={search_info.address} />
                 </div>
                 <div className="col-4">
                     <Field
                         name="timein"
                         component={renderDateTimePicker}
-                        label={convertTime(search_info.timein)}
+                        defaultValue={new Date(Date.parse(search_info.timein))}
                     />
                 </div>
                 <div className="col-2">

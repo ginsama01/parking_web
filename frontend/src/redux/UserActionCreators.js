@@ -1,6 +1,18 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
 
+
+export const setSnackbar = (
+    snackbarOpen,
+    snackbarType = "success",
+    snackbarMessage = ""
+) => ({
+    type: ActionTypes.SET_SNACKBAR,
+    snackbarOpen,
+    snackbarType,
+    snackbarMessage
+});
+
 // get all parks for maker
 export const fetchAllParks = () => (dispatch) => {
     dispatch(allParksLoading(true));
@@ -431,6 +443,7 @@ export const postLogin = (username, password) => (dispatch) => {
             const event = new Event('storagechange');
             window.dispatchEvent(event);
             alert('Đăng nhập thành công');
+            dispatch(setSnackbar(true, "success", "Đăng nhập thành công"));
             window.location.href = '/';
             return user;
         })
@@ -603,7 +616,7 @@ export const postMark = (park_id, isMark) => (dispatch) => {
             else {
                 throw response;
             }
-        }) 
+        })
         .then(response => response.json())
         .then((newMark) => {
             //alert("Thêm vào yêu thích " + JSON.stringify(newMark));
