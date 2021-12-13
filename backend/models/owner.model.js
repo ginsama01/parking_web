@@ -7,12 +7,6 @@ const Owner = dbConnect.define('owner', {
         primaryKey: true,
         allowNull: false,
     },
-    age: {
-        type: DataTypes.INTEGER
-    },
-    ssid: {
-        type: DataTypes.BIGINT(12)
-    },
     isactivated: {
         type: DataTypes.TINYINT,
         allowNull: false
@@ -22,8 +16,8 @@ const Owner = dbConnect.define('owner', {
 });
 
 
-dbConnect.sync().then(() => {
-    console.log('Owner model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Owner model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Owner;

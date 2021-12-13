@@ -1,55 +1,38 @@
 import React, { Component } from "react";
-import Header from './HeaderComponent';
-import Footer from './FooterComponent';
-import SearchInfo from './SearchInfoComponent';
-import { connect } from "react-redux";
-import ParkListTabs from "./ParkListComponent";
-import { fetchParks, postUser, postLogin } from "../redux/ActionCreators";
-import Start from "./StartComponent"
-import { Routes, Route } from 'react-router-dom'
-import Login from "./LoginComponent";
-import Register from "./SignupComponent";
-
-const mapStateToProps = state => {
-    return {
-        parks: state.parks,
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-    fetchParks: () => {dispatch(fetchParks())},
-    postLogin: (username, password) => dispatch(postLogin(username, password)),
-    postUser: (username, password, email, firstname, lastname, type) => dispatch(postUser(username, password, email, firstname, lastname, type))
-});
-
-
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import Header from "./HeaderComponent";
+import Footer from "./FooterComponent";
+import MainAdmin from "./admin-components/MainAdminComponent";
+import MainUser from "./user-components/MainUserComponent";
+import MainAccountComponent from "./account-components/MainAccountComponent";
+import Forgotten from "./authen-components/ForgotPasswordComponent";
+import Login from "./authen-components/LoginComponent";
+import Register from "./authen-components/SignupComponent";
+import Verify from "./authen-components/VerifyComponent";
 class Main extends Component {
 
     constructor(props) {
         super(props);
     }
 
-
-    componentDidMount() {
-        //this.props.fetchParks();
-        //this.props.postUser();
-    }
-
     render() {
         return (
             <div>
                 <Header />
-                {/* <SearchInfo />
-                <ParkListTabs parks={this.props.parks} /> */}
-                <Routes>
-                    <Route path="/login" element={ <Login postLogin = {this.props.postLogin}/>} />
-                    <Route path="/register" element= { <Register postUser = {this.props.postUser}/> } />
-                    
-                </Routes>
+                <Switch>
+                    <Route path="/admin"><MainAdmin /></Route>
+                    <Route path="/user"><MainUser /></Route>
+                    <Route path="/account"><MainAccountComponent /></Route>
+                    <Route path="/login"><Login /></Route>
+                    <Route path="/register"><Register /></Route>
+                    <Route path="/forgotten"><Forgotten /></Route>
+                    <Route path="/verify"><Verify /></Route>
+                    <Redirect to="/user/start" />
+                </Switch>
                 <Footer />
             </div>
         );
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default withRouter(Main);

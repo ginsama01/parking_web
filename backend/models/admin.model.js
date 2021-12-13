@@ -15,8 +15,8 @@ const Admin = dbConnect.define('admin', {
 });
 
 
-dbConnect.sync().then(() => {
-    console.log('Admin model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Admin model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Admin;

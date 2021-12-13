@@ -24,8 +24,8 @@ const Park_User = dbConnect.define('park_user', {
 });
 
 
-dbConnect.sync().then(() => {
-    console.log('Park_User model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Park_User model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Park_User;

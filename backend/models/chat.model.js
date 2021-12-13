@@ -25,8 +25,8 @@ const Chat = dbConnect.define('chat', {
 });
 
 
-dbConnect.sync().then(() => {
-    console.log('Chat model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Chat model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Chat;

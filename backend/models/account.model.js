@@ -23,22 +23,29 @@ const Account = dbConnect.define('account', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     address: {
         type: DataTypes.STRING,
     },
     phone: {
-        type: DataTypes.INTEGER
+        type: DataTypes.STRING
     },
     facebookId: {
+        type: DataTypes.STRING
+    },
+    code: {
         type: DataTypes.STRING
     }
 }, {
     freezeTableName: true
 });
 
-dbConnect.sync().then(() => {
-    console.log('Account model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Account model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Account;
 

@@ -10,6 +10,10 @@ const Favorite = require('./favorite.model');
 const Comment = require('./comment.model');
 const Parking = require('./parking.model');
 const Pending = require('./pending.model');
+const Report = require('./report.model');
+const Banlist = require('./banlist.model');
+const Search = require('./search.model');
+const {dbConnect} = require('../connectDB');
 
 Owner.belongsTo(Account, {
     foreignKey: 'own_id',
@@ -104,6 +108,20 @@ Pending.belongsTo(Park_User, {
     targetKey: 'rela_id'
 });
 
+//Reference between pending and park_user
+Park_User.hasMany(Report, {
+    foreignKey: 'rela_id',
+    sourceKey: 'rela_id'
+});
+Report.belongsTo(Park_User, {
+    foreignKey: 'rela_id',
+    targetKey: 'rela_id'
+});
+
+dbConnect.sync().then(() => {
+    console.log('Database sync ok');
+}).catch(e => console.error(e));
+
 module.exports = {
     Account,
     Admin,
@@ -116,5 +134,8 @@ module.exports = {
     Parking,
     Pending,
     Comment, 
-    Favorite
+    Favorite,
+    Report,
+    Banlist,
+    Search
 }

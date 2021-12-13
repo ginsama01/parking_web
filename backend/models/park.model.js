@@ -12,16 +12,33 @@ const Park = dbConnect.define('park', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     total_space: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    total_in: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    open_time: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    isActivated: {
+        type: DataTypes.TINYINT,
+        allowNull: false,
+        defaultValue: 0
     },
     location: {
         type: DataTypes.STRING,
         allowNull: false
     },
     price: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.INTEGER,
         allowNull: false
     }, 
     hasCamera: {
@@ -51,8 +68,8 @@ const Park = dbConnect.define('park', {
 });
 
 
-dbConnect.sync().then(() => {
-    console.log('Park model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Park model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Park;
