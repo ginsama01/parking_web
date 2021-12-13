@@ -15,7 +15,7 @@ var accountAdminRouter = require('./routes/account.admin.router');
 var accountUserRouter = require('./routes/account.user.router');
 var chartRouter = require('./routes/chart.admin.router');
 var authenRouter = require('./routes/authen.router');
-var uploadRouter = require('./routes/upload.park.image.router');
+var uploadRouter = require('./routes/upload.image.router');
 var config = require('./config');
 const { cors, corsWithOptions } = require('./routes/cors');
 
@@ -27,8 +27,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser(config.cookieKey));
 

@@ -11,11 +11,14 @@ ownRouter.route('/info')
     .get((req, res, next) => {
         //const own_id = authenticate.getAccountId(req);
         const own_id = 3;
-        dbConnect.query("SELECT park_id AS id, name, location, total_space, price, isActivated, hasCamera, hasRoof, allowOvernight, allowBooking, description, open_time "
+        dbConnect.query("SELECT park_id AS id, name, image_url, location, total_space, price, isActivated, hasCamera, hasRoof, allowOvernight, allowBooking, description, open_time "
             + "FROM park WHERE own_id = " + own_id + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then((result) => {
-
+            for (let i = 0; i < result.length; ++i) {
+                result[i]['image'] = result[i]['image'] === null ? '' : result[i]['image'];
+                result[i]['image'] = result[i]['image'].split(',')[0];
+            }
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(result);
@@ -39,7 +42,7 @@ ownRouter.route('/info')
 
 ownRouter.route('/info/:id')
     .get((req, res, next) => {
-        dbConnect.query("SELECT park_id AS id, name, location, total_space, price, hasCamera, hasRoof, allowOvernight, allowBooking, description, open_time "
+        dbConnect.query("SELECT park_id AS id, name, image_url, location, total_space, price, hasCamera, hasRoof, allowOvernight, allowBooking, description, open_time "
             + "FROM park WHERE park_id = " + req.params.id + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then((result) => {
@@ -53,7 +56,9 @@ ownRouter.route('/info/:id')
                 result[0]['open_time'] = result[0]['open_time'].split(' - ')[0];
                 result[0]['allow24h'] = false;
             }
-
+            const images = result[0]['image_url'] === null ? [] : result[0]['image_url'].split(',');
+            result[0]['images'] = [];
+            images.forEach((item) => result[0]['images'].push({ "img": item }));
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(result[0]);

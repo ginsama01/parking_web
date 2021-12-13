@@ -6,5 +6,5 @@ module.exports = {
         clientSecret: 'a81abc197b5da607ee6eb3b2c492f441'
     },
     'cookieKey': '1234-4321',
-    'googlemapKey': 'AIzaSyDFOk5Vvai-PKsIMWPWqJcT23U5zMKaaCQ'
+    'googlemapKey': 'AIzaSyAqvvK78HJ1YKUHXJHk5FuqHHrsrSXygYk'
 }
