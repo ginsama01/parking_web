@@ -13,9 +13,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function AlertDialog(props) {
     const [open, setOpen] = React.useState(false);
-
     const { title, content, label, color, handleAction } = props;
-
+    
     const handleClickOpen = () => {
         setOpen(true);
     };

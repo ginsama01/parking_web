@@ -19,9 +19,8 @@ const mapDispatchToProps = dispatch => ({
 
 function Map(props) {
 
-	const [markers, setMarkers] = React.useState([]);
-
 	const { search_info } = props
+	const [markers, setMarkers] = React.useState([]);
 
 	React.useEffect(() => {
 		props.fetchAllParks();
@@ -46,8 +45,7 @@ function Map(props) {
 		<div>
 			<GoogleMap
 				defaultZoom={15}
-				center={{ lat: search_info.lat, lng: search_info.lng }}
-			>
+				center={{ lat: search_info.lat, lng: search_info.lng }} >
 				{markers.map((marker) => {
 					return (
 						<Marker position={{ lat: marker.lat, lng: marker.lng }} onClick={(event) => handleClickMarker(event, marker.park_id)} />

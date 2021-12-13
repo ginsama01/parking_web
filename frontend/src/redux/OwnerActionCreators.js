@@ -96,7 +96,7 @@ export const pushEditParkInfo = (park_id, name, total_space, location, price, ha
         }
 
         return fetch(baseUrl + 'owner/parks/info/' + park_id, {
-            method: 'PUSH',
+            method: 'PUT',
             body: JSON.stringify(editParkInfo),
             headers: {
                 'Content-Type': 'application/json'
@@ -108,9 +108,7 @@ export const pushEditParkInfo = (park_id, name, total_space, location, price, ha
                     return response;
                 }
                 else {
-                    var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                    error.response = response;
-                    throw error;
+                    throw response;
                 }
             },
                 error => {
@@ -286,3 +284,179 @@ export const addParkReview = (owner_park_info) => ({
     type: ActionTypes.ADD_PARKREVIEW,
     payload: owner_park_info
 });
+
+// fetch park status
+export const fetchParkStatus = (park_id) => (dispatch) => {
+    dispatch(parkStatusLoading(true));
+
+    return fetch(baseUrl + 'owner/parks/status/' + park_id)
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
+        .then(response => response.json())
+        .then(owner_park_status => dispatch(addParkStatus(owner_park_status)))
+        .catch(error => dispatch(parkStatusFailed(error.message)));
+}
+
+export const parkStatusLoading = () => ({
+    type: ActionTypes.PARKSTATUS_LOADING
+});
+
+export const parkStatusFailed = (errmess) => ({
+    type: ActionTypes.PARKSTATUS_FAILED,
+    payload: errmess
+});
+
+export const addParkStatus = (owner_park_info) => ({
+    type: ActionTypes.ADD_PARKSTATUS,
+    payload: owner_park_info
+});
+
+// fetch book list
+export const fetchBookList = (park_id) => (dispatch) => {
+    dispatch(bookListLoading(true));
+
+    return fetch(baseUrl + 'owner/parks/pending/' + park_id)
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
+        .then(response => response.json())
+        .then(book_list => dispatch(addBookList(book_list)))
+        .catch(error => dispatch(bookListFailed(error.message)));
+}
+
+export const bookListLoading = () => ({
+    type: ActionTypes.BOOKLIST_LOADING
+});
+
+export const bookListFailed = (errmess) => ({
+    type: ActionTypes.BOOKLIST_FAILED,
+    payload: errmess
+});
+
+export const addBookList = (book_list) => ({
+    type: ActionTypes.ADD_BOOKLIST,
+    payload: book_list
+});
+
+// owner change park status
+export const postNewStatus = (park_id, value) => (dispatch) => {
+
+    const newStatus = { control: value }
+
+    return fetch(baseUrl + 'owner/parks/status/' + park_id, {
+        method: 'POST',
+        body: JSON.stringify(newStatus),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
+        .then(response => response.json())
+        .then((newStatus) => {
+            return (newStatus);
+        })
+        .catch(error => {
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
+}
+
+// owner verify booking
+export const putBooking = (pending_id) => (dispatch) => {
+
+    return fetch(baseUrl + 'owner/parks/pending/' + pending_id, {
+        method: 'PUT',
+        credentials: 'include'
+    })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
+        .then(response => response.json())
+        .then(() => {
+            alert("verified")
+        })
+        .catch(error => {
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
+}
+
+// owner report booking
+export const deleteBooking = (pending_id) => (dispatch) => {
+
+    return fetch(baseUrl + 'owner/parks/pending/' + pending_id, {
+        method: 'DELETE',
+        credentials: 'include'
+    })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+            error => {
+                var errmess = new Error(error.message);
+                throw errmess;
+            })
+        .then(response => response.json())
+        .then(() => {
+            alert("deleted")
+        })
+        .catch(error => {
+            error.json().then(body => {
+                alert(body.message);
+            })
+        });
+}

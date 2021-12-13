@@ -43,7 +43,7 @@ function NewParkInfo(props) {
             postImage={props.postParkImages}
             name={props.name}
             total_space={props.total_space}
-            location={String(props.location)}
+            location={JSON.stringify(props.location)}
             price={props.price}
             hasCamera={Boolean(props.hasCamera)}
             hasRoof={Boolean(props.hasRoof)}

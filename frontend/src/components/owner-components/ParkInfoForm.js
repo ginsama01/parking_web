@@ -8,16 +8,29 @@ import "react-widgets/styles.css";
 import { useHistory } from "react-router-dom";
 import { baseUrl } from '../../shared/baseUrl';
 
-const renderTextField = ({ label, input, ...custom }) => (
-    <TextField
-        variant="outlined"
-        label={label}
-        sx={{ width: '100%' }}
-        {...input}
-        {...custom}
-    />
+// xác thực một số trường cần thiết
+const required = value => value ? undefined : <p style={{color: "red"}}>Cần thiết</p>
+const maxLength = max => value =>
+    value && value.length > max ? <p style={{color: "red"}}>Tối đa {max} ký tự</p> : undefined
+const maxLength30 = maxLength(30)
+const number = value => value && isNaN(Number(value)) ? <p style={{color: "red"}}>Trường này là một số</p> : undefined
+
+// text field
+const renderTextField = ({ label, input, type, meta: { touched, error, warning }, ...custom }) => (
+    <div>
+        <TextField
+            variant="outlined"
+            label={label}
+            type={type}
+            sx={{ width: '100%' }}
+            {...input}
+            {...custom}
+        />
+        {touched && ((error && <span>{error}</span>) || (warning && <span>{warning}</span>))}
+    </div>
 )
 
+// text field for description
 const renderMultilineTextField = ({ label, input, ...custom }) => (
     <TextField
         variant="outlined"
@@ -30,6 +43,7 @@ const renderMultilineTextField = ({ label, input, ...custom }) => (
     />
 )
 
+// check box
 const renderCheckbox = ({ input, label }) => (
     <div>
         <FormControlLabel
@@ -45,6 +59,7 @@ const renderCheckbox = ({ input, label }) => (
     </div>
 )
 
+// time picker for open time and close time
 const renderTimePicker = ({ input: { onChange, value }, showTime, disabled }) =>
     <TimeInput
         onChange={onChange}
@@ -56,10 +71,8 @@ const renderTimePicker = ({ input: { onChange, value }, showTime, disabled }) =>
 
 function ParkInfoForm(props) {
 
-    const { typeForm, titleForm, postInfo, postImage, initialValues, is24hSelected } = props;
-
+    const { is24hSelected, typeForm, titleForm, postInfo, postImage, initialValues, iniImages, handleRemoveIniImages, submitting } = props;
     const history = useHistory();
-
     const paperStyle = {
         padding: 20,
         width: '800px',
@@ -70,26 +83,22 @@ function ParkInfoForm(props) {
     }
     const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
     const [images, setImages] = useState([]);
-    const [oldImages, setOldImages] = useState(initialValues.images);
-    const [removeImages, setRemoveImages] = useState([]);
 
-    // action delete an image from initial images
+    // xóa một bức ảnh ở trường những ảnh đã có sẵn
     const handleRemoveIni = (image) => {
-        let newOldImages = [...oldImages];
-        newOldImages.splice(newOldImages.indexOf(image), 1);
-        setOldImages([...newOldImages]);
+        handleRemoveIniImages(image);
     }
 
-    // action delete an preview image
+    // xóa một bức ảnh ở trường những tấm ảnh mới thêm vào
     const handleRemove = (image) => {
-        removeImages.push(image);
         let newImage = [...images];
         newImage.splice(images.indexOf(image), 1);
         setImages([...newImage]);
+        console.log(images);
     }
 
+    // action submit for new park form và edit info form
     async function handleSubmit(event) {
-        // action submit for new park form và edit info form
         if (typeForm == "Thêm bãi đỗ") {
             event.preventDefault();
             var success = await postInfo(props.name, props.total_space, props.location, props.price, props.hasCamera, props.hasRoof, props.allowOvernight, props.allowBooking, props.description, props.open_time, props.close_time, props.allow24h);
@@ -99,14 +108,13 @@ function ParkInfoForm(props) {
             }
         } else {
             event.preventDefault();
-            var success = await postInfo(props.name, props.total_space, props.location, props.price, props.hasCamera, props.hasRoof, props.allowOvernight, props.allowBooking, props.description, props.open_time, props.close_time, props.allow24h, removeImages);
-            if (success) {
-                postImage(success.park_id, images);
-                history.push("/owner/myparks");
-            }
+            postInfo(props.id, props.name, props.total_space, props.location, props.price, props.hasCamera, props.hasRoof, props.allowOvernight, props.allowBooking, props.description, props.open_time, props.close_time, props.allow24h, props.removeImages);
+            postImage(props.id, images);
+            history.push("/owner/myparks");
         }
     }
 
+    // dropzone --> trường thêm file ảnh
     const renderDropzoneInput = (field) => {
         return (
             <div>
@@ -160,11 +168,11 @@ function ParkInfoForm(props) {
                     <span className="error">{field.meta.error}</span>}
 
                 {/* Hiển thị hình ảnh đã cũ của bãi đỗ đối với form chỉnh sửa */}
-                {typeForm == "Lưu thông tin" && oldImages && Array.isArray(oldImages) && (
+                {typeForm == "Lưu thông tin" && iniImages && Array.isArray(iniImages) && (
                     <Grid container spacing={3}>
-                        {oldImages.map((image) =>
+                        {iniImages.map((image) =>
                             <Grid item xs={4}>
-                                <img width='150' height='150' src={baseUrl + image} />
+                                <img width='150' height='150' src={baseUrl + image.img} />
                                 <IconButton color="success" aria-label="remove" size="large"
                                     style={{ marginBottom: "120px", marginLeft: "-20px" }}
                                     onClick={() => handleRemoveIni(image)} >
@@ -202,26 +210,26 @@ function ParkInfoForm(props) {
                         <label>Tên bãi đỗ</label>
                     </Grid>
                     <Grid item xs={10}>
-                        <Field name="name" component={renderTextField} label="Tên bãi đỗ" />
+                        <Field name="name" component={renderTextField} label="Tên bãi đỗ" validate={[ required, maxLength30 ]} />
                     </Grid>
                     <Grid item xs={2}>
                         <label>Địa chỉ</label>
                     </Grid>
                     <Grid item xs={10}>
-                        {typeForm == "Lưu thông tin" && <Field name="location" component={LocationSearchInput} defaultValue={initialValues.location} />}
-                        {typeForm == "Thêm bãi đỗ" && <Field name="location" component={LocationSearchInput} label="Vị trí bãi đỗ" />}
+                        {typeForm == "Lưu thông tin" && <Field name="location" component={LocationSearchInput} defaultValue={initialValues.location} validate={ required } />}
+                        {typeForm == "Thêm bãi đỗ" && <Field name="location" component={LocationSearchInput} label="Vị trí bãi đỗ" validate={ required } />}
                     </Grid>
                     <Grid item xs={2}>
                         <label>Sức chứa</label>
                     </Grid>
                     <Grid item xs={4}>
-                        <Field name="total_space" component={renderTextField} label='Sức chứa (xe)' />
+                        <Field name="total_space" component={renderTextField} label='Sức chứa (xe)' validate={[ required, number ]} />
                     </Grid>
                     <Grid item xs={1}>
                         <label>Giá</label>
                     </Grid>
                     <Grid item xs={5}>
-                        <Field name="price" component={renderTextField} label='Giá (VNĐ)' />
+                        <Field name="price" component={renderTextField} label='Giá (VNĐ)' validate={[ required, number ]} />
                     </Grid>
                     <Grid item xs={2}>
                         <label>Cơ sở vật chất</label>
@@ -238,7 +246,6 @@ function ParkInfoForm(props) {
                     <Grid item xs={3}>
                         <Field name="allowOvernight" component={renderCheckbox} label="Gửi qua đêm" />
                     </Grid>
-
                     <Grid item xs={2}>
                         <label>Mô tả thêm</label>
                     </Grid>
@@ -267,14 +274,11 @@ function ParkInfoForm(props) {
                         <label>Hình ảnh</label>
                     </Grid>
                     <Grid item xs={10}>
-                        <Field
-                            name="images"
-                            component={renderDropzoneInput}
-                        />
+                        <Field name="images" component={renderDropzoneInput} />
                     </Grid>
                     <Grid item xs={5}></Grid>
                     <Grid item xs={3} style={{ marginTop: "20px" }}>
-                        <button type="submit" style={{ color: "white", backgroundColor: "#2e7d32" }}>{typeForm}</button>
+                        <button type="submit" disabled={submitting} style={{ color: "white", backgroundColor: "#2e7d32" }}>{typeForm}</button>
                     </Grid>
                 </Grid>
             </Paper>

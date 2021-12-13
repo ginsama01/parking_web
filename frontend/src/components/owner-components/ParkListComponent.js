@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -10,13 +10,17 @@ import { connect } from 'react-redux';
 import { fetchOwnerParks, deletePark } from "../../redux/OwnerActionCreators";
 import { useHistory } from "react-router-dom";
 import AlertDialog from '../DialogComponent';
+import { baseUrl } from '../../shared/baseUrl';
 
 function ParkCard(props) {
 
-    const { park, deletePark } = props;
-
+    const { park, deletePark, setIsChange } = props;
+    const history = useHistory();
+    
+    // xóa một bãi đỗ
     const handleSubmitDelete = (event) => {
-        deletePark(park.id)
+        deletePark(park.id);
+        setIsChange(true)
     }
 
     return (
@@ -27,7 +31,7 @@ function ParkCard(props) {
             <CardMedia
                 component="img"
                 height="194"
-                image="../../../public/assets/logo192.png"
+                src={baseUrl + park.image}
                 alt={park.name}
             />
             <CardContent>
@@ -39,13 +43,16 @@ function ParkCard(props) {
                 <Stack spacing={2} direction="row">
                     <AlertDialog
                         title={"Chắc chắn muốn xóa"}
-                        content={"Bạn chắc chắn muốn xóa bãi đỗ ID: " + park.id + " " +  park.name}
+                        content={"Bạn chắc chắn muốn xóa bãi đỗ ID: " + park.id + " " + park.name}
                         label={"Xóa"}
                         color={"warning"}
                         handleAction={handleSubmitDelete} />
-                    {/* <Button variant="contained" color="warning">Xóa</Button> */}
-                    <Button variant="contained" color="info">Xem</Button>
-                    <Button variant="contained" color="success">Quản lý</Button>
+                    <Button variant="contained" color="info"
+                        onClick={() => history.push("/owner/info/" + park.id)}>Xem</Button>
+                    {park.isActivated == 1 &&
+                        <Button variant="contained" color="success"
+                            onClick={() => history.push("/owner/status/" + park.id)}>Quản lý</Button>}
+                    {park.isActivated == 0 && <Button variant="contained" color="error" disableElevation>Đang xác minh</Button>}
                 </Stack>
             </CardActions>
         </Card>
@@ -66,15 +73,23 @@ const mapDispatchToProps = dispatch => ({
 function OwnerParks(props) {
 
     const history = useHistory();
+    const [isChange, setIsChange] = useState(false);
 
-    React.useEffect(() => {
+    useEffect(() => {
         props.fetchOwnerParks()
     }, [])
 
+    useEffect(() => {
+        if (isChange) {
+            props.fetchOwnerParks();
+            setIsChange(false);
+        }
+    })
+
     return (
         <div>
-            <Grid align='center' style={{ margin: "20px 0px" }}>
-                <h1>Danh sách bãi đỗ</h1>
+            <Grid align='center' style={{ color: "#22577E", marginBottom: "30px", marginTop: "30px" }}>
+                <h1 style={{ fontWeight: "bolder" }}>Bãi đỗ của tôi</h1>
             </Grid>
             <div style={{ margin: "3% 0% 3% 3%" }}>
                 {props.owner_parks.owner_parks.length > 0 &&
@@ -94,7 +109,8 @@ function OwnerParks(props) {
                                 <Grid item>
                                     <ParkCard
                                         park={park}
-                                        deletePark={props.deletePark} />
+                                        deletePark={props.deletePark}
+                                        setIsChange={setIsChange} />
                                 </Grid>
                             );
                         })}</Grid>}

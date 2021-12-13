@@ -3,7 +3,6 @@ import { Rating, CardMedia, CardContent, Box, Card, ButtonBase, CircularProgress
 import { baseUrl } from '../../shared/baseUrl';
 import { Media, } from "reactstrap";
 
-
 function RenderParkCard({ park, selectedPark, setSelectedPark }) {
     const handleSelect = (id) => {
         setSelectedPark(id);

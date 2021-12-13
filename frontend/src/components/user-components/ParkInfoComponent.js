@@ -2,64 +2,15 @@ import { ImageList, ImageListItem, CircularProgress } from "@mui/material";
 import React from "react";
 import { baseUrl } from "../../shared/baseUrl";
 
-
-function CameraIcon({ hasCamera }) {
-    if (hasCamera) {
-        return (
-            <div><i class="fas fa-video"></i> CCTV</div>
-        );
-    } else {
-        return (
-            <></>
-        );
-    }
-}
-
-function RoofIcon({ hasRoof }) {
-    if (hasRoof) {
-        return (
-            <div><span class="iconify" data-icon="bx:bxs-car-garage"></span> Mái che</div>
-        );
-    } else {
-        return (
-            <></>
-        );
-    }
-}
-
-function ReserveIcon({ allowReserve }) {
-    if (allowReserve) {
-        return (
-            <div><span class="iconify" data-icon="cib:hatena-bookmark"></span> Đặt trước</div>
-        );
-    } else {
-        return (
-            <></>
-        );
-    }
-}
-
-function OvernightIcon({ allowOvernight }) {
-    if (allowOvernight) {
-        return (
-            <div><i class="fas fa-moon"></i> Gửi qua đêm</div>
-        );
-    } else {
-        return (
-            <></>
-        );
-    }
-}
-
 function RenderParkInfo({ park_info }) {
     if (park_info != null) {
         return (
             <div>
                 <div style={{ paddingTop: "15px", display: "inline-flex" }}>
-                    <div style={{ marginRight: "10px" }}><CameraIcon hasCamera={park_info.hasCamera} /></div>
-                    <div style={{ marginRight: "10px" }}><RoofIcon hasRoof={park_info.hasRoof} /></div>
-                    <div style={{ marginRight: "10px" }}><ReserveIcon allowReserve={park_info.allowReserve} /></div>
-                    <div><OvernightIcon allowOvernight={park_info.allowOvernight} /></div>
+                    {park_info.hasCamera == 1 && <div style={{ marginRight: "10px" }}><i class="fas fa-video"></i> CCTV</div>}
+                    {park_info.hasRoof == 1 && <div style={{ marginRight: "10px" }}><span class="iconify" data-icon="bx:bxs-car-garage"></span> Mái che</div>}
+                    {park_info.allowBooking == 1 && <div style={{ marginRight: "10px" }}><span class="iconify" data-icon="cib:hatena-bookmark"></span> Đặt trước</div>}
+                    {park_info.allowOvernight == 1 && <div><i class="fas fa-moon"></i> Gửi qua đêm</div>}
                 </div>
                 <div style={{ marginTop: "20px" }}>
                     <p>{park_info.description}</p>

@@ -2,7 +2,6 @@ import { Button, Grid, styled, Paper, CircularProgress, Stack, Dialog } from "@m
 import React from "react";
 import AlertDialog from "../DialogComponent";
 
-
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
     padding: theme.spacing(1),
@@ -21,7 +20,6 @@ function RenderOpenTime({ isOpen, openTime }) {
         );
     }
 }
-
 
 function RenderParkStatus(props) {
     const { park_status, postBooking, search_info } = props;
@@ -84,14 +82,14 @@ function RenderParkStatus(props) {
 }
 
 const ParkStatus = (props) => {
-    if (props.park_status.isLoading) {
+    if (props.isLoading) {
         return (
             <div>
                 <CircularProgress color="success" />
             </div>
         );
     }
-    else if (props.park_status.errMess) {
+    else if (props.errMess) {
         return (
             <div>
                 <h4>{props.errMess}</h4>

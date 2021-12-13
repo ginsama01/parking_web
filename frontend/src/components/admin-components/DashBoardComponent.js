@@ -1,6 +1,5 @@
 import { useEffect } from "react"
 import SideBar from "./SideBarComponent";
-import { Paper } from "@mui/material";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -13,7 +12,7 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
-import { Pie, Bar, Doughnut } from 'react-chartjs-2';
+import { Bar, Doughnut } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import { fetchTransChart, fetchUserChart, fetchRatingChart } from '../../redux/AdminActionCreators';
 

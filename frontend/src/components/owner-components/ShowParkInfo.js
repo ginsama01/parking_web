@@ -2,13 +2,15 @@ import { connect } from "react-redux";
 import { fetchOwnerParkInfo, fetchParkReview } from "../../redux/OwnerActionCreators";
 import {
     ImageList, ImageListItem, Grid, Button, Rating, Avatar, ListItem,
-    List, ListItemAvatar, ListItemText, Divider, Paper
+    List, ListItemAvatar, ListItemText, Divider, Paper, CircularProgress
 } from "@mui/material";
 import { ListInlineItem } from "reactstrap";
 import { baseUrl } from "../../shared/baseUrl";
-import { useEffect } from 'react';
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from 'react';
 import React from "react";
+import { useHistory, useParams } from "react-router-dom";
+import "react-image-gallery/styles/css/image-gallery.css";
+import ImageGallery from "react-image-gallery";
 
 import {
     Chart as ChartJS,
@@ -37,63 +39,16 @@ ChartJS.register(
     Legend
 );
 
-function RenderParkReview(props) {
-    const { comments } = props;
-    return (
-        <div>
-            <Paper style={{ maxHeight: 320, overflow: 'auto', backgroundColor: "#E5E5E5" }}>
-                <List sx={{ width: '100%' }}>
-                    {comments.map((comment) => {
-                        return (
-                            <div>
-                                <ListItem alignItems="flex-start">
-                                    <ListItemAvatar>
-                                        <Avatar>{comment.name[0]}</Avatar>
-                                    </ListItemAvatar>
-                                    <ListInlineItem>
-                                        <ListItemText primary={comment.name}
-                                            secondary={
-                                                <React.Fragment>
-                                                    <Rating size="small" name="rating" value={comment.rating} precision={0.1} readOnly />
-                                                    <div>{comment.content}</div>
-                                                </React.Fragment>
-                                            }
-                                        />
-                                    </ListInlineItem>
-                                </ListItem>
-                                <Divider variant="inset" component="li" />
-                            </div>
-                        );
-                    })}
-                </List>
-            </Paper>
-        </div>
-    );
-}
+const RenderParkInfo = (props) => {
 
-const mapStateToProps = state => {
-    return {
-        park_info: state.owner_park_info.owner_park_info,
-        park_review: state.owner_park_review.owner_park_review
-    }
-}
+    const { park_info, park_review } = props;
+    const history = useHistory();
+    const images_gallery = park_info.images.map((image) => ({
+        original: `${baseUrl + image.img}`,
+        thumbnail: `${baseUrl + image.img}`
+    }));
 
-const mapDispatchToProps = dispatch => ({
-    fetchOwnerParkInfo: (park_id) => dispatch(fetchOwnerParkInfo(park_id)),
-    fetchParkReview: (park_id) => dispatch(fetchParkReview(park_id))
-});
-
-function ShowParkInfo(props) {
-
-    const { id } = useParams();
-
-    useEffect(() => {
-        props.fetchOwnerParkInfo(id);
-        props.fetchParkReview(id);
-        console.log(props.park_review.comment)
-    }, [id])
-
-    const data = {
+    const rating_data = {
         labels: ["5 sao", "4 sao", "3 sao", "2 sao", "1 sao"],
         datasets: [
             {
@@ -115,11 +70,11 @@ function ShowParkInfo(props) {
                     'rgb(201, 203, 207)'
                 ],
                 data: [
-                    props.park_review.rating_five,
-                    props.park_review.rating_four,
-                    props.park_review.rating_three,
-                    props.park_review.rating_two,
-                    props.park_review.rating_one,
+                    park_review.rating_five,
+                    park_review.rating_four,
+                    park_review.rating_three,
+                    park_review.rating_two,
+                    park_review.rating_one,
                 ]
             }
         ]
@@ -127,65 +82,135 @@ function ShowParkInfo(props) {
 
     return (
         <div>
-            <div>
-                <h2>ID: {props.park_info.id} - {props.park_info.name}</h2>
-                <div className="row">
-                    <div className="col-5">
-                        {/* <ImageList sx={{ width: 360 }} cols={3} rowHeight={150}>
-                            {props.park_info.image_url.map((item) => (
-                                <ImageListItem key={item}>
-                                    <img
-                                        src={baseUrl + item}
-                                        alt=""
-                                    />
-                                </ImageListItem>
-                            ))}
-                        </ImageList> */}
+            <div style={{ margin: "20px" }}>
+                <Grid align='center' style={{ color: "#22577E", marginBottom: "30px" }}>
+                    <h1 style={{ fontWeight: "bolder" }}>ID: {park_info.id} - {park_info.name}</h1>
+                </Grid>
+                <div className="row" style={{ marginBottom: "20px" }}>
+                    <div className="col-1"></div>
+                    <div className="col-4">
+                        <ImageGallery items={images_gallery} />
                     </div>
-                    <div className="col-7">
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}><i class="fas fa-map-marker-alt"></i> {props.park_info.location}</Grid>
-                            <Grid item xs={12}><i class="fas fa-car"></i> {props.park_info.total_space} xe</Grid>
-                            <Grid item xs={12}><i class="fas fa-money-check-alt"></i> {props.park_info.price} K</Grid>
+                    <div className="col-6">
+                        <Grid container spacing={3}>
+                            <Grid item xs={12}><h2>Thông tin chi tiết</h2></Grid>
+                            <Grid item xs={12}><i class="fas fa-map-marker-alt"></i> {park_info.location}</Grid>
+                            <Grid item xs={12}><i class="fas fa-car"></i> {park_info.total_space} xe</Grid>
+                            <Grid item xs={12}><i class="fas fa-money-check-alt"></i> {park_info.price} K</Grid>
                             <Grid item xs={12}>
                                 <div style={{ display: "inline-flex" }}>
-                                    {props.park_info.hasCamera == 1 && <div style={{ marginRight: "10px" }}><i class="fas fa-video"></i> CCTV</div>}
-                                    {props.park_info.hasRoof == 1 && <div style={{ marginRight: "10px" }}><span class="iconify" data-icon="bx:bxs-car-garage"></span> Mái che</div>}
-                                    {props.park_info.allowBooking == 1 && <div style={{ marginRight: "10px" }}><span class="iconify" data-icon="cib:hatena-bookmark"></span> Đặt trước</div>}
-                                    {props.park_info.allowOvernight == 1 && <div><i class="fas fa-moon"></i> Gửi qua đêm</div>}
+                                    {park_info.hasCamera == 1 && <div style={{ marginRight: "10px" }}><i class="fas fa-video"></i> CCTV</div>}
+                                    {park_info.hasRoof == 1 && <div style={{ marginRight: "10px" }}><span class="iconify" data-icon="bx:bxs-car-garage"></span> Mái che</div>}
+                                    {park_info.allowBooking == 1 && <div style={{ marginRight: "10px" }}><span class="iconify" data-icon="cib:hatena-bookmark"></span> Đặt trước</div>}
+                                    {park_info.allowOvernight == 1 && <div><i class="fas fa-moon"></i> Gửi qua đêm</div>}
                                 </div>
                             </Grid>
-                            <Grid item xs={12}><i class="fas fa-file-medical"></i> {props.park_info.description}</Grid>
-                            <Grid item xs={12}><i class="far fa-clock"></i> {props.park_info.allow24h ? ("Mở cửa 24/24") : ("Mở cửa từ: " + props.park_info.open_time + " - " + props.park_info.close_time)}</Grid>
+                            <Grid item xs={12}><i class="fas fa-file-medical"></i> {park_info.description}</Grid>
+                            <Grid item xs={12}><i class="far fa-clock"></i> {park_info.allow24h ? ("Mở cửa 24/24") : ("Mở cửa từ: " + park_info.open_time + " - " + park_info.close_time)}</Grid>
+                            <Grid item xs={5}><Button variant="contained" color="success" onClick={() => history.push("/owner/edit/" + props.id)}> Chỉnh sửa thông tin</Button></Grid>
                         </Grid>
                     </div>
+                    <div className="col-1"></div>
                 </div>
+                <Divider variant="inset" />
+                <Grid align='center' style={{ color: "#22577E", marginBottom: "30px", marginTop: "30px" }}>
+                    <h2 style={{ fontWeight: "bolder" }}>Thông tin đánh giá</h2>
+                </Grid>
                 <div className="row">
+                    <div className="col-1"></div>
                     <div className="col-2">
-                        <div>{props.park_review.avg_rating}</div>
-                        <div>{props.park_review.total_rating} lượt đánh giá</div>
+                        <Grid align='center' style={{ marginTop: "40px" }}>
+                            <h1>{parseFloat(park_review.avg_rating).toPrecision(2)}</h1>
+                            <Rating size="large" name="rating" value={parseFloat(park_review.avg_rating).toPrecision(2)} precision={0.1} readOnly />
+                            <h6>{park_review.total_rating} lượt đánh giá</h6>
+                        </Grid>
                     </div>
                     <div className="col-4">
                         <Bar
-                            data={data}
+                            data={rating_data}
                             options={{
                                 indexAxis: 'y',
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: 'Lượng đánh giá bãi đỗ'
-                                    }
-                                }
                             }}
                         />
                     </div>
-                    <div className="col-6">
-                        <RenderParkReview comments={props.park_review.comment}/>
+                    <div className="col-4">
+                        <List sx={{ width: '100%' }}>
+                            {park_review.comment.map((item) => {
+                                return (
+                                    <div>
+                                        <ListItem alignItems="flex-start">
+                                            <ListItemAvatar>
+                                                <Avatar>{item.name[0]}</Avatar>
+                                            </ListItemAvatar>
+                                            <ListInlineItem>
+                                                <ListItemText primary={item.name}
+                                                    secondary={
+                                                        <React.Fragment>
+                                                            <Rating size="small" name="rating" value={item.rating} precision={0.1} readOnly />
+                                                            <div>{item.content}</div>
+                                                        </React.Fragment>
+                                                    }
+                                                />
+                                            </ListInlineItem>
+                                        </ListItem>
+                                        <Divider variant="inset" component="li" />
+                                    </div>
+                                );
+                            })}
+                        </List>
                     </div>
+                    <div className="col-1"></div>
                 </div>
             </div>
-        </div>
+        </div >
     );
+}
+
+
+const mapStateToProps = state => {
+    return {
+        owner_park_info: state.owner_park_info,
+        owner_park_review: state.owner_park_review
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+    fetchOwnerParkInfo: (park_id) => dispatch(fetchOwnerParkInfo(park_id)),
+    fetchParkReview: (park_id) => dispatch(fetchParkReview(park_id))
+});
+
+const ShowParkInfo = (props) => {
+
+    const { id } = useParams();
+
+    useEffect(() => {
+        props.fetchOwnerParkInfo(id);
+        props.fetchParkReview(id);
+    }, [id])
+
+    if (props.owner_park_info.isLoading || props.owner_park_review.isLoading) {
+        return (
+            <div>
+                <CircularProgress />
+            </div>
+        );
+    } else if (props.owner_park_info.errMess || props.owner_park_review.errMess) {
+        return (
+            <div>
+                <h4>{props.owner_park_info.errMess}</h4>
+                <h4>{props.owner_park_review.errMess}</h4>
+            </div>
+        );
+    } else if (props.owner_park_review.owner_park_review != null && props.owner_park_info.owner_park_info != null) {
+        return (
+            <div>
+                <RenderParkInfo
+                    park_info={props.owner_park_info.owner_park_info}
+                    park_review={props.owner_park_review.owner_park_review}
+                    id={id} />
+            </div>
+        );
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShowParkInfo);

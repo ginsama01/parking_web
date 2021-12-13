@@ -29,6 +29,8 @@ import { TransChart } from './admin/trans-chart';
 import { OwnerParks } from './owner/owner-parks';
 import { OwnerParkInfo } from './owner/park-info';
 import { OwnerParkReview } from './owner/park-review';
+import { OwnerParkStatus } from './owner/park-status';
+import { BookList } from './owner/book-list';
 
 import { Snackbar } from './snackbar';
 
@@ -58,6 +60,8 @@ export const ConfigureStore = () => {
             owner_parks: OwnerParks,
             owner_park_info: OwnerParkInfo,
             owner_park_review: OwnerParkReview,
+            owner_park_status: OwnerParkStatus,
+            book_list: BookList,
 
             form: formReducer,
             ...createForms({

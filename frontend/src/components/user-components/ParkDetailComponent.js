@@ -51,10 +51,12 @@ function allyProps(index) {
 
 
 const ParkDetail = (props) => {
-    const theme = useTheme();
-    const [value, setValue] = React.useState(0);
 
     const { setSelectedPark, postMark, setIsPostMark } = props;
+    const theme = useTheme();
+    const [value, setValue] = React.useState(0);
+    
+    // đóng park_detail --> trở lại park_list
     const handleCloseParkDetail = () => {
         setSelectedPark(-1);
     }
@@ -112,8 +114,7 @@ const ParkDetail = (props) => {
                     <SwipeableViews
                         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                         index={value}
-                        onChangeIndex={handleChangeIndex}
-                    >
+                        onChangeIndex={handleChangeIndex} >
                         <TabPanel value={value} index={0} dir={theme.direction}>
                             <Media list>
                                 <ParkStatus

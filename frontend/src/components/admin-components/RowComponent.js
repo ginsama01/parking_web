@@ -15,6 +15,7 @@ function Row(props) {
     const { row, isItemSelected, handleClick, labelId, typeTable, postVerify, setIsListChange } = props;
     const [open, setOpen] = React.useState(false);
 
+    // xác nhận một bãi đỗ
     const handleVerify = (event) => {
         postVerify(row.id);
         setIsListChange(true)
@@ -80,6 +81,7 @@ function Row(props) {
                         </IconButton>
                     </TableCell>}
             </TableRow>
+            {/* Một số thông tin thêm về bãi đỗ */}
             {typeTable == "Bãi đỗ" &&
                 <TableRow>
                     <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
@@ -104,6 +106,7 @@ function Row(props) {
                     </TableCell>
                 </TableRow>
             }
+            {/* hiển thị bảng các bãi đỗ của chủ bãi đỗ */}
             {typeTable == "Chủ bãi đỗ" &&
                 <TableRow>
                     <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>

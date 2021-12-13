@@ -17,15 +17,4 @@ export const Snackbar = (state = {
     default:
       return state;
   }
-};
-
-// export const setSnackbar = (
-//   snackbarOpen,
-//   snackbarType = "success",
-//   snackbarMessage = ""
-// ) => ({
-//   type: ActionTypes.SET_SNACKBAR,
-//   snackbarOpen,
-//   snackbarType,
-//   snackbarMessage
-// });
+}
