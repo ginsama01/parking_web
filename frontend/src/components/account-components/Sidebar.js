@@ -3,7 +3,7 @@ import { Navigation } from "react-minimal-side-navigation";
 import { useHistory, useLocation } from "react-router-dom";
 import Icon from "awesome-react-icons";
 import React, { useState } from "react";
-import { Logout } from "../../redux/UserActionCreators";
+import { Logout } from "../../redux/AuthenActionCreators";
 import { connect } from "react-redux";
 import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
 

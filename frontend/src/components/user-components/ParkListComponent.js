@@ -99,6 +99,7 @@ function ParkListTabs(props) {
     const [value, setValue] = React.useState(0);
     const [selectedPark, setSelectedPark] = React.useState(-1);
     const [isPostComment, setIsPostComment] = React.useState(false);
+    const [filter, setFilter] = React.useState({camera: true, roof: true, booking: true, overnight: true});
     const [isPostMark, setIsPostMark] = React.useState(false);
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -189,17 +190,17 @@ function ParkListTabs(props) {
                                 >
                                     <TabPanel value={value} index={0} dir={theme.direction}>
                                         <Media list>
-                                            <ParkList parks={props.best_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
+                                            <ParkList parks={props.best_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} filter={filter} />
                                         </Media>
                                     </TabPanel>
                                     <TabPanel value={value} index={1} dir={theme.direction}>
                                         <Media list>
-                                            <ParkList parks={props.cheap_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
+                                            <ParkList parks={props.cheap_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} filter={filter} />
                                         </Media>
                                     </TabPanel>
                                     <TabPanel value={value} index={2} dir={theme.direction}>
                                         <Media list>
-                                            <ParkList parks={props.near_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
+                                            <ParkList parks={props.near_parks} selectedPark={selectedPark} setSelectedPark={setSelectedPark} filter={filter} />
                                         </Media>
                                     </TabPanel>
                                 </SwipeableViews>
@@ -227,7 +228,8 @@ function ParkListTabs(props) {
                 </Col>
                 <Col sm='8' xs='12'>
                     <SearchInfoBar handleSubmit={handleSubmitSearch}
-                        search_info={props.search_info.search_info} />
+                        search_info={props.search_info.search_info} 
+                        setFilter={setFilter} />
                     <Map
                         googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyAqvvK78HJ1YKUHXJHk5FuqHHrsrSXygYk&&callback=initMap&v=weekly`}
                         loadingElement={<div style={{ height: `90%` }} />}

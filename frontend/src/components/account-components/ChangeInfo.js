@@ -15,9 +15,6 @@ const validUsername = (val) => /^[a-zA-Z][a-zA-Z0-9]+$/.test(val);
 //const validPasword = (val) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]$/.test(val);
 const validPasword = (val) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{0,}$/.test(val);
 
-// const mapDispatchToProps = dispatch => ({
-//     postUser: (username, password, email, firstname, lastname,address, type) => dispatch(postUser(username, password, email, firstname, lastname,address, type))
-// });
 
 const mapStateToProps = state => {
     return {
@@ -32,22 +29,19 @@ const mapDispatchToProps = dispatch => ({
 });
 
 function ChangeInfo(props){
-
-    const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
-
+    React.useLayoutEffect(() => {
+        console.log("will mount here");
+    }, []);
+    
     React.useEffect(() => {
 		props.fetchInfoUser();
 	}, []);
     
-    React.useEffect(() => {
-        forceUpdate();
-    }, [props.info_user])
     
     const [openModal, setOpenModal] = React.useState(false)
     const [changePass, setChangePass] = React.useState(false)
 
     
-
     const handleChangePass = e =>{
         e.preventDefault()
         setChangePass(true)
@@ -239,7 +233,7 @@ function ChangeInfo(props){
                                     <Label htmlFor="type" md={3}>Chọn loại tài khoản</Label>
                                     <Col md={3}>
                                         <Control.select model=".type" name="type"   
-                                            className="form-control" defaultValue={props.info_user.info.type} 
+                                            className="form-control" defaultValue="user" 
                                             validators={{
                                                 required
                                             }}

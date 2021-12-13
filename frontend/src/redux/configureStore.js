@@ -9,8 +9,8 @@ import { NearParks } from './user/near-parks'
 import { ParkStatus } from './user/park-status';
 import { ParkInfo } from './user/park-info';
 import { Comments } from './user/comments';
-import { InitialSignup } from './user/signup';
-import { InitialLogin } from './user/login';
+import { InitialSignup } from './authen/signup';
+import { InitialLogin } from './authen/login';
 import { AllParks } from './user/all-parks';
 import { SearchInfo } from './user/search-info';
 import { FavoriteMark } from './user/favorite-mark';
@@ -61,11 +61,15 @@ export const ConfigureStore = () => {
             ...createForms({
                 signup: InitialSignup,
                 login: InitialLogin,
+                sendCode: {username: ""},
+                forgotten: {username: "", code: ""},
+                newPassword: {username: "", password: ""},
                 changeinfo: InitialChangInfo,
                 deleteUser: InitialDeleteUser,
                 deleteLovepark: InitialDeleteLovepark,
                 deleteHistorypark: InitialDeleteHistorypark,
-                deleteOrderpark: InitialDeleteOrderpark
+                deleteOrderpark: InitialDeleteOrderpark,
+                
             })
         }),
         applyMiddleware(thunk, logger)

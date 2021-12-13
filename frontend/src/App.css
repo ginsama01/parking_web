@@ -95,3 +95,8 @@ p {
   z-index: 1000;
   border-radius: 0 0 2px 2px;
 }
+
+.form-group {
+  margin-bottom: 10px;
+}
+
