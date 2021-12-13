@@ -9,13 +9,14 @@ uploadRouter.use(express.json());
 
 uploadRouter.route('/:parkId')
     .post((req, res, next) => {
-        const data = req.body.image;
+        const data = req.body.images;
         dbConnect.query("SELECT image_url FROM park WHERE park_id = " + req.params.parkId + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then(result => {
             var number = 0;
             var url = '';
-            if (result.length != 0) {
+            console.log(result[0]);
+            if (result[0].image_url !== null) {
                 const image_url = result[0].image_url.split(',');
                 for (let i = 0; i < image_url.length; ++i) {
                     var last = image_url[i].lastIndexOf('-');

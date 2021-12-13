@@ -239,7 +239,7 @@ function ChangeInfo(props){
                                     <Label htmlFor="type" md={3}>Chọn loại tài khoản</Label>
                                     <Col md={3}>
                                         <Control.select model=".type" name="type"   
-                                            className="form-control" defaultValue="user" 
+                                            className="form-control" defaultValue={props.info_user.info.type} 
                                             validators={{
                                                 required
                                             }}

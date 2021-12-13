@@ -229,7 +229,7 @@ function ParkListTabs(props) {
                     <SearchInfoBar handleSubmit={handleSubmitSearch}
                         search_info={props.search_info.search_info} />
                     <Map
-                        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyDFOk5Vvai-PKsIMWPWqJcT23U5zMKaaCQ&&callback=initMap&v=weekly`}
+                        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyAqvvK78HJ1YKUHXJHk5FuqHHrsrSXygYk&&callback=initMap&v=weekly`}
                         loadingElement={<div style={{ height: `90%` }} />}
                         containerElement={<div style={{ height: `90vh`, margin: `auto` }} />}
                         mapElement={<div style={{ height: `90%` }} />}

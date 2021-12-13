@@ -16,8 +16,8 @@ ownRouter.route('/info')
             type: dbConnect.QueryTypes.SELECT
         }).then((result) => {
             for (let i = 0; i < result.length; ++i) {
-                result[i]['image'] = result[i]['image'] === null ? '' : result[i]['image'];
-                result[i]['image'] = result[i]['image'].split(',')[0];
+                result[i]['image_url'] = result[i]['image_url'] === null ? '' : result[i]['image_url'];
+                result[i]['image'] = result[i]['image_url'].split(',')[0];
             }
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
@@ -75,8 +75,11 @@ ownRouter.route('/info/:id')
             type: dbConnect.QueryTypes.SELECT
         }).then(images => {
             var image = images[0].image_url;
-            var image_del = parkJson['image_url'].split(',');
-            var image_current = image.split(',');
+            var image_del = [];
+            parkJson['images'].forEach(image => {
+                image_del.push(image.img)
+            });
+            var image_current = image === null ? [] : image.split(',');
             for (let i = image_current.length - 1; i >= 0; --i) {
                 for (let j = 0; j < image_del.length; ++j) {
                     if (image_current[i] == image_del[j]) {
