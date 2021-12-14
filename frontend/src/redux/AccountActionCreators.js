@@ -315,7 +315,7 @@ export const postDeleteOrderpark = (parks) => (dispatch) => {
         })
         .then(response => response.json())
         .then(response => {
-            dispatch(setSnackbar(true, "success", "Xóa bãi đỗ thành công")); 
+            dispatch(setSnackbar(true, "success", response.message)); 
             return response;
         })
         .catch(error =>  {

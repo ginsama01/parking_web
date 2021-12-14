@@ -16,6 +16,7 @@ var lng = null;
 parkRouter.use(express.json());
 
 parkRouter.route('/')
+//fetch all park for marker
     .get((req, res, next) => {
         console.log(req.headers.origin);
         dbConnect.query("SELECT park_id, location FROM park", {
@@ -28,6 +29,7 @@ parkRouter.route('/')
             .catch(err => next(err))
     })
 
+//fetch search info
 parkRouter.route('/search')
     .get((req, res, next) => {
         if (req.query.search_id == 'null') {
@@ -47,6 +49,7 @@ parkRouter.route('/search')
         }
 
     })
+    //post search
     .post((req, res, next) => {
         if (!req.body.address) {
             res.statusCode = 400;
@@ -102,6 +105,8 @@ parkRouter.route('/search')
         }
     });
 
+
+    //Fetch best park
 parkRouter.route('/best')
     .get((req, res, next) => {
         if (req.query.search_id == 'null') {
@@ -122,6 +127,7 @@ parkRouter.route('/best')
     });
 
 
+    //Fetch cheap park
 parkRouter.route('/cheap')
     .get((req, res, next) => {
         if (req.query.search_id == 'null') {
@@ -143,6 +149,7 @@ parkRouter.route('/cheap')
     });
 
 
+    //Fetch near park
 parkRouter.route('/near')
     .get((req, res, next) => {
         if (req.query.search_id == 'null') {
@@ -163,6 +170,7 @@ parkRouter.route('/near')
         
     });
 
+    //get mark for favorite
 parkRouter.route('/mark/:parkId')
     .get(async (req, res, next) => {
         if (!req.signedCookies.token) {
@@ -184,6 +192,7 @@ parkRouter.route('/mark/:parkId')
         }
     })
 
+    //fetch status park
 parkRouter.route('/status/:parkId')
     .get(async (req, res, next) => {
         dbConnect.query("SELECT park_id, name, price, location, total_space AS totalSpace, total_space - total_in"
@@ -237,6 +246,7 @@ parkRouter.route('/status/:parkId')
             .catch((err) => next(err));
     });
 
+    //fetch info park
 parkRouter.route('/info/:parkId')
     .get((req, res, next) => {
         dbConnect.query("SELECT park_id, hasCamera, hasRoof, allowBooking, allowOvernight, description, image_url FROM park " +

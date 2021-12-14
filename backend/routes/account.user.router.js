@@ -231,7 +231,7 @@ accountRouter.route('/favorite/:flistid')
             .catch(err => next(err));
     })
 
-    //Fetch pending list for users
+//Fetch pending list for users
 accountRouter.route('/pending')
     .get(authenticate.verifyUser, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
@@ -254,81 +254,92 @@ accountRouter.route('/pending')
         if (req.body.timein) {
             timein = req.body.timein;
         } else {
-            timein = new Date(new Date().getTime() + 30*60000);
+            timein = new Date(new Date().getTime() + 30 * 60000);
         }
-        dbConnect.query("SELECT allowBooking FROM park WHERE park_id = " + req.body.park_id, {
-            type: dbConnect.QueryTypes.SELECT
-        }).then(park => {
-            if (park[0].allowBooking == false) {
-                res.statusCode = 403;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({ message: "Bãi đỗ không cho phép đặt trước" });
-            } else {
-                dbConnect.query("SELECT isactivated FROM user WHERE user_id = " + user_id + ";", {
-                    type: dbConnect.QueryTypes.SELECT
-                }).then(result => {
-                    if (result[0].isactivated == false) {
-                        res.statusCode = 403;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json({ message: "Bạn cần xác minh tài khoản trước khi sử dụng chức năng này" });
-                    } else {
-                        dbConnect.query("SELECT * FROM park_user WHERE park_id = " + req.body.park_id + " AND user_id = " + user_id + ";", {
-                            type: dbConnect.QueryTypes.SELECT
-                        }).then(result => {
-                            if (result.length == 0) {
-                                models.Park_User.create({ park_id: req.body.park_id, user_id: user_id })
-                                    .then(rela => {
-                                        models.Pending.create({ rela_id: rela.dataValues.rela_id, time_start: timein, status: 'Đang đặt trước' })
-                                            .then(() => {
-                                                res.statusCode = 201;
-                                                res.setHeader('Content-Type', 'application/json');
-                                                res.json({ success: true });
-                                            }, err => next(err))
-                                    }, err => next(err))
-                            } else {
-                                models.Pending.create({ rela_id: result[0].rela_id, time_start: timein, status: 'Đang đặt trước' })
-                                    .then(() => {
-                                        res.statusCode = 201;
-                                        res.setHeader('Content-Type', 'application/json');
-                                        res.json({ success: true });
-                                    })
-                            }
-                        }, err => next(err))
+        console.log(new Date().getTime() - new Date(Date.parse(timein)).getTime());
+        if (new Date().getTime() - new Date(Date.parse(timein)).getTime() > 0) {
+            res.statusCode = 403;
+            res.json({ message: "Thời gian đặt trước không hợp lệ" });
+        } else {
+            dbConnect.query("SELECT allowBooking FROM park WHERE park_id = " + req.body.park_id, {
+                type: dbConnect.QueryTypes.SELECT
+            }).then(park => {
+                if (park[0].allowBooking == false) {
+                    res.statusCode = 403;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({ message: "Bãi đỗ không cho phép đặt trước" });
+                } else {
+                    dbConnect.query("SELECT isactivated FROM user WHERE user_id = " + user_id + ";", {
+                        type: dbConnect.QueryTypes.SELECT
+                    }).then(result => {
+                        if (result[0].isactivated == false) {
+                            res.statusCode = 403;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json({ message: "Bạn cần xác minh tài khoản trước khi sử dụng chức năng này" });
+                        } else {
+                            dbConnect.query("SELECT * FROM park_user WHERE park_id = " + req.body.park_id + " AND user_id = " + user_id + ";", {
+                                type: dbConnect.QueryTypes.SELECT
+                            }).then(result => {
+                                if (result.length == 0) {
+                                    models.Park_User.create({ park_id: req.body.park_id, user_id: user_id })
+                                        .then(rela => {
+                                            models.Pending.create({ rela_id: rela.dataValues.rela_id, time_start: timein, status: 'Đang đặt trước' })
+                                                .then(() => {
+                                                    res.statusCode = 201;
+                                                    res.setHeader('Content-Type', 'application/json');
+                                                    res.json({ success: true });
+                                                }, err => next(err))
+                                        }, err => next(err))
+                                } else {
+                                    models.Pending.create({ rela_id: result[0].rela_id, time_start: timein, status: 'Đang đặt trước' })
+                                        .then(() => {
+                                            res.statusCode = 201;
+                                            res.setHeader('Content-Type', 'application/json');
+                                            res.json({ success: true });
+                                        })
+                                }
+                            }, err => next(err))
 
-                    }
-                }, err => next(err))
-                    .catch(err => next(err));
-            }
-        }, err => next(err))
-        .catch(err => next(err));
+                        }
+                    }, err => next(err))
+                        .catch(err => next(err));
+                }
+            }, err => next(err))
+                .catch(err => next(err));
+        }
     })
     //delete pending
-    .delete(authenticate.verifyUser, (req, res, next) => {
-        models.Pending.update({ status: 'Đã hủy' }, {
+    .delete(authenticate.verifyUser, (req, res, next) => { 
+        models.Pending.findAll({
             where: {
                 pending_id: req.body.pending_list
             }
-        }).then(() => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({ success: true, status: 'Delete pending succesfully!' });
-        }, (err) => next(err))
-            .catch(err => next(err));
+        }).then(result => {
+            console.log(result);
+            var del_list = [];
+            for (let i = 0; i < result.length; ++i) {
+                const now = new Date();
+                var differentFromPending = (now.getTime() - result[i].dataValues.createdAt.getTime())/(1000*60);
+                var differentFromStart = (result[i].dataValues.time_start.getTime() - now.getTime())/(1000*60);
+                if (differentFromStart > 0 && (differentFromStart > 60 || differentFromPending < 15)) {
+                    del_list.push(result[i].dataValues.pending_id);
+                }
+            }
+            models.Pending.update({ status: 'Đã hủy' }, {
+                where: {
+                    pending_id: del_list
+                }
+            }).then(() => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({ success: true, message: 'Hủy thành công ' + del_list.length + ' đơn đặt trước' });
+            }, (err) => next(err))
+                .catch(err => next(err));
+        }, err => next(err))
+        .catch(err => next(err));
+       
     })
 
-accountRouter.route('/pending/:pendingid')
-    .delete(authenticate.verifyUser, (req, res, next) => {
-        models.Pending.destroy({
-            where: {
-                pending_id: req.params.pendingid
-            }
-        }).then(() => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({ success: true, status: 'Delete pending succesfully!' });
-        }, (err) => next(err))
-            .catch(err => next(err));
-    })
 
 
 module.exports = accountRouter;
