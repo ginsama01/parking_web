@@ -77,12 +77,6 @@ const headCells = [
     label: 'Bãi đỗ',
   },
   {
-    id: 'description',
-    numeric: false,
-    disablePadding: false,
-    label: 'Mô tả',
-  },
-  {
     id: 'time_start',
     numeric: false,
     disablePadding: false,
@@ -243,13 +237,13 @@ function OrderPark(props) {
   const handleClick = (event, id, status) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
-    if (selectedIndex === -1 && status === "Đang đặt trước") {
+    if (selectedIndex === -1 ) {
       newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0 && status === "Đang đặt trước") {
+    } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1 && status === "Đang đặt trước") {
+    } else if (selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0 && status === "Đang đặt trước") {
+    } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1),
@@ -258,7 +252,8 @@ function OrderPark(props) {
 
     setSelected(newSelected);
   };
-
+  const handleRowClick = (event, id) => {
+  }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -285,11 +280,11 @@ function OrderPark(props) {
     
   return (
     <Row>
-        <Col sm='3' xs='12'>
+        <Col className="col-3">
             <Layout></Layout>
         </Col>
-        <Col>
-            <div className="row row-content" style={{backgroundColor: '#F8F9FB', borderRadius: '20px'}}>
+        <Col className="col-9">
+            <div className="row row-content" style={{backgroundColor: '#F8F9FB', borderRadius: '20px', paddingLeft:"10px"}}>
             <div className="col-12 col-md-8 offset-2">
                 <h3 style={{color:'green', fontWeight:'bold'}}>Danh sách đặt trước</h3>
             </div>
@@ -322,7 +317,7 @@ function OrderPark(props) {
                           return (
                             <TableRow
                               hover
-                              onClick={(event) => handleClick(event, row.pending_id, row.status)}
+                              onClick={(event) => handleRowClick(event, row.pending_id)}
                               role="checkbox"
                               aria-checked={isItemSelected}
                               tabIndex={-1}
@@ -332,6 +327,7 @@ function OrderPark(props) {
                               <TableCell >
                               {row.status === "Đang đặt trước" ?
                                 (<Checkbox
+                                  onClick={(event) => handleClick(event, row.pending_id)}
                                   color="primary"
                                   checked={isItemSelected}
                                   inputProps={{
@@ -348,18 +344,17 @@ function OrderPark(props) {
                               >
                                 {row.name}
                                 <br></br>
-                                <p style={{color: 'grey'}}>{row.location}</p>
+                                <p style={{color: 'grey',fontSize:'15px'}}>{row.location}</p>
                               </TableCell>
-                              <TableCell align="left">{row.description}</TableCell>
                               <TableCell align="left">{convertTime(row.time_start)}</TableCell>
                               <TableCell align="left">
                                 {row.price}
                                 <br></br>
-                                <p style={{color: 'grey'}}>/1h</p>
+                                <p style={{color: 'grey',fontSize:'15px'}}>/1h</p>
                               </TableCell>
                               <TableCell align="left">{row.phone}
                                 <br></br>
-                                <p style={{color: 'grey'}}>{row.email}</p>
+                                <p style={{color: 'grey',fontSize:'15px'}}>{row.email}</p>
                               </TableCell>
                               <TableCell align="left"> <Rating name="read-only" value={row.rating} readOnly precision={0.1}/> </TableCell>
                               <TableCell align="left">

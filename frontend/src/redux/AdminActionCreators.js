@@ -1,5 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
+import { setSnackbar } from './AuthenActionCreators';
 
 // get user list for admin
 export const fetchUserList = () => (dispatch) => {
@@ -247,21 +248,17 @@ export const deleteUsers = (users_delete) => (dispatch) => {
             if (response.ok) {
                 return response;
             } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
-        .then(users => {
-            alert('Đã xóa ' + JSON.stringify(users));
         })
-        .catch(error => {
+        .then(response => response.json())
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Đã xóa thành công")); 
+            return response;
+        })
+        .catch(error =>  {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
 }
@@ -284,21 +281,17 @@ export const deleteOwners = (owners_delete) => (dispatch) => {
             if (response.ok) {
                 return response;
             } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
-        .then(owners => {
-            alert('Đã xóa ' + JSON.stringify(owners));
         })
-        .catch(error => {
+        .then(response => response.json())
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Đã xóa thành công")); 
+            return response;
+        })
+        .catch(error =>  {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
 }
@@ -321,21 +314,17 @@ export const deleteParks = (parks_delete) => (dispatch) => {
             if (response.ok) {
                 return response;
             } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
-        .then(parks => {
-            alert('Đã xóa ' + JSON.stringify(parks));
         })
-        .catch(error => {
+        .then(response => response.json())
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Đã xóa thành công")); 
+            return response;
+        })
+        .catch(error =>  {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
 }
@@ -359,21 +348,17 @@ export const postVerify = (park_id) => (dispatch) => {
             if (response.ok) {
                 return response;
             } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
-        .then(verifiedPark => {
-            alert('Verify ' + JSON.stringify(verifiedPark));
         })
-        .catch(error => {
+        .then(response => response.json())
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Xác thực thành công")); 
+            return response;
+        })
+        .catch(error =>  {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
 }

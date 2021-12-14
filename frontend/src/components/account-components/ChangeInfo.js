@@ -54,6 +54,7 @@ function ChangeInfo(props){
     const handleChangePass = e =>{
         e.preventDefault()
         setChangePass(true)
+
     }
 
     const closeChangePass = ()=>{
@@ -72,7 +73,7 @@ function ChangeInfo(props){
     const handleSubmit = async (values) => {
         console.log(values);
         console.log('---------') 
-        var response = await props.postChange(values.username.value, values.firstname.value, values.lastname.value, values.email.value, values.phone.value, values.address.value)
+        var response = await props.postChange(values.username, values.firstname, values.lastname, values.email, values.phone, values.address)
         if (response) {
             props.fetchInfoUser();
           }
@@ -81,6 +82,7 @@ function ChangeInfo(props){
         console.log(values);
         props.postChangePass(values.password, values.newpass,values.repass);
         console.log(values.password);
+        closeChangePass();
     }
     const handleDeleteUser = () => {
         props.postDelete()
@@ -99,7 +101,7 @@ function ChangeInfo(props){
                       <p>Bạn có thể chỉnh sửa thông tin hồ sơ của mình bên dưới. Nhấp vào nút đặt lại mật khẩu sẽ gửi một liên kết đặt lại đến email của bạn.</p>
                     </div>
                     <div className="col-12 ">
-                        <LocalForm model="changeinfo" onSubmitFailed={handleSubmit} >
+                        <LocalForm model="changeinfo" onSubmit={handleSubmit} >
                             <Row className="form-group">
                                 <Label htmlFor="username" md={3}>Tên người dùng</Label>
                                 <Col >
@@ -179,21 +181,10 @@ function ChangeInfo(props){
                                     <Control.text model=".phone" id="phone" name="phone"
                                         placeholder="SĐT"
                                         className="form-control"
-                                        validators={{
-                                            required, minLength: minLength(1), maxLength: maxLength(30)
-                                        }}
+                                        
                                         defaultValue={props.info_user.info.phone}
                                          />
-                                    <Errors
-                                        className="text-danger"
-                                        model=".phone"
-                                        show="touched"
-                                        messages={{
-                                            required: 'Bắt buộc',
-                                            minLength: 'Tối thiểu 1 ký tự',
-                                            maxLength: 'Tối đa 30 ký tự',
-                                        }}
-                                     />
+                                    
                                 </Col>
                             </Row>
                             <br></br>
@@ -226,20 +217,10 @@ function ChangeInfo(props){
                                     <Control.text model=".address" id="address" name="address"
                                         placeholder="Địa chỉ"
                                         className="form-control"
-                                        validators={{
-                                            required
-                                        }}
+                                        
                                         defaultValue={props.info_user.info.address}
                                          />
-                                    <Errors
-                                        className="text-danger"
-                                        model=".address"
-                                        show="touched"
-                                        messages={{
-                                            required: 'Bắt buộc',
-                                            
-                                        }}
-                                     />
+                                    
                                 </Col>
                             </Row>
                             <br></br>
