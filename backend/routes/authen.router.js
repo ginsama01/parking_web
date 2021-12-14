@@ -216,4 +216,27 @@ accountRouter.route('/forgotten/password')
         res.json({ success: true });
     })
     
+accountRouter.route('/changepass')
+    .put(authenticate.verifyUserOrOwner, (req, res, next) => {
+        const id = authenticate.getAccountId(req);
+        dbConnect.query("SELECT password FROM account WHERE id = " + id + ";", {
+            type: dbConnect.QueryTypes.SELECT
+        }).then((result) => {
+            if (result[0].password != req.body.password) {
+                res.statusCode = 403;
+                res.json({message: "Mật khẩu cũ không đúng"});
+            } else {
+                models.Account.update({password: req.body.newpass}, {
+                    where: {
+                        id: id
+                    }
+                }).then(() => {
+                    res.statusCode = 201;
+                    res.json({success: true});
+                }, err => next(err));
+            }
+        }, err => next(err))
+        .catch(err => next(err));
+    })
+
 module.exports = accountRouter;

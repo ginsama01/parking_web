@@ -244,17 +244,17 @@ function HistoryPark(props) {
     setSelected([]);
   };
 
-  const handleClick = (event, id, status) => {
+  const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
-    if (selectedIndex === -1 && status !== "Đang đỗ xe") {
+    if (selectedIndex === -1 ) {
       newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0 && status !== "Đang đỗ xe") {
+    } else if (selectedIndex === 0 ) {
       newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1 && status !== "Đang đỗ xe") {
+    } else if (selectedIndex === selected.length - 1 ) {
       newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0 && status !== "Đang đỗ xe") {
+    } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1),
@@ -263,7 +263,9 @@ function HistoryPark(props) {
 
     setSelected(newSelected);
   };
-
+  const handleRowClick = (event, id) => {
+    
+  }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -290,16 +292,16 @@ function HistoryPark(props) {
     
   return (
     <Row>
-        <Col sm='3' xs='12'>
+        <Col className="col-3">
             <Layout></Layout>
         </Col>
-        <Col>
+        <Col className="col-9">
             <div className="row row-content" style={{backgroundColor: '#F8F9FB', borderRadius: '20px'}}>
             <div className="col-12 col-md-8 offset-2">
                 <h3 style={{color:'green', fontWeight:'bold'}}>Lịch sử đỗ xe</h3>
             </div>
             <Box sx={{ width: '100%' }}>
-              <Paper sx={{ width: '100%', mb: 2 }}>
+              <Paper sx={{ width: '100%'}}>
                 <EnhancedTableToolbar numSelected={selected.length} postDeleteHistorypark={props.postDeleteHistorypark} selected={selected} 
                 setSelected={setSelected} fetchHistoryParks={props.fetchHistoryParks }/>
                 <TableContainer>
@@ -328,7 +330,7 @@ function HistoryPark(props) {
                           return (
                             <TableRow
                               hover
-                              onClick={(event) => handleClick(event, row.parking_id, row.status)}
+                              onClick={(event) => handleRowClick(event, row.parking_id, row.status)}
                               role="checkbox"
                               aria-checked={isItemSelected}
                               tabIndex={-1}
@@ -338,6 +340,7 @@ function HistoryPark(props) {
                               <TableCell padding="checkbox">
                                 {row.status !== "Đang đỗ xe" ?
                                 (<Checkbox
+                                  onClick={(event) => handleClick(event, row.parking_id)}
                                   color="primary"
                                   checked={isItemSelected}
                                   inputProps={{

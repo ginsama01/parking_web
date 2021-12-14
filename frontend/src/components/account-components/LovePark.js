@@ -24,19 +24,20 @@ import { visuallyHidden } from '@mui/utils';
 import { Button, FormGroup, Input, Label, Form, Row, Col } from 'reactstrap';
 import Layout from './LayOut';
 import { Rating } from '@mui/material';
-import { fetchLoveParks, postDeleteLovepark } from "../../redux/AccountActionCreators";
+import { fetchOrderParks, postDeleteOrderpark } from "../../redux/AccountActionCreators";
 import { connect } from "react-redux";
+
 
 const mapStateToProps = state => {
 	return {
-		love_parks: state.love_parks,
+		order_parks: state.order_parks,
 	}
 }
 
 const mapDispatchToProps = dispatch => ({
-	fetchLoveParks: () => dispatch(fetchLoveParks()),
-  postDeleteLovepark: (parks) => dispatch(postDeleteLovepark(parks))
-});
+	fetchOrderParks: () => dispatch(fetchOrderParks()),
+  postDeleteOrderpark: (parks) => dispatch(postDeleteOrderpark(parks))
+}); 
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -82,6 +83,12 @@ const headCells = [
     label: 'Mô tả',
   },
   {
+    id: 'time_start',
+    numeric: false,
+    disablePadding: false,
+    label: 'Thời gian vào',
+  },
+  {
     id: 'price',
     numeric: true,
     disablePadding: false,
@@ -99,28 +106,24 @@ const headCells = [
     disablePadding: false,
     label: 'Đánh giá',
   },
+  {
+    id: 'status',
+    numeric: true,
+    disablePadding: false,
+    label: 'Trạng thái',
+  },
 ];
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+  const {order, orderBy,onRequestSort} =
     props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
-
   return (
     <TableHead>
       <TableRow style={{backgroundColor:'#CEE5D0'}}>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
+        <TableCell >
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
@@ -160,9 +163,9 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { numSelected, selected, setSelected} = props;
   const handleDelete = async () => {
-      var response = await props.postDeleteLovepark(selected);
+      var response = await props.postDeleteOrderpark(selected);
       if (response) {
-        props.fetchLoveParks();
+        props.fetchOrderParks();
         setSelected([]);
       }
   }
@@ -183,8 +186,7 @@ const EnhancedTableToolbar = (props) => {
           color="inherit"
           variant="subtitle1"
           component="div"
-        >
-          {numSelected} đã chọn
+        > {numSelected} đã chọn
         </Typography>
       ) : (
         <Typography
@@ -199,7 +201,9 @@ const EnhancedTableToolbar = (props) => {
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
-            <DeleteIcon onClick={handleDelete}/>
+            <Button style={{backgroundColor: '#F8F9FB', color: 'green',border: '1px solid green'}} type="submit" onClick={handleDelete}  >
+              Hủy đặt trước
+            </Button>
           </IconButton>
         </Tooltip>
       ) : (
@@ -216,22 +220,18 @@ const EnhancedTableToolbar = (props) => {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   selected: PropTypes.array.isRequired,
-  setSelected: PropTypes.func.isRequired,
 };
 
-
-
-
-function LovePark(props) {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('price');
+function OrderPark(props) {
+  const [order, setOrder] = React.useState('desc');
+  const [orderBy, setOrderBy] = React.useState('time_start');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   React.useEffect(() => {
-		props.fetchLoveParks();
+		props.fetchOrderParks();
 	}, []);
 
   const handleRequestSort = (event, property) => {
@@ -240,20 +240,10 @@ function LovePark(props) {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = props.love_parks.parks.map((n) => n.flist_id);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, id) => {
+  const handleClick = (event, id, status) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
-
-    if (selectedIndex === -1) {
+    if (selectedIndex === -1 ) {
       newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
@@ -268,7 +258,8 @@ function LovePark(props) {
 
     setSelected(newSelected);
   };
-
+  const handleRowClick = (event, id) => {
+  }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -286,21 +277,26 @@ function LovePark(props) {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.love_parks.parks.length) : 0;
-
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.order_parks.parks.length) : 0;
+  
+  function convertTime(time) {
+      var date = new Date(Date.parse(time));
+      return(date.getHours() + ':' + date.getMinutes() + '  ' + date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear());
+  }
+    
   return (
     <Row>
-        <Col sm='3' xs='12'>
+        <Col className="col-3">
             <Layout></Layout>
         </Col>
-        <Col>
+        <Col className="col-9">
             <div className="row row-content" style={{backgroundColor: '#F8F9FB', borderRadius: '20px'}}>
-            <div className="col-12 col-md-8 offset-2">
-                <h3 style={{color:'green', fontWeight:'bold'}}>Bãi đỗ yêu thích</h3>
+            <div className="col-12 ">
+                <h3 style={{color:'green', fontWeight:'bold'}}>Danh sách đặt trước</h3>
             </div>
             <Box sx={{ width: '100%' }}>
               <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} postDeleteLovepark={props.postDeleteLovepark} selected={selected} setSelected={setSelected} fetchLoveParks={props.fetchLoveParks}/>
+                <EnhancedTableToolbar numSelected={selected.length} postDeleteOrderpark={props.postDeleteOrderpark} selected={selected} setSelected={setSelected} fetchOrderParks={props.fetchOrderParks}/>
                 <TableContainer>
                   <Table
                     sx={{ minWidth: 750 }}
@@ -311,37 +307,40 @@ function LovePark(props) {
                       numSelected={selected.length}
                       order={order}
                       orderBy={orderBy}
-                      onSelectAllClick={handleSelectAllClick}
                       onRequestSort={handleRequestSort}
-                      rowCount={props.love_parks.parks.length}
+                      rowCount={props.order_parks.parks.length}
+                      parks={props.order_parks.parks}
                     />
                     <TableBody>
                       {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                         rows.slice().sort(getComparator(order, orderBy)) */}
-                      {stableSort(props.love_parks.parks, getComparator(order, orderBy))
+                      {stableSort(props.order_parks.parks, getComparator(order, orderBy))
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((row, index) => {
-                          const isItemSelected = isSelected(row.flist_id);
+                          const isItemSelected = isSelected(row.pending_id);
                           const labelId = `enhanced-table-checkbox-${index}`;
 
                           return (
                             <TableRow
                               hover
-                              onClick={(event) => handleClick(event, row.flist_id)}
+                              onClick={(event) => handleRowClick(event, row.pending_id)}
                               role="checkbox"
                               aria-checked={isItemSelected}
                               tabIndex={-1}
-                              key={row.flist_id}
+                              key={row.pending_id}
                               selected={isItemSelected}
                             >
-                              <TableCell padding="checkbox">
-                                <Checkbox
+                              <TableCell >
+                              {row.status === "Đang đặt trước" ?
+                                (<Checkbox
+                                  onClick={(event) => handleClick(event, row.pending_id)}
                                   color="primary"
                                   checked={isItemSelected}
                                   inputProps={{
                                     'aria-labelledby': labelId,
                                   }}
-                                />
+                                />) : (<div></div>)
+                                }
                               </TableCell>
                               <TableCell
                                 component="th"
@@ -354,17 +353,20 @@ function LovePark(props) {
                                 <p style={{color: 'grey'}}>{row.location}</p>
                               </TableCell>
                               <TableCell align="left">{row.description}</TableCell>
+                              <TableCell align="left">{convertTime(row.time_start)}</TableCell>
                               <TableCell align="left">
                                 {row.price}
                                 <br></br>
                                 <p style={{color: 'grey'}}>/1h</p>
                               </TableCell>
-                              <TableCell align="left">
-                              {row.phone}
+                              <TableCell align="left">{row.phone}
                                 <br></br>
                                 <p style={{color: 'grey'}}>{row.email}</p>
-                                </TableCell>
+                              </TableCell>
                               <TableCell align="left"> <Rating name="read-only" value={row.rating} readOnly precision={0.1}/> </TableCell>
+                              <TableCell align="left">
+                                {row.status}
+                              </TableCell>
                             </TableRow>
                           );
                         })}
@@ -383,7 +385,7 @@ function LovePark(props) {
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25]}
                   component="div"
-                  count={props.love_parks.parks.length}
+                  count={props.order_parks.parks.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onPageChange={handleChangePage}
@@ -400,4 +402,4 @@ function LovePark(props) {
         </Row>
   );
 }
-export default connect(mapStateToProps, mapDispatchToProps)(LovePark);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderPark);

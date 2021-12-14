@@ -369,3 +369,40 @@ export const addDeleteOrderpark = (user) => ({
     type: AccountActionTypes.ADD_DELETEORDERPARK,
     payload: user
 });
+
+//change pass
+export const postChangePass = (password, newpass, repass) => (dispatch) => {
+    const changeUser = {
+        password: password,
+        newpass: newpass,
+        repass: repass
+    };
+    return fetch(baseUrl + 'authen/changepass', 
+        {
+            method: 'PUT',
+            headers: {
+                "Content-Type": "application/json",
+              },
+            body: JSON.stringify(changeUser),
+            credentials: "include"
+        })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => {
+            alert('Thay đổi mật khẩu tài khoản thành công'); 
+            //window.location.href='/'
+        })
+        .then(user => dispatch(addChange(user)))
+        .catch(error =>  { console.log('post change', error.message); alert('Your account could not be posted\nError: '+error.message); });
+    }

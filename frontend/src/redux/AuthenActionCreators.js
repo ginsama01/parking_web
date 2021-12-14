@@ -1,6 +1,15 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from "../shared/baseUrl";
-
+export const setSnackbar = (
+    snackbarOpen,
+    snackbarType = "success",
+    snackbarMessage = ""
+) => ({
+    type: ActionTypes.SET_SNACKBAR,
+    snackbarOpen,
+    snackbarType,
+    snackbarMessage
+});
 //Sign up
 export const postUser = (username, password, email, firstname, lastname, type) => (dispatch) => {
     const newUser = {
@@ -200,7 +209,7 @@ export const postLogin = (username, password) => (dispatch) => {
             sessionStorage.setItem('role', user['role']);
             const event = new Event('storagechange');
             window.dispatchEvent(event);
-            alert('Đăng nhập thành công');
+            dispatch(setSnackbar(true, "success", "Đăng nhập thành công"));
             return user;
         })
         .catch(error => {
