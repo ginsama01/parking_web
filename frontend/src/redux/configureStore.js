@@ -9,8 +9,8 @@ import { NearParks } from './user/near-parks'
 import { ParkStatus } from './user/park-status';
 import { ParkInfo } from './user/park-info';
 import { Comments } from './user/comments';
-import { InitialSignup } from './user/signup';
-import { InitialLogin } from './user/login';
+import { InitialSignup } from './authen/signup';
+import { InitialLogin } from './authen/login';
 import { AllParks } from './user/all-parks';
 import { SearchInfo } from './user/search-info';
 import { FavoriteMark } from './user/favorite-mark';
@@ -22,12 +22,19 @@ import { UserChart } from './admin/user-chart';
 import { RatingChart } from './admin/rating-chart';
 import { TransChart } from './admin/trans-chart';
 
+import { OwnerParks } from './owner/owner-parks';
+import { OwnerParkInfo } from './owner/park-info';
+import { OwnerParkReview } from './owner/park-review';
+import { OwnerParkStatus } from './owner/park-status';
+import { BookList } from './owner/book-list';
+import { InitialChangePass} from './account/change-pass';
+import { Snackbar } from './snackbar';
+
 import { LoveParks } from './account/love-parks';
 import { OrderParks } from './account/order-parks';
 import { HistoryParks } from './account/history-parks';
 import { InfoUser } from './account/info-user';
 import { InitialChangInfo } from './account/change-info';
-import { InitialChangePass} from './account/change-pass';
 import { InitialDeleteUser} from './account/delete-user';
 import { InitialDeleteLovepark } from './account/delete-lovepark';
 import { InitialDeleteHistorypark } from './account/delete-historypark';
@@ -36,6 +43,8 @@ import { InitialDeleteOrderpark } from './account/delete-orderpark';
 export const ConfigureStore = () => {
     const store = createStore(
         combineReducers({
+            snackbar: Snackbar,
+
             best_parks: BestParks,
             cheap_parks: CheapParks,
             near_parks: NearParks,
@@ -58,16 +67,26 @@ export const ConfigureStore = () => {
             history_parks: HistoryParks,
             info_user: InfoUser,
 
+            owner_parks: OwnerParks,
+            owner_park_info: OwnerParkInfo,
+            owner_park_review: OwnerParkReview,
+            owner_park_status: OwnerParkStatus,
+            book_list: BookList,
+            
             form: formReducer,
             ...createForms({
                 signup: InitialSignup,
                 login: InitialLogin,
+                sendCode: {username: ""},
+                forgotten: {username: "", code: ""},
+                newPassword: {username: "", password: ""},
                 changeinfo: InitialChangInfo,
                 changepass:InitialChangePass,
                 deleteUser: InitialDeleteUser,
                 deleteLovepark: InitialDeleteLovepark,
                 deleteHistorypark: InitialDeleteHistorypark,
-                deleteOrderpark: InitialDeleteOrderpark
+                deleteOrderpark: InitialDeleteOrderpark,
+                
             })
         }),
         applyMiddleware(thunk, logger)

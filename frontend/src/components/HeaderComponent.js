@@ -5,7 +5,7 @@ import {
     NavItem, NavbarToggler, Nav, Collapse, Navbar,
     NavbarBrand, Button
 } from "reactstrap";
-import { Logout } from "../redux/UserActionCreators";
+import { Logout } from "../redux/AuthenActionCreators";
 
 const mapDispatchToProps = dispatch => ({
     Logout: () => dispatch(Logout())
@@ -26,7 +26,7 @@ function Info(props) {
     return (
         <NavItem>
             {!login &&
-                <Link to='/user/login'>
+                <Link to='/login'>
                     <Button outline >
                         <span className="fa fa-sign-in fa-lg"></span> Đăng nhập
                     </Button>
@@ -35,7 +35,14 @@ function Info(props) {
             {login && sessionStorage.getItem('role') == 'user' &&
                 <Link to='/account/info'>
                     <Button outline>
-                        <span className="fa fa-sign-in fa-lg"></span> Quản lý tài khoản
+                        <span className="fa fa-sign-in fa-lg"></span> Tài khoản
+                    </Button>
+                </Link>
+            }
+            {login && sessionStorage.getItem('role') == 'owner' &&
+                <Link to='/account/info'>
+                    <Button outline>
+                        <span className="fa fa-sign-in fa-lg"></span> Tài khoản
                     </Button>
                 </Link>
             }
@@ -73,27 +80,22 @@ class Header extends Component {
             <>
                 <Navbar expand="lg" style={{ backgroundColor: '#CEE5D0' }}>
                     <NavbarToggler onClick={this.toggleNav} />
-                    <NavbarBrand className="app-name ms-auto" href="/">Park Type</NavbarBrand>
+                    <NavbarBrand className="app-name ms-auto">Park Type</NavbarBrand>
                     <Collapse isOpen={this.state.isNavOpen} navbar>
                         <Nav className="ms-auto" navbar>
                             <NavItem>
                                 <NavLink style={{ color: '#3E7C17' }} className="nav-link" to="/">
-                                    <strong>Nav Example</strong>
+                                    <strong>Tìm bãi đỗ</strong>
                                 </NavLink>
                             </NavItem>
                             <NavItem>
                                 <NavLink style={{ color: '#3E7C17' }} className="nav-link" to="/">
-                                    <strong>Nav Example</strong>
+                                    <strong>Quản lý bãi đỗ</strong>
                                 </NavLink>
                             </NavItem>
                             <NavItem>
                                 <NavLink style={{ color: '#3E7C17' }} className="nav-link" to="/">
-                                    <strong>Nav Example</strong>
-                                </NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink style={{ color: '#3E7C17' }} className="nav-link" to="/">
-                                    <strong>Nav Example</strong>
+                                    <strong>Về chúng tôi</strong>
                                 </NavLink>
                             </NavItem>
 

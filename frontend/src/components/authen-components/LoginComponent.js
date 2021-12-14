@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Label, Row, Col } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
-import { postLogin } from "../../redux/UserActionCreators";
+import { postLogin } from "../../redux/AuthenActionCreators";
 import { connect } from "react-redux";
 import { fetchInfoUser} from "../../redux/AccountActionCreators";
 import { withRouter } from 'react-router-dom'
@@ -30,16 +30,16 @@ class Login extends Component {
     render() {
         return (
             <div className="container">
-                <div className="row row-content">
-                    <div className="col-12 col-md-8 offset-2">
-                      <h3>Đăng nhập tài khoản</h3>
+                <div className="row row-content" style={{boxShadow: "0 3px 10px 0 rgb(0 0 0 / 20%)", width: "60vw", paddingLeft: "0px", marginTop: "30px ", marginBottom: "30px"}}>
+                    <div className="col-12 col-md-8 offset-2" style={{marginBottom: "20px"}}>
+                      <h3 style={{fontWeight: 'bold', color: 'green'}}>Đăng nhập tài khoản</h3>
                       <p>Chào mừng đến với ParkType! Đăng nhập vào tài khoản của bạn!</p>
                     </div>
                     <div className="col-12 col-md-8 offset-2">
                         <LocalForm model="login" onSubmit={(values) => this.handleSubmit(values)}>
                             <Row className="form-group">
-                                <Label htmlFor="username" md={2}>Username</Label>
-                                <Col md={10}>
+                            <Label htmlFor="username" md={3}>Tên người dùng</Label>
+                                <Col md={12}>
                                     <Control.text model=".username" id="username" name="username"
                                         placeholder="Username"
                                         className="form-control"
@@ -59,8 +59,8 @@ class Login extends Component {
                             </Row>
                             
                             <Row className="form-group">
-                                <Label htmlFor="password" md={2}>Password</Label>
-                                <Col md={10}>
+                                <Label htmlFor="password" md={3}>Mật khẩu</Label>
+                                <Col md={12}>
                                     <Control model=".password" id="password" name="password"
                                         type="password"
                                         className="form-control"
@@ -78,11 +78,13 @@ class Login extends Component {
                                      />
                                 </Col>
                             </Row>
-                            <p>Quên mật khẩu?</p>
-                            <Button type="submit" value="submit" color="primary">Đăng nhập</Button>
-                            <p>Bạn chưa có tài khoản?</p>
-                            <Link to="/user/register">
-                                <Button>Đăng ký</Button>
+                            <Link to="/forgotten" style={{textDecoration: "none", color: "green", fontWeight: "bold"}}>
+                                <p className='col-12 col-md-3 offset-9' >Quên mật khẩu?</p>
+                            </Link>
+                            <Button type="submit" value="submit" color="success" className='col-12 col-md-8 offset-2' style={{height: "50px", fontWeight: "bold", fontSize: "large"}}>Đăng nhập</Button>
+                            <p style={{marginTop: "20px", textAlign: "center"}}>Bạn chưa có tài khoản?</p>
+                            <Link to="/register">
+                            <Button className='col-12 col-md-8 offset-2' style={{height: "50px", fontWeight: "bold", fontSize: "large"}}>Tạo tài khoản</Button>
                             </Link>
                         </LocalForm>
                     </div>

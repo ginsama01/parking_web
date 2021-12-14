@@ -15,7 +15,7 @@ var accountAdminRouter = require('./routes/account.admin.router');
 var accountUserRouter = require('./routes/account.user.router');
 var chartRouter = require('./routes/chart.admin.router');
 var authenRouter = require('./routes/authen.router');
-var uploadRouter = require('./routes/upload.park.image.router');
+var uploadRouter = require('./routes/upload.image.router');
 var config = require('./config');
 const { cors, corsWithOptions } = require('./routes/cors');
 

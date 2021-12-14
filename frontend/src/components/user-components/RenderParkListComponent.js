@@ -44,6 +44,9 @@ function RenderParkCard({ park, selectedPark, setSelectedPark }) {
 
 export const ParkList = (props) => {
     const { selectedPark, setSelectedPark } = props;
+    React.useEffect(() => {
+        console.log(props.filter);
+    }, [props.filter])
     if (props.isLoading) {
         return (
             <div className="container">
@@ -61,6 +64,10 @@ export const ParkList = (props) => {
             <div className="container">
                 <Media list>
                     {props.parks.parks.map((park) => {
+                        if ((props.filter.camera == true || park.hasCamera == true) 
+                            && (props.filter.roof == true || park.hasRoof == true)
+                            && (props.filter.booking == true || park.allowBooking == true)
+                            && (props.filter.overnight == true || park.allowOvernight == true))
                         return (
                             <div key={park.id} style={{ margin: "15px 0px 0px -70px" }}>
                                 <RenderParkCard park={park} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />

@@ -18,25 +18,34 @@ accountRouter.route('/userinfo')
             res.setHeader('Content-Type', 'application/json');
             res.json(result);
         }, (err) => next(err))
-        .catch(err => next(err))
+            .catch(err => next(err))
     })
     .delete(authenticate.verifyAdmin, (req, res, next) => {
         console.log(req.body);
-        models.User.destroy({
+        models.Account.findAll({
             where: {
-                user_id: req.body.users_delete
+                id: req.body.users_delete
             }
-        }).then(() => {
-            models.Account.destroy({
+        }).then(result => {
+            result.forEach(account => models.Banlist.create({ ban_email: account.dataValues.email }));
+            models.User.destroy({
                 where: {
-                    id: req.body.users_delete
+                    user_id: req.body.users_delete
                 }
             }).then(() => {
-                res.statusCode = 200;
-                res.json({sucess: true});
+                models.Account.destroy({
+                    where: {
+                        id: req.body.users_delete
+                    }
+                }).then(() => {
+                    res.statusCode = 200;
+                    res.json({ sucess: true });
+                }, err => next(err))
             }, err => next(err))
+                .catch(err => next(err));
         }, err => next(err))
-        .catch(err => next(err));  
+            .catch(err => next(err));
+
     })
 
 accountRouter.route('/ownerinfo')
@@ -54,36 +63,44 @@ accountRouter.route('/ownerinfo')
                     }).then(parks => {
                         resObj[i]['parks'] = parks;
                     }, (err) => next(err))
-                    .catch(err => next(err))
+                        .catch(err => next(err))
                 );
             }
             Promise.all(promises)
-            .then(() => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(resObj);
-            }, (err) => next(err))
-            .catch(err => next(err));
+                .then(() => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(resObj);
+                }, (err) => next(err))
+                .catch(err => next(err));
         }, (err) => next(err))
-        .catch(err => next(err))
+            .catch(err => next(err))
     })
     .delete(authenticate.verifyAdmin, (req, res, next) => {
         console.log(req.body);
-        models.Owner.destroy({
+        models.Account.findAll({
             where: {
-                own_id: req.body.owners_delete
+                id: req.body.owners_delete
             }
-        }).then(() => {
-            models.Account.destroy({
+        }).then(result => {
+            result.forEach(account => models.Banlist.create({ ban_email: account.dataValues.email }));
+            models.Owner.destroy({
                 where: {
-                    id: req.body.owners_delete
+                    own_id: req.body.owners_delete
                 }
             }).then(() => {
-                res.statusCode = 200;
-                res.json({sucess: true});
+                models.Account.destroy({
+                    where: {
+                        id: req.body.owners_delete
+                    }
+                }).then(() => {
+                    res.statusCode = 200;
+                    res.json({ sucess: true });
+                }, err => next(err))
             }, err => next(err))
+                .catch(err => next(err));
         }, err => next(err))
-        .catch(err => next(err));  
+            .catch(err => next(err));
     })
-    
+
 module.exports = accountRouter;

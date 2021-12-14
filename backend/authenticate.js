@@ -16,11 +16,21 @@ exports.getCodeVerify = (id) => {
 
 exports.getIdCode = (code) => {
     try {
-        var decode = jwt.verify(token, config.secretKey);
+        var decode = jwt.verify(code, config.verifyKey);
         return decode.id;
     } catch(error) {
         return 'Wrong';
     }
+}
+
+exports.getCodeForgotten = () => {
+    const getRndInterger = (min, max) => {
+        return Math.floor(Math.random() * (max - min + 1) ) + min;
+    } 
+    var rand1 = getRndInterger(0, 9);
+    var rand2 = getRndInterger(0, 99999);
+    var code = "" + rand1 + rand2;
+    return code;
 }
 
 exports.getAccountId = (req) => {
@@ -31,7 +41,35 @@ exports.getAccountId = (req) => {
 
 exports.sendEmail = (url, email, code) => {
     var email = email;
-    var token = token;
+    var code = code;
+    var mail = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'parkingwebtest@gmail.com',
+            pass: 'parkingweb123'
+        }
+    });
+    var mailOptions = {
+        from: 'parkingwebtest@gmail.com',
+        to: email,
+        subject: 'Park Type - Account verification',
+        html: '<p>You requested for email verification, kindly use this <a href="' + url 
+        + '/verify?code=' + code + '">link</a> to verify your email address</p>'
+    }
+    mail.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(error);
+            return error.message;
+        } else {
+            return 'Success';
+        }
+    })
+}
+
+exports.sendCode = (email, code) => {
+    var email = email;
+    var code = code;
+    console.log(code);
     var mail = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -44,8 +82,7 @@ exports.sendEmail = (url, email, code) => {
         from: 'parkingwebtest@gmail.com',
         to: email,
         subject: 'Park Type - Account verification',
-        html: '<p>You requested for email verification, kindly use this <a href="' + url 
-        + 'verify?token=' + token + '">link</a> to verify your email address</p>'
+        html: '<p>Your code: ' + code + '</p>'
     }
 
     mail.sendMail(mailOptions, (error, info) => {
@@ -53,10 +90,11 @@ exports.sendEmail = (url, email, code) => {
             console.log(error);
             return error.message;
         } else {
-            return 'Success';
+            return code;
         }
     })
 }
+
 
 exports.verifyUser = (req, res, next) => {
     if (!req.signedCookies.token) {

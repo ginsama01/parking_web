@@ -243,13 +243,13 @@ function OrderPark(props) {
   const handleClick = (event, id, status) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
-    if (selectedIndex === -1 ) {
+    if (selectedIndex === -1 && status === "Đang đặt trước") {
       newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
+    } else if (selectedIndex === 0 && status === "Đang đặt trước") {
       newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
+    } else if (selectedIndex === selected.length - 1 && status === "Đang đặt trước") {
       newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
+    } else if (selectedIndex > 0 && status === "Đang đặt trước") {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1),
@@ -258,8 +258,7 @@ function OrderPark(props) {
 
     setSelected(newSelected);
   };
-  const handleRowClick = (event, id) => {
-  }
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -286,12 +285,12 @@ function OrderPark(props) {
     
   return (
     <Row>
-        <Col className="col-3">
+        <Col sm='3' xs='12'>
             <Layout></Layout>
         </Col>
-        <Col className="col-9">
+        <Col>
             <div className="row row-content" style={{backgroundColor: '#F8F9FB', borderRadius: '20px'}}>
-            <div className="col-12 ">
+            <div className="col-12 col-md-8 offset-2">
                 <h3 style={{color:'green', fontWeight:'bold'}}>Danh sách đặt trước</h3>
             </div>
             <Box sx={{ width: '100%' }}>
@@ -323,7 +322,7 @@ function OrderPark(props) {
                           return (
                             <TableRow
                               hover
-                              onClick={(event) => handleRowClick(event, row.pending_id)}
+                              onClick={(event) => handleClick(event, row.pending_id, row.status)}
                               role="checkbox"
                               aria-checked={isItemSelected}
                               tabIndex={-1}
@@ -333,7 +332,6 @@ function OrderPark(props) {
                               <TableCell >
                               {row.status === "Đang đặt trước" ?
                                 (<Checkbox
-                                  onClick={(event) => handleClick(event, row.pending_id)}
                                   color="primary"
                                   checked={isItemSelected}
                                   inputProps={{

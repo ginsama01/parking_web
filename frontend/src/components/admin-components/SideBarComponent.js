@@ -1,6 +1,6 @@
 import { List, ListItem, ListItemIcon, ListItemText, Box, Divider } from "@mui/material";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { Logout } from "../../redux/UserActionCreators";
+import { Logout } from "../../redux/AuthenActionCreators";
 import { connect } from "react-redux";
 
 const mapDispatchToProps = dispatch => ({

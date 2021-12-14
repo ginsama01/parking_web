@@ -4,9 +4,5 @@ export const InitialChangInfo = {
     lastname: '',
     email: '',
     phone: '',
-    address: '',
-    password:'', 
-    newpass:'',
-    repass:''
-
+    address: ''
 };

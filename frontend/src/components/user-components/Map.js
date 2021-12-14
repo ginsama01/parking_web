@@ -37,7 +37,16 @@ function Map(props) {
 				setCoordinate({lat: marker.lat, lng: marker.lng});
 			}
 		})
-	}, [selectedPark])
+	}, [selectedPark]);
+
+	React.useEffect(() => {
+		markers.map(marker => {
+			if (marker.park_id == selectedPark) {
+				setCoordinate({lat: marker.lat, lng: marker.lng});
+			}
+		})
+	}, [markers])
+	
 	React.useEffect(() => {
 		props.all_parks.parks.map(park =>
 			geocodeByAddress(park.location)

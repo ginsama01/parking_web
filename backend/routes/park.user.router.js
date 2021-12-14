@@ -62,7 +62,7 @@ parkRouter.route('/search')
             timein = req.body.timein;
             lat = req.body.address.location.lat;
             lng = req.body.address.location.lng;
-            dbConnect.query("SELECT park_id AS id, name, image_url AS image, price, location, (SELECT AVG(rating) FROM comment WHERE rela_id IN " +
+            dbConnect.query("SELECT park_id AS id, name, image_url AS image, price, location, hasCamera, hasRoof, allowBooking, allowOvernight, (SELECT AVG(rating) FROM comment WHERE rela_id IN " +
                 "(SELECT rela_id FROM park_user WHERE park_id = park.park_id)) AS rate, (SELECT COUNT(rating) FROM comment WHERE" +
                 " rela_id IN (SELECT rela_id FROM park_user WHERE park_id = park.park_id)) AS numOfRate FROM park", {
                 type: dbConnect.QueryTypes.SELECT
