@@ -1,11 +1,12 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
+import { setSnackbar } from './AuthenActionCreators';
 
 // get parks for owner
 export const fetchOwnerParks = () => (dispatch) => {
     dispatch(ownerParksLoading(true));
 
-    return fetch(baseUrl + 'owner/parks/info')
+    return fetch(baseUrl + 'owner/parks/info',{credentials: 'include'})
         .then(response => {
             if (response.ok) {
                 return response;
@@ -42,7 +43,7 @@ export const addOwnerParks = (owner_parks) => ({
 export const fetchOwnerParkInfo = (park_id) => (dispatch) => {
     dispatch(ownerParkInfoLoading(true));
 
-    return fetch(baseUrl + 'owner/parks/info/' + park_id)
+    return fetch(baseUrl + 'owner/parks/info/' + park_id,{credentials: 'include'})
         .then(response => {
             if (response.ok) {
                 return response;
@@ -103,27 +104,24 @@ export const pushEditParkInfo = (park_id, name, total_space, location, price, ha
             },
             credentials: 'include'
         })
-            .then(response => {
-                if (response.ok) {
-                    return response;
-                }
-                else {
-                    throw response;
-                }
-            },
-                error => {
-                    var errmess = new Error(error.message);
-                    throw errmess;
-                })
-            .then(response => response.json())
-            .then((editParkInfo) => {
-                alert(editParkInfo);
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                throw response;
+            }
+        })
+        .then(response => response.json())
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Chỉnh sửa thành công")); 
+            return response;
+        })
+        .catch(error =>  {
+            error.json().then(body => {
+                dispatch(setSnackbar(true, "error", body.message));
             })
-            .catch(error => {
-                error.json().then(body => {
-                    alert(body.message);
-                })
-            });
+        });
+
     }
 
 // post park image
@@ -139,29 +137,19 @@ export const postParkImages = (park_id, images) => (dispatch) => {
         },
         credentials: 'include'
     })
-        .then(response => {
-            if (response.ok) {
-                return response;
-            }
-            else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
-        .then(response => response.json())
-        .then((newImages) => {
-            alert(newImages);
+    .then(response => {
+        if (response.ok) {
+            return response;
+        } else {
+            throw response;
+        }
+    })
+    .then(response => response.json())
+    .catch(error =>  {
+        error.json().then(body => {
+            dispatch(setSnackbar(true, "error", body.message));
         })
-        .catch(error => {
-            error.json().then(body => {
-                alert(body.message);
-            })
-        });
+    });
 }
 
 
@@ -192,29 +180,23 @@ export const postNewPark = (name, total_space, location, price, hasCamera, hasRo
             },
             credentials: 'include'
         })
-            .then(response => {
-                if (response.ok) {
-                    return response;
-                }
-                else {
-                    var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                    error.response = response;
-                    throw error;
-                }
-            },
-                error => {
-                    var errmess = new Error(error.message);
-                    throw errmess;
-                })
-            .then(response => response.json())
-            .then((newPark) => {
-                return (newPark);
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                throw response;
+            }
+        })
+        .then(response => response.json())
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Tạo bãi đỗ thành công")); 
+            return response;
+        })
+        .catch(error =>  {
+            error.json().then(body => {
+                dispatch(setSnackbar(true, "error", body.message));
             })
-            .catch(error => {
-                error.json().then(body => {
-                    alert(body.message);
-                })
-            });
+        });
     }
 
 // delete a park
@@ -229,30 +211,26 @@ export const deletePark = (park_id) => (dispatch) => {
             if (response.ok) {
                 return response;
             } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
-        .then(park_id => {
-            alert('Đã xóa ' + park_id);
         })
-        .catch(error => {
+        .then(response => response.json())
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Xóa bãi đỗ thành công")); 
+            return response;
+        })
+        .catch(error =>  {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
-}
 
+    }
 // fetch park review
 export const fetchParkReview = (park_id) => (dispatch) => {
     dispatch(parkReviewLoading(true));
 
-    return fetch(baseUrl + 'owner/parks/rating/' + park_id)
+    return fetch(baseUrl + 'owner/parks/rating/' + park_id,{credentials: 'include'})
         .then(response => {
             if (response.ok) {
                 return response;
@@ -289,7 +267,7 @@ export const addParkReview = (owner_park_info) => ({
 export const fetchParkStatus = (park_id) => (dispatch) => {
     dispatch(parkStatusLoading(true));
 
-    return fetch(baseUrl + 'owner/parks/status/' + park_id)
+    return fetch(baseUrl + 'owner/parks/status/' + park_id,{credentials: 'include'})
         .then(response => {
             if (response.ok) {
                 return response;
@@ -326,7 +304,7 @@ export const addParkStatus = (owner_park_info) => ({
 export const fetchBookList = (park_id) => (dispatch) => {
     dispatch(bookListLoading(true));
 
-    return fetch(baseUrl + 'owner/parks/pending/' + park_id)
+    return fetch(baseUrl + 'owner/parks/pending/' + park_id, {credentials: 'include'})
         .then(response => {
             if (response.ok) {
                 return response;
@@ -372,29 +350,23 @@ export const postNewStatus = (park_id, value) => (dispatch) => {
         },
         credentials: 'include'
     })
-        .then(response => {
-            if (response.ok) {
-                return response;
-            }
-            else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
-        .then(response => response.json())
-        .then((newStatus) => {
-            return (newStatus);
+    .then(response => {
+        if (response.ok) {
+            return response;
+        } else {
+            throw response;
+        }
+    })
+    .then(response => response.json())
+    .then(response => {
+        dispatch(setSnackbar(true, "success", "Cập nhật thành công")); 
+        return response;
+    })
+    .catch(error =>  {
+        error.json().then(body => {
+            dispatch(setSnackbar(true, "error", body.message));
         })
-        .catch(error => {
-            error.json().then(body => {
-                alert(body.message);
-            })
-        });
+    });
 }
 
 // owner verify booking
@@ -404,29 +376,23 @@ export const putBooking = (pending_id) => (dispatch) => {
         method: 'PUT',
         credentials: 'include'
     })
-        .then(response => {
-            if (response.ok) {
-                return response;
-            }
-            else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
-        .then(response => response.json())
-        .then(() => {
-            alert("verified")
+    .then(response => {
+        if (response.ok) {
+            return response;
+        } else {
+            throw response;
+        }
+    })
+    .then(response => response.json())
+    .then(response => {
+        dispatch(setSnackbar(true, "success", "Xác nhận đặt trước")); 
+        return response;
+    })
+    .catch(error =>  {
+        error.json().then(body => {
+            dispatch(setSnackbar(true, "error", body.message));
         })
-        .catch(error => {
-            error.json().then(body => {
-                alert(body.message);
-            })
-        });
+    });
 }
 
 // owner report booking
@@ -436,27 +402,21 @@ export const deleteBooking = (pending_id) => (dispatch) => {
         method: 'DELETE',
         credentials: 'include'
     })
-        .then(response => {
-            if (response.ok) {
-                return response;
-            }
-            else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
-        .then(response => response.json())
-        .then(() => {
-            alert("deleted")
+    .then(response => {
+        if (response.ok) {
+            return response;
+        } else {
+            throw response;
+        }
+    })
+    .then(response => response.json())
+    .then(response => {
+        dispatch(setSnackbar(true, "success", "Xác nhận hủy đặt trước")); 
+        return response;
+    })
+    .catch(error =>  {
+        error.json().then(body => {
+            dispatch(setSnackbar(true, "error", body.message));
         })
-        .catch(error => {
-            error.json().then(body => {
-                alert(body.message);
-            })
-        });
+    });
 }

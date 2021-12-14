@@ -92,7 +92,7 @@ function OwnerParks(props) {
                 <h1 style={{ fontWeight: "bolder" }}>Bãi đỗ của tôi</h1>
             </Grid>
             <div style={{ margin: "3% 0% 3% 3%" }}>
-                {props.owner_parks.owner_parks.length > 0 &&
+                {props.owner_parks.owner_parks.length >= 0 &&
                     <Grid container spacing={4}>
                         <Grid item>
                             <Card sx={{ width: 400, height: 400 }} style={{ backgroundColor: '#CEE5D0' }}>
@@ -113,7 +113,8 @@ function OwnerParks(props) {
                                         setIsChange={setIsChange} />
                                 </Grid>
                             );
-                        })}</Grid>}
+                        })}
+                        </Grid>}
             </div>
         </div>
     );

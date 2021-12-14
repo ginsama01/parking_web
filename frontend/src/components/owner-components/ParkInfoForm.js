@@ -108,9 +108,9 @@ function ParkInfoForm(props) {
             }
         } else {
             event.preventDefault();
-            postInfo(props.id, props.name, props.total_space, props.location, props.price, props.hasCamera, props.hasRoof, props.allowOvernight, props.allowBooking, props.description, props.open_time, props.close_time, props.allow24h, props.removeImages);
+            await postInfo(props.id, props.name, props.total_space, props.location, props.price, props.hasCamera, props.hasRoof, props.allowOvernight, props.allowBooking, props.description, props.open_time, props.close_time, props.allow24h, props.removeImages);
             postImage(props.id, images);
-            history.push("/owner/myparks");
+            history.push("/owner/info/" + props.id);
         }
     }
 

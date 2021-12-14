@@ -112,7 +112,7 @@ accountRouter.route('/verify')
         if (decodeId == 'Wrong') {
             
             res.statusCode = 403;
-            res.json({ message: 'Can not verify. Maybe code is invalid or time out' });
+            res.json({ message: 'Không thể xác thực. Có thể mã code đã hết thời hạn' });
         } else {
             dbConnect.query("SELECT id FROM account WHERE id = " + decodeId + ";", {
                 type: dbConnect.QueryTypes.SELECT
@@ -151,11 +151,17 @@ accountRouter.route('/verify')
                 .catch(err => next(err));
         }
     })
-    .post((req, res, next) => {
+    .post(authenticate.verifyUserOrOwner, (req, res, next) => {
         var id = authenticate.getAccountId(req);
-        authenticate.sendEmail(req.hostname, req.body.email, authenticate.getCodeVerify(id));
-        res.statusCode = 201;
-        res.json({ success: true, status: 'Please check your email to verify account' });
+        dbConnect.query("SELECT email FROM account WHERE id = " + id, {
+            type: dbConnect.QueryTypes.SELECT
+        }).then(result => {
+            authenticate.sendEmail(req.headers.origin, result[0].email, authenticate.getCodeVerify(id));
+            res.statusCode = 201;
+            res.json({ success: true, status: 'Please check your email to verify account' });
+        }, err => next(err))
+        .catch(err => next(err))
+        
     })
 
     accountRouter.route('/forgotten')
@@ -224,7 +230,7 @@ accountRouter.route('/changepass')
         }).then((result) => {
             if (result[0].password != req.body.password) {
                 res.statusCode = 403;
-                res.json({message: "Mật khẩu cũ không đúng"});
+                res.json({message: "Mật khẩu hiện tại không đúng"});
             } else {
                 models.Account.update({password: req.body.newpass}, {
                     where: {

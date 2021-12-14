@@ -7,6 +7,7 @@ const parkRouter = express.Router();
 
 parkRouter.use(express.json());
 
+//Fetch park list for admin
 parkRouter.route('/')
     .get(authenticate.verifyAdmin, (req, res, next) => {
         dbConnect.query("SELECT p.park_id AS id, p.name, p.location, p.price, p.hasRoof, p.hasCamera, p.allowOvernight, p.allowBooking, p.description, "
@@ -19,6 +20,7 @@ parkRouter.route('/')
         }, (err) => next(err))
         .catch(err => next(err))
     })
+    //delete park for admin
     .delete(authenticate.verifyAdmin, (req, res, next) => {
         console.log(req.body);
         models.Park.destroy({
@@ -33,6 +35,7 @@ parkRouter.route('/')
     })
 
 parkRouter.route('/verify')
+//verify park for admin
     .post(authenticate.verifyAdmin, (req, res, next) => {
         models.Park.update({isActivated: true}, {
             where: {

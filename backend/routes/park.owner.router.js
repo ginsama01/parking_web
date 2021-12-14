@@ -8,9 +8,9 @@ const ownRouter = express.Router();
 ownRouter.use(express.json());
 
 ownRouter.route('/info')
-    .get((req, res, next) => {
-        //const own_id = authenticate.getAccountId(req);
-        const own_id = 3;
+    //Fetch parks info of an owner
+    .get(authenticate.verifyOwner, (req, res, next) => {
+        const own_id = authenticate.getAccountId(req);
         dbConnect.query("SELECT park_id AS id, name, image_url, location, total_space, price, isActivated, hasCamera, hasRoof, allowOvernight, allowBooking, description, open_time "
             + "FROM park WHERE own_id = " + own_id + ";", {
             type: dbConnect.QueryTypes.SELECT
@@ -25,23 +25,36 @@ ownRouter.route('/info')
         }, (err) => next(err))
             .catch((err) => next(err));
     })
-    .post((req, res, next) => {
-        let parkJson = req.body;
-        //parkJson["own_id"] = authenticate.getAccountId(req);
-        parkJson["own_id"] = 3;
-        parkJson['open_time'] = parkJson['allow24h'] == true ? 'Cả ngày' : parkJson['open_time'] + ' - ' + parkJson['close_time'];
-        models.Park.create(parkJson)
-            .then((park) => {
-                console.log('Park created ', park);
-                res.statusCode = 201;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({success: true, park_id: park.dataValues.park_id});
-            }, (err) => next(err))
-            .catch((err) => next(err));
+    //Create a park
+    .post(authenticate.verifyOwner, (req, res, next) => {
+        const own_id = authenticate.getAccountId(req);
+        dbConnect.query("SELECT isactivated FROM owner WHERE own_id = " + own_id, {
+            type: dbConnect.QueryTypes.SELECT
+        }).then((result) => {
+            if (result.isactivated == false) {
+                res.statusCode = 403;
+                res.json({ message: "Tạo bãi đỗ thất bại. Tài khoản chưa được xác minh" })
+            } else {
+                let parkJson = req.body;
+                parkJson["own_id"] = authenticate.getAccountId(req);
+                parkJson["location"] = JSON.parse(parkJson.location).name;
+                parkJson['open_time'] = parkJson['allow24h'] == true ? 'Cả ngày' : parkJson['open_time'] + ' - ' + parkJson['close_time'];
+                models.Park.create(parkJson)
+                    .then((park) => {
+                        res.statusCode = 201;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json({ success: true, park_id: park.dataValues.park_id });
+                    }, (err) => next(err))
+                    .catch((err) => next(err));
+            }
+        }, err => next(err))
+        .catch(err => next(err));
+
     });
 
+//Fetch info of a park
 ownRouter.route('/info/:id')
-    .get((req, res, next) => {
+    .get(authenticate.verifyOwner, (req, res, next) => {
         dbConnect.query("SELECT park_id AS id, name, image_url, location, total_space, price, hasCamera, hasRoof, allowOvernight, allowBooking, description, open_time "
             + "FROM park WHERE park_id = " + req.params.id + ";", {
             type: dbConnect.QueryTypes.SELECT
@@ -65,18 +78,19 @@ ownRouter.route('/info/:id')
         }, (err) => next(err))
             .catch((err) => next(err));
     })
-    .put((req, res, next) => {
+    //Change info of a park
+    .put(authenticate.verifyOwner, (req, res, next) => {
         let parkJson = req.body;
-        //parkJson["own_id"] = authenticate.getAccountId(req);
-        parkJson["own_id"] = 3;
-        console.log(1);
+        console.log(parkJson);
+        parkJson["own_id"] = authenticate.getAccountId(req);
+        parkJson["location"] = JSON.parse(parkJson.location).name;
         parkJson['open_time'] = parkJson['allow24h'] == true ? 'Cả ngày' : parkJson['open_time'] + ' - ' + parkJson['close_time'];
         dbConnect.query("SELECT image_url FROM park WHERE park_id = " + req.params.id + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then(images => {
             var image = images[0].image_url;
             var image_del = [];
-            parkJson['images'].forEach(image => {
+            parkJson['removeImages'].forEach(image => {
                 image_del.push(image.img)
             });
             var image_current = image === null ? [] : image.split(',');
@@ -98,28 +112,30 @@ ownRouter.route('/info/:id')
                     park_id: req.params.id
                 }
             }).then((park) => {
-                    res.statusCode = 201;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json({success: true});
-                }, (err) => next(err))
+                res.statusCode = 201;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({ success: true });
+            }, (err) => next(err))
                 .catch((err) => next(err));
         }, (err) => next(err))
             .catch(err => next(err));
     })
-    .delete((req, res, next) => {
+    //Delete a park
+    .delete(authenticate.verifyOwner, (req, res, next) => {
         models.Park.destroy({
             where: {
                 park_id: req.params.id
             }
         }).then(() => {
             res.statusCode = 204;
-            res.json({success: true});
+            res.json({ success: true });
         }, err => next(err))
-        .catch(err => next(err));
+            .catch(err => next(err));
     })
 
+//Fetch rating of a park
 ownRouter.route('/rating/:parkId')
-    .get((req, res, next) => {
+    .get(authenticate.verifyOwner, (req, res, next) => {
         dbConnect.query("SELECT AVG(rating) AS avg_rating, COUNT(*) AS total_rating, COUNT(CASE WHEN rating = 0 THEN 1 ELSE null END) AS rating_old, "
             + "COUNT(CASE WHEN rating = 1 THEN 1 ELSE null END) AS rating_one, "
             + "COUNT(CASE WHEN rating = 2 THEN 1 ELSE null END) AS rating_two, "
@@ -141,11 +157,12 @@ ownRouter.route('/rating/:parkId')
             }, err => next(err))
                 .catch(err => next(err));
         }, err => next(err))
-        .catch(err => next(err));
+            .catch(err => next(err));
     })
 
+//Fetch status of a park
 ownRouter.route('/status/:parkId')
-    .get((req, res, next) => {
+    .get(authenticate.verifyOwner, (req, res, next) => {
         dbConnect.query("SELECT park_id, name, total_space, total_in FROM park WHERE park_id = " + req.params.parkId + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then(result => {
@@ -153,38 +170,40 @@ ownRouter.route('/status/:parkId')
             res.setHeader('Content-Type', 'application/json');
             res.json(result[0]);
         }, err => next(err))
-        .catch(err => next(err));
+            .catch(err => next(err));
     })
-    .post((req, res, next) => {
+    //change info of a park
+    .post(authenticate.verifyOwner, (req, res, next) => {
         var control = req.body.control;
         if (control == true) {
-            models.Park.increment({total_in: 1}, {
+            models.Park.increment({ total_in: 1 }, {
                 where: {
                     park_id: req.params.parkId
                 }
             }).then(() => {
                 res.statusCode = 201;
-                res.json({status: "success"});
+                res.json({ status: "success" });
             }, err => next(err))
-            .catch(err => next(err));
+                .catch(err => next(err));
         } else {
-            models.Park.increment({total_in: -1}, {
+            models.Park.increment({ total_in: -1 }, {
                 where: {
                     park_id: req.params.parkId
                 }
             }).then(() => {
                 res.statusCode = 201;
-                res.json({status: "success"});
+                res.json({ status: "success" });
             }, err => next(err))
-            .catch(err => next(err));
+                .catch(err => next(err));
         }
     })
 
 ownRouter.route('/pending/:parkId')
-    .get((req, res, next) => {
-        dbConnect.query("SELECT p.pending_id, a.username, CONCAT(a.firstname, ' ', a.lastname) AS name, a.phone, p.time_start " 
-        + "FROM pending p JOIN park_user pu ON p.rela_id = pu.rela_id JOIN account a ON pu.user_id = a.id "
-        + "WHERE p.status = 'Đang đặt trước' AND pu.park_id = " + req.params.parkId + ";", {
+//Fetch list pending of a park
+    .get(authenticate.verifyOwner, (req, res, next) => {
+        dbConnect.query("SELECT p.pending_id, a.username, CONCAT(a.firstname, ' ', a.lastname) AS name, a.phone, p.time_start "
+            + "FROM pending p JOIN park_user pu ON p.rela_id = pu.rela_id JOIN account a ON pu.user_id = a.id "
+            + "WHERE p.status = 'Đang đặt trước' AND pu.park_id = " + req.params.parkId + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then(result => {
             res.statusCode = 200;
@@ -192,41 +211,72 @@ ownRouter.route('/pending/:parkId')
             res.json(result);
         })
     })
-    .put((req, res, next) => {
-        models.Pending.update({status: "Đã hoàn thành"}, {
+    //Push one pending to park
+    .put(authenticate.verifyOwner, (req, res, next) => {
+        models.Pending.update({ status: "Đã hoàn thành" }, {
             where: {
                 pending_id: req.params.parkId
             }
         }).then(result => {
             dbConnect.query("SELECT rela_id, (SELECT park_id FROM park_user WHERE rela_id = pending.rela_id) AS park_id "
-            + "FROM pending WHERE pending_id = " + req.params.parkId + ";", {
+                + "FROM pending WHERE pending_id = " + req.params.parkId + ";", {
                 type: dbConnect.QueryTypes.SELECT
             }).then(result => {
                 var rela_id = result[0].rela_id;
                 var park_id = result[0].park_id;
-                models.Park.increment({total_in: 1}, {
+                models.Park.increment({ total_in: 1 }, {
                     where: {
                         park_id: park_id
                     }
-                }).then( () => {
-                    models.Parking.create({rela_id: rela_id, status: 'Đang đỗ xe'});
+                }).then(() => {
+                    models.Parking.create({ rela_id: rela_id, status: 'Đang đỗ xe' });
                     res.statusCode = 201;
-                    res.json({sucess: true});
+                    res.json({ sucess: true });
                 }, err => next(err))
             }, err => next(err))
-           
+
+        }, err => next(err))
+            .catch(err => next(err));
+    })
+    //delete one pending of park
+    .delete(authenticate.verifyOwner, (req, res, next) => {
+        dbConnect.query("SELECT time_start, createdAt, (SELECT user_id FROM park_user WHERE rela_id = pending.rela_id) AS id FROM pending WHERE pending_id = " + req.params.parkId + ";", {
+            type: dbConnect.QueryTypes.SELECT
+        }).then(result => {
+            if (result.length == 0) {
+                res.statusCode = 400;
+                res.json({message: "Người dùng đã xóa đặt trước"});
+            } else {
+                const now = new Date();
+                var differentFromPending = (now.getTime() - result[0].createdAt.getTime())/(1000*60);
+                var differentFromStart = (result[0].time_start.getTime() - now.getTime())/(1000*60);
+                if (differentFromPending <= 15 || differentFromStart > 60) {
+                    models.Pending.update({ status: "Chủ bãi hủy" }, {
+                        where: {
+                            pending_id: req.params.parkId
+                        }
+                    }).then(() => {
+                        res.statusCode = 200;
+                        res.json({ sucess: true });
+                    }, err => next(err))
+                } else if (differentFromStart <= -10) {
+                    models.User.increment({penalty: 1}, {
+                        where: {
+                            user_id: result[0].id
+                        }
+                    }, err => next(err))
+                    models.Pending.update({ status: "Chủ bãi hủy" }, {
+                        where: {
+                            pending_id: req.params.parkId
+                        }
+                    }).then(() => {
+                        res.statusCode = 200;
+                        res.json({ sucess: true });
+                    }, err => next(err));
+                }
+            }
         }, err => next(err))
         .catch(err => next(err));
-    })
-    .delete((req, res, next) => {
-        models.Pending.update({status: "Chủ bãi hủy"}, {
-            where: {
-                pending_id: req.params.parkId
-            }
-        }).then( () => {
-            res.statusCode = 204;
-            res.json({sucess: true});
-        })
     })
 
 module.exports = ownRouter;

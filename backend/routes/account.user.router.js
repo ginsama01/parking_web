@@ -42,6 +42,7 @@ accountRouter.route('/info')
             .catch(err => next(err));
 
     })
+    //change info for user
     .put(authenticate.verifyUserOrOwner, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
         let infoObj = req.body;
@@ -56,6 +57,7 @@ accountRouter.route('/info')
         }, (err) => next(err))
             .catch(err => next(err));
     })
+    //delete account
     .delete(authenticate.verifyUserOrOwner, (req, res, next) => {
         let id = authenticate.getAccountId(req);
         dbConnect.query("SELECT * FROM user where user_id = " + id + ";", {
@@ -120,6 +122,7 @@ accountRouter.route('/parking')
         }, (err) => next(err))
             .catch(err => next(err));
     })
+    //delte parking history
     .delete(authenticate.verifyUser, (req, res, next) => {
         models.Parking.destroy({
             where: {
@@ -149,6 +152,7 @@ accountRouter.route('/favorite')
         }, (err) => next(err))
             .catch(err => next(err));
     })
+    //add favorite park
     .post(authenticate.verifyUser, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
         let favoObj = req.body;
@@ -197,6 +201,7 @@ accountRouter.route('/favorite')
             })
         }
     })
+    //delete favorite park
     .delete(authenticate.verifyUser, (req, res, next) => {
         models.Favorite.destroy({
             where: {
@@ -226,6 +231,7 @@ accountRouter.route('/favorite/:flistid')
             .catch(err => next(err));
     })
 
+    //Fetch pending list for users
 accountRouter.route('/pending')
     .get(authenticate.verifyUser, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
@@ -241,6 +247,7 @@ accountRouter.route('/pending')
         }, (err) => next(err))
             .catch(err => next(err));
     })
+    //add pending
     .post(authenticate.verifyUser, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
         var timein;
@@ -271,7 +278,7 @@ accountRouter.route('/pending')
                             if (result.length == 0) {
                                 models.Park_User.create({ park_id: req.body.park_id, user_id: user_id })
                                     .then(rela => {
-                                        models.Pending.create({ rela_id: rela.dataValues.rela_id, time_start: req.body.timein, status: 'Đang đặt trước' })
+                                        models.Pending.create({ rela_id: rela.dataValues.rela_id, time_start: timein, status: 'Đang đặt trước' })
                                             .then(() => {
                                                 res.statusCode = 201;
                                                 res.setHeader('Content-Type', 'application/json');
@@ -279,7 +286,7 @@ accountRouter.route('/pending')
                                             }, err => next(err))
                                     }, err => next(err))
                             } else {
-                                models.Pending.create({ rela_id: result[0].rela_id, time_start: req.body.timein, status: 'Đang đặt trước' })
+                                models.Pending.create({ rela_id: result[0].rela_id, time_start: timein, status: 'Đang đặt trước' })
                                     .then(() => {
                                         res.statusCode = 201;
                                         res.setHeader('Content-Type', 'application/json');
@@ -295,6 +302,7 @@ accountRouter.route('/pending')
         }, err => next(err))
         .catch(err => next(err));
     })
+    //delete pending
     .delete(authenticate.verifyUser, (req, res, next) => {
         models.Pending.update({ status: 'Đã hủy' }, {
             where: {

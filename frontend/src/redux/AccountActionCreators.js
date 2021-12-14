@@ -1,5 +1,6 @@
 import * as AccountActionTypes from './AccountActionTypes';
 import { baseUrl } from '../shared/baseUrl';
+import { setSnackbar } from './AuthenActionCreators';
 
 
 export const fetchLoveParks = () => (dispatch) => {
@@ -170,21 +171,19 @@ export const postChange = (username, firstname, lastname, email, phone, address)
             if (response.ok) {
                 return response;
             } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
         })
+        .then(response => response.json())
         .then(response => {
-            alert('Thay đổi thông tin tài khoản thành công'); 
-            //window.location.href='/'
+            dispatch(setSnackbar(true, "success", "Thay đổi thông tin tài khoản thành công")); 
+            return response;
         })
-        .then(user => dispatch(addChange(user)))
-        .catch(error =>  { console.log('post change', error.message); alert('Your account could not be posted\nError: '+error.message); });
+        .catch(error =>  { 
+            error.json().then(body => {
+                dispatch(setSnackbar(true, "error", body.message));
+            })
+        });
     }
 
 export const changeFailed = (errmess) => ({
@@ -211,32 +210,20 @@ export const postDelete = (username, email) => (dispatch) => {
             if (response.ok) {
                 return response;
             } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
         })
+        .then(response => response.json())
         .then(response => {
-            alert('Xóa tài khoản thành công'); 
-            window.location.href='/'
+            dispatch(setSnackbar(true, "success", "Xóa tài khoản thành công")); 
+            return response;
         })
-        .then(user => dispatch(addDeleteUser(user)))
-        .catch(error =>  { console.log('post delete user', error.message); alert('Your account could not be posted\nError: '+error.message); });
+        .catch(error =>  {
+            error.json().then(body => {
+                dispatch(setSnackbar(true, "error", body.message));
+            })
+        });
     }
-
-export const deleteUserFailed = (errmess) => ({
-    type: AccountActionTypes.DELETEUSER_FAILED,
-    payload: errmess
-});
-
-export const addDeleteUser = (user) => ({
-    type: AccountActionTypes.ADD_DELETEUSER,
-    payload: user
-});
 
 //delete lovepark
 export const postDeleteLovepark = (parks) => (dispatch) => {
@@ -256,31 +243,21 @@ export const postDeleteLovepark = (parks) => (dispatch) => {
             if (response.ok) {
                 return response;
             } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
         })
+        .then(response => response.json())
         .then(response => {
-            alert('Xóa bãi đỗ thành công'); 
-            return response;  
+            dispatch(setSnackbar(true, "success", "Xóa bãi đỗ thành công")); 
+            return response;
         })
-        .catch(error =>  { console.log('post delete lovepark', error.message); alert('Your account could not be posted\nError: '+error.message); });
+        .catch(error =>  {
+            error.json().then(body => {
+                dispatch(setSnackbar(true, "error", body.message));
+            })
+        });
     }
 
-export const deleteLoveparkFailed = (errmess) => ({
-    type: AccountActionTypes.DELETELOVEPARK_FAILED,
-    payload: errmess
-});
-
-export const addDeleteLovepark = (user) => ({
-    type: AccountActionTypes.ADD_DELETELOVEPARK,
-    payload: user
-});
 
 //delete historypark
 export const postDeleteHistorypark = (parks) => (dispatch) => {
@@ -300,31 +277,20 @@ export const postDeleteHistorypark = (parks) => (dispatch) => {
             if (response.ok) {
                 return response;
             } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
         })
+        .then(response => response.json())
         .then(response => {
-            alert('Xóa bãi đỗ thành công'); 
+            dispatch(setSnackbar(true, "success", "Xóa bãi đỗ thành công")); 
+            return response;
         })
-        .then(park=> dispatch(addDeleteLovepark(park)))
-        .catch(error =>  { console.log('post delete historypark', error.message); alert('Your account could not be posted\nError: '+error.message); });
+        .catch(error =>  {
+            error.json().then(body => {
+                dispatch(setSnackbar(true, "error", body.message));
+            })
+        });
     }
-
-export const deleteHistoryparkFailed = (errmess) => ({
-    type: AccountActionTypes.DELETEHISTORYPARK_FAILED,
-    payload: errmess
-});
-
-export const addDeleteHistorypark = (user) => ({
-    type: AccountActionTypes.ADD_DELETEHISTORYPARK,
-    payload: user
-});
 
 //delete orderpark
 export const postDeleteOrderpark = (parks) => (dispatch) => {
@@ -344,32 +310,20 @@ export const postDeleteOrderpark = (parks) => (dispatch) => {
             if (response.ok) {
                 return response;
             } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
         })
+        .then(response => response.json())
         .then(response => {
-            alert('Hủy đặt trước bãi đỗ thành công'); 
-            return response;  
+            dispatch(setSnackbar(true, "success", "Xóa bãi đỗ thành công")); 
+            return response;
         })
-        .catch(error =>  { console.log('post delete orderpark', error.message); alert('Your account could not be posted\nError: '+error.message); });
+        .catch(error =>  {
+            error.json().then(body => {
+                dispatch(setSnackbar(true, "error", body.message));
+            })
+        });
     }
-
-export const deleteOrderparkFailed = (errmess) => ({
-    type: AccountActionTypes.DELETEORDERPARK_FAILED,
-    payload: errmess
-});
-
-export const addDeleteOrderpark = (user) => ({
-    type: AccountActionTypes.ADD_DELETEORDERPARK,
-    payload: user
-});
-
 //change pass
 export const postChangePass = (password, newpass, repass) => (dispatch) => {
     const changeUser = {
@@ -390,19 +344,46 @@ export const postChangePass = (password, newpass, repass) => (dispatch) => {
             if (response.ok) {
                 return response;
             } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
+        })
+        .then(response => response.json())
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Thay đổi mật khẩu tài khoản thành công")); 
+            return response;
+        })
+        .catch(error =>  {
+            error.json().then(body => {
+                dispatch(setSnackbar(true, "error", body.message));
+            })
+        });
+    }
+
+//Post verify
+export const postVerify = () => (dispatch) => {
+    return fetch(baseUrl + 'authen/verify', 
+        {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+              },
+            credentials: "include"
         })
         .then(response => {
-            alert('Thay đổi mật khẩu tài khoản thành công'); 
-            //window.location.href='/'
+            if (response.ok) {
+                return response;
+            } else {
+                throw response;
+            }
         })
-        .then(user => dispatch(addChange(user)))
-        .catch(error =>  { console.log('post change', error.message); alert('Your account could not be posted\nError: '+error.message); });
+        .then(response => response.json())
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Kiểm tra email để xác thực tài khoản")); 
+            return response;
+        })
+        .catch(error =>  {
+            error.json().then(body => {
+                dispatch(setSnackbar(true, "error", body.message));
+            })
+        });
     }

@@ -7,6 +7,7 @@ const chartRouter = express.Router();
 
 chartRouter.use(express.json());
 
+//Fetch rating chart
 chartRouter.get('/rating-count', authenticate.verifyAdmin, async (req, res, next) => {
     var resObj = [
         {
@@ -60,6 +61,7 @@ chartRouter.get('/rating-count', authenticate.verifyAdmin, async (req, res, next
     res.json(resObj);
 });
 
+//fetch user-number chart
 chartRouter.get('/user-number', authenticate.verifyAdmin, async (req, res, next) => {
     var month = new Date().getMonth() + 1;
     var year = new Date().getFullYear();
@@ -90,6 +92,7 @@ chartRouter.get('/user-number', authenticate.verifyAdmin, async (req, res, next)
     res.json(resObj);
 })
 
+//fetch transaction chart
 chartRouter.get('/transaction', authenticate.verifyAdmin, async (req, res, next) => {
     var month = new Date().getMonth() + 1;
     var year = new Date().getFullYear();

@@ -1,5 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from "../shared/baseUrl";
+
 export const setSnackbar = (
     snackbarOpen,
     snackbarType = "success",
@@ -37,16 +38,17 @@ export const postUser = (username, password, email, firstname, lastname, type) =
             }
         })
         .then(response => response.json())
-        .then(result => {
-            if (result.success === true) {
-                alert('Vui lòng vào email để xác thực tài khoản!');
-            }
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Vui lòng vào email để xác thực tài khoản!")); 
+            return response;
+
         })
-        .catch(error => {
+        .catch(error =>  {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
+        
 }
 
 export const userFailed = (errmess) => ({
@@ -70,17 +72,15 @@ export const getVerify = (code) => (dispatch) => {
             }
         })
         .then(response => response.json())
-        .then(result => {
-            if (result.success == true) {
-                alert('Xác thực thành công!');
-                return result;
-            }
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Xác thực thành công!")); 
+            return response;
         })
-        .catch(error => {
-            error.json().then(body=> {
-                alert(body.message);
+        .catch(error =>  {
+            error.json().then(body => {
+                dispatch(setSnackbar(true, "error", body.message));
             })
-        })
+        });
 }
 
 // Forgotten
@@ -105,13 +105,13 @@ export const sendCode = (username) => (dispatch) => {
             }
         })
         .then(response => response.json())
-        .then(result => {
-            alert("Vui lòng vào email để lấy mã xác thực!");
-            return result;
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Vui lòng vào email để lấy mã xác thực!")); 
+            return response;
         })
-        .catch(error => {
+        .catch(error =>  {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
 }
@@ -138,12 +138,12 @@ export const postForgotten = (username, code) => (dispatch) => {
             }
         })
         .then(response => response.json())
-        .then(result => {
-            return result;
+        .then(response => {
+            return response;
         })
-        .catch(error => {
+        .catch(error =>  {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
 }
@@ -170,15 +170,17 @@ export const postNewPassword = (username, password) => (dispatch) => {
             }
         })
         .then(response => response.json())
-        .then(result => {
-            alert('Thay đổi mật khẩu thành công!');
+        .then(response => {
+            dispatch(setSnackbar(true, "success", "Thay đổi mật khẩu thành công!")); 
+            return response;
         })
-        .catch(error => {
+        .catch(error =>  {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
 }
+
 
 // Login 
 export const postLogin = (username, password) => (dispatch) => {
@@ -204,18 +206,17 @@ export const postLogin = (username, password) => (dispatch) => {
         })
         .then(response => response.json())
         .then(user => {
-            sessionStorage.setItem('login', true);
-            sessionStorage.setItem('username', user['username']);
-            sessionStorage.setItem('role', user['role']);
+            localStorage.setItem('login', true);
+            localStorage.setItem('username', user['username']);
+            localStorage.setItem('role', user['role']);
             const event = new Event('storagechange');
             window.dispatchEvent(event);
             dispatch(setSnackbar(true, "success", "Đăng nhập thành công"));
             return user;
         })
-        .catch(error => {
+        .catch(error =>  {
             error.json().then(body => {
-                alert(body.message);
-                return body.message;
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
 }
@@ -234,22 +235,21 @@ export const Logout = () => (dispatch) => {
             if (response.ok) {
                 return response;
             } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
+        })
         .then(response => response.json())
         .then(user => {
-            sessionStorage.removeItem('login');
-            sessionStorage.removeItem('username');
-            sessionStorage.removeItem('role');
+            localStorage.removeItem('login');
+            localStorage.removeItem('username');
+            localStorage.removeItem('role');
             const event = new Event('storagechange');
             window.dispatchEvent(event);
+            dispatch(setSnackbar(true, "success", "Đăng xuất thành công"));
         })
-        .catch(error => { console.log('post user', error.message); alert('Your account could not be posted\nError: ' + error.message); });
+        .catch(error =>  {
+            error.json().then(body => {
+                dispatch(setSnackbar(true, "error", body.message));
+            })
+        });
 }

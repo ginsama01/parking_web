@@ -63,7 +63,7 @@ function ParkStatus(props) {
 
 function BookList(props) {
     const { book_list, handleDeleteBooking, handlePutBooking, setIsChange } = props;
-    
+
     // xóa một lượt đặt trước
     const deleteBooking = (pending_id) => {
         handleDeleteBooking(pending_id);
@@ -75,7 +75,7 @@ function BookList(props) {
         handlePutBooking(pending_id);
         setIsChange(true);
     }
-    
+
     return (
         <div style={{ margin: "20px" }}>
             <Grid align='center' style={{ color: "#22577E", marginBottom: "30px" }}>
@@ -164,6 +164,14 @@ function OwnerParkStatus(props) {
             setIsChange(false)
         }
     }, [isChange])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            console.log('This will run every 30 second!');
+            props.fetchBookList(id);
+        }, 30000);
+        return () => clearInterval(interval);
+    }, []);
 
     if (props.book_list.isLoading || props.owner_park_status.isLoading) {
         return (

@@ -20,6 +20,7 @@ accountRouter.route('/userinfo')
         }, (err) => next(err))
             .catch(err => next(err))
     })
+    //Delete user list for admin
     .delete(authenticate.verifyAdmin, (req, res, next) => {
         console.log(req.body);
         models.Account.findAll({
@@ -49,6 +50,7 @@ accountRouter.route('/userinfo')
     })
 
 accountRouter.route('/ownerinfo')
+//Fetch owner list for admin
     .get(authenticate.verifyAdmin, (req, res, next) => {
         dbConnect.query("SELECT a.id, a.username, CONCAT(a.firstname, ' ', a.lastname) AS name, a.address, a.phone, a.email, o.isActivated"
             + " FROM account a JOIN owner o ON a.id = o.own_id;", {
@@ -76,6 +78,7 @@ accountRouter.route('/ownerinfo')
         }, (err) => next(err))
             .catch(err => next(err))
     })
+    //delete owner list for admin
     .delete(authenticate.verifyAdmin, (req, res, next) => {
         console.log(req.body);
         models.Account.findAll({

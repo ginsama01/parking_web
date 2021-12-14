@@ -89,7 +89,7 @@ class Header extends Component {
                                 </NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink style={{ color: '#3E7C17' }} className="nav-link" to="/">
+                                <NavLink style={{ color: '#3E7C17' }} className="nav-link" to="/owner/myparks">
                                     <strong>Quản lý bãi đỗ</strong>
                                 </NavLink>
                             </NavItem>

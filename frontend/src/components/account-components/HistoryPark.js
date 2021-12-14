@@ -296,7 +296,7 @@ function HistoryPark(props) {
             <Layout></Layout>
         </Col>
         <Col className="col-9">
-            <div className="row row-content" style={{backgroundColor: '#F8F9FB', borderRadius: '20px'}}>
+            <div className="row row-content" style={{backgroundColor: '#F8F9FB', borderRadius: '20px',paddingLeft:"10px"}}>
             <div className="col-12 col-md-8 offset-2">
                 <h3 style={{color:'green', fontWeight:'bold'}}>Lịch sử đỗ xe</h3>
             </div>
@@ -357,12 +357,12 @@ function HistoryPark(props) {
                               >
                                 {row.name}
                                 <br></br>
-                                <p style={{color: 'grey'}}>{row.location}</p>
+                                <p style={{color: 'grey',fontSize:'15px'}}>{row.location}</p>
                               </TableCell>
                               <TableCell align="left">{convertTime(row.open)}</TableCell>
                               <TableCell align="left">{row.phone}
                                 <br></br>
-                                <p style={{color: 'grey'}}>{row.email}</p>
+                                <p style={{color: 'grey',fontSize:'15px'}}>{row.email}</p>
                               </TableCell>
                               <TableCell align="left"> <Rating name="read-only" value={row.rating} readOnly precision={0.1}/> </TableCell>
                               <TableCell align="left">

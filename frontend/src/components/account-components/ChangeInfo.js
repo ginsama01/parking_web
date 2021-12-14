@@ -4,7 +4,7 @@ import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 import Layout from './LayOut';
-import { fetchInfoUser, postChange, postDelete, postChangePass} from "../../redux/AccountActionCreators";
+import { fetchInfoUser, postChange, postDelete, postChangePass, postVerify} from "../../redux/AccountActionCreators";
 import { connect } from "react-redux";
 import AlertDialog from "../Dialog_Component";
 
@@ -30,7 +30,8 @@ const mapDispatchToProps = dispatch => ({
     fetchInfoUser: () => dispatch(fetchInfoUser()),
     postChange: (username, firstname, lastname, email, phone, address) => dispatch(postChange(username, firstname, lastname, email, phone, address)),
     postChangePass: (password, newpass, repass) => dispatch(postChangePass(password, newpass, repass)),
-    postDelete: (username, email) => dispatch(postDelete(username, email))
+    postDelete: (username, email) => dispatch(postDelete(username, email)),
+    postVerify: () => dispatch(postVerify())
 
 });
 
@@ -54,6 +55,7 @@ function ChangeInfo(props){
     const handleChangePass = e =>{
         e.preventDefault()
         setChangePass(true)
+
     }
 
     const closeChangePass = ()=>{
@@ -72,15 +74,19 @@ function ChangeInfo(props){
     const handleSubmit = async (values) => {
         console.log(values);
         console.log('---------') 
-        var response = await props.postChange(values.username.value, values.firstname.value, values.lastname.value, values.email.value, values.phone.value, values.address.value)
+        var response = await props.postChange(values.username, values.firstname, values.lastname, values.email, values.phone, values.address)
         if (response) {
             props.fetchInfoUser();
           }
     }
     const clickChangePass =(values) => {
         console.log(values);
-        props.postChangePass(values.password, values.newpass,values.repass);
-        console.log(values.password);
+        props.postChangePass(values.password, values.newpass, values.repass);
+        closeChangePass();
+    }
+
+    const handleVerify = () => {
+        props.postVerify();
     }
     const handleDeleteUser = () => {
         props.postDelete()
@@ -99,7 +105,7 @@ function ChangeInfo(props){
                       <p>Bạn có thể chỉnh sửa thông tin hồ sơ của mình bên dưới. Nhấp vào nút đặt lại mật khẩu sẽ gửi một liên kết đặt lại đến email của bạn.</p>
                     </div>
                     <div className="col-12 ">
-                        <LocalForm model="changeinfo" onSubmitFailed={handleSubmit} >
+                        <LocalForm model="changeinfo" onSubmit={handleSubmit} >
                             <Row className="form-group">
                                 <Label htmlFor="username" md={3}>Tên người dùng</Label>
                                 <Col >
@@ -179,21 +185,10 @@ function ChangeInfo(props){
                                     <Control.text model=".phone" id="phone" name="phone"
                                         placeholder="SĐT"
                                         className="form-control"
-                                        validators={{
-                                            required, minLength: minLength(1), maxLength: maxLength(30)
-                                        }}
+                                        
                                         defaultValue={props.info_user.info.phone}
                                          />
-                                    <Errors
-                                        className="text-danger"
-                                        model=".phone"
-                                        show="touched"
-                                        messages={{
-                                            required: 'Bắt buộc',
-                                            minLength: 'Tối thiểu 1 ký tự',
-                                            maxLength: 'Tối đa 30 ký tự',
-                                        }}
-                                     />
+                                    
                                 </Col>
                             </Row>
                             <br></br>
@@ -226,20 +221,10 @@ function ChangeInfo(props){
                                     <Control.text model=".address" id="address" name="address"
                                         placeholder="Địa chỉ"
                                         className="form-control"
-                                        validators={{
-                                            required
-                                        }}
+                                        
                                         defaultValue={props.info_user.info.address}
                                          />
-                                    <Errors
-                                        className="text-danger"
-                                        model=".address"
-                                        show="touched"
-                                        messages={{
-                                            required: 'Bắt buộc',
-                                            
-                                        }}
-                                     />
+                                    
                                 </Col>
                             </Row>
                             <br></br>
@@ -297,9 +282,7 @@ function ChangeInfo(props){
                                                     <Control model=".password" id="password" name="password"
                                                         type="password"
                                                         className="form-control"
-                                                        validators={{
-                                                            required, minLength: minLength(8), maxLength: maxLength(50), validPasword
-                                                        }}
+                                                        
                                                 />
                                                 </Col>
                                             </Row>
@@ -372,7 +355,7 @@ function ChangeInfo(props){
                                 <Row className="form-group">
                                     <Label htmlFor="verification" md={3}>Xác minh tài khoản</Label>
                                     <Col >
-                                        <Button style={{backgroundColor: 'white', color: 'green',border: '1px solid green'}}  onClick={handleChangePass}  >
+                                        <Button style={{backgroundColor: 'white', color: 'green',border: '1px solid green'}}  onClick={handleVerify}  >
                                             Xác minh tài khoản
                                         </Button>
                                     </Col>
