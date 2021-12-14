@@ -269,6 +269,10 @@ function LovePark(props) {
     setSelected(newSelected);
   };
 
+  const handleRowClick = (event, id) => {
+    
+  }
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -290,10 +294,10 @@ function LovePark(props) {
 
   return (
     <Row>
-        <Col sm='3' xs='12'>
+        <Col className="col-3">
             <Layout></Layout>
         </Col>
-        <Col>
+        <Col className="col-9">
             <div className="row row-content" style={{backgroundColor: '#F8F9FB', borderRadius: '20px'}}>
             <div className="col-12 col-md-8 offset-2">
                 <h3 style={{color:'green', fontWeight:'bold'}}>Bãi đỗ yêu thích</h3>
@@ -327,7 +331,7 @@ function LovePark(props) {
                           return (
                             <TableRow
                               hover
-                              onClick={(event) => handleClick(event, row.flist_id)}
+                              onClick={(event) => handleRowClick(event, row.flist_id)}
                               role="checkbox"
                               aria-checked={isItemSelected}
                               tabIndex={-1}
@@ -336,6 +340,7 @@ function LovePark(props) {
                             >
                               <TableCell padding="checkbox">
                                 <Checkbox
+                                  onClick={(event) => handleClick(event, row.flist_id)}
                                   color="primary"
                                   checked={isItemSelected}
                                   inputProps={{

@@ -27,6 +27,7 @@ import { OrderParks } from './account/order-parks';
 import { HistoryParks } from './account/history-parks';
 import { InfoUser } from './account/info-user';
 import { InitialChangInfo } from './account/change-info';
+import { InitialChangePass} from './account/change-pass';
 import { InitialDeleteUser} from './account/delete-user';
 import { InitialDeleteLovepark } from './account/delete-lovepark';
 import { InitialDeleteHistorypark } from './account/delete-historypark';
@@ -62,6 +63,7 @@ export const ConfigureStore = () => {
                 signup: InitialSignup,
                 login: InitialLogin,
                 changeinfo: InitialChangInfo,
+                changepass:InitialChangePass,
                 deleteUser: InitialDeleteUser,
                 deleteLovepark: InitialDeleteLovepark,
                 deleteHistorypark: InitialDeleteHistorypark,
