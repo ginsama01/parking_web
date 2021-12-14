@@ -39,7 +39,7 @@ accountRouter.route('/info')
                     .catch(err => next(err));
             }
         }, err => next(err))
-        .catch(err => next(err));
+            .catch(err => next(err));
 
     })
     .put(authenticate.verifyUserOrOwner, (req, res, next) => {
@@ -66,7 +66,7 @@ accountRouter.route('/info')
                     where: {
                         own_id: id
                     }
-                }).then( () => {
+                }).then(() => {
                     models.Account.destroy({
                         where: {
                             id: id
@@ -74,9 +74,9 @@ accountRouter.route('/info')
                     }).then(() => {
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
-                        res.json({success: true});
+                        res.json({ success: true });
                     }, err => next(err));
-                    
+
                 }, (err) => next(err))
                     .catch(err => next(err));
             } else {
@@ -84,7 +84,7 @@ accountRouter.route('/info')
                     where: {
                         user_id: id
                     }
-                }).then( () => {
+                }).then(() => {
                     models.Account.destroy({
                         where: {
                             id: id
@@ -92,16 +92,16 @@ accountRouter.route('/info')
                     }).then(() => {
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
-                        res.json({success: true});
+                        res.json({ success: true });
                     }, err => next(err));
-                    
+
                 }, (err) => next(err))
                     .catch(err => next(err));
             }
         }, err => next(err))
-        .catch(err => next(err));
+            .catch(err => next(err));
 
-        
+
     })
 
 //Fetch Parking History
@@ -243,40 +243,57 @@ accountRouter.route('/pending')
     })
     .post(authenticate.verifyUser, (req, res, next) => {
         let user_id = authenticate.getAccountId(req);
-        dbConnect.query("SELECT isactivated FROM user WHERE user_id = " + user_id + ";", {
+        var timein;
+        if (req.body.timein) {
+            timein = req.body.timein;
+        } else {
+            timein = new Date(new Date().getTime() + 30*60000);
+        }
+        dbConnect.query("SELECT allowBooking FROM park WHERE park_id = " + req.body.park_id, {
             type: dbConnect.QueryTypes.SELECT
-        }).then(result => {
-            if (result[0].isactivated == false) {
+        }).then(park => {
+            if (park[0].allowBooking == false) {
                 res.statusCode = 403;
                 res.setHeader('Content-Type', 'application/json');
-                res.json({ message: "Bạn cần xác minh tài khoản trước khi sử dụng chức năng này" });
+                res.json({ message: "Bãi đỗ không cho phép đặt trước" });
             } else {
-                dbConnect.query("SELECT * FROM park_user WHERE park_id = " + req.body.park_id + " AND user_id = " + user_id + ";", {
+                dbConnect.query("SELECT isactivated FROM user WHERE user_id = " + user_id + ";", {
                     type: dbConnect.QueryTypes.SELECT
                 }).then(result => {
-                    if (result.length == 0) {
-                        models.Park_User.create({ park_id: req.body.park_id, user_id: user_id })
-                            .then(rela => {
-                                models.Pending.create({ rela_id: rela.dataValues.rela_id, time_start: req.body.timein, status: 'Đang đặt trước' })
+                    if (result[0].isactivated == false) {
+                        res.statusCode = 403;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json({ message: "Bạn cần xác minh tài khoản trước khi sử dụng chức năng này" });
+                    } else {
+                        dbConnect.query("SELECT * FROM park_user WHERE park_id = " + req.body.park_id + " AND user_id = " + user_id + ";", {
+                            type: dbConnect.QueryTypes.SELECT
+                        }).then(result => {
+                            if (result.length == 0) {
+                                models.Park_User.create({ park_id: req.body.park_id, user_id: user_id })
+                                    .then(rela => {
+                                        models.Pending.create({ rela_id: rela.dataValues.rela_id, time_start: req.body.timein, status: 'Đang đặt trước' })
+                                            .then(() => {
+                                                res.statusCode = 201;
+                                                res.setHeader('Content-Type', 'application/json');
+                                                res.json({ success: true });
+                                            }, err => next(err))
+                                    }, err => next(err))
+                            } else {
+                                models.Pending.create({ rela_id: result[0].rela_id, time_start: req.body.timein, status: 'Đang đặt trước' })
                                     .then(() => {
                                         res.statusCode = 201;
                                         res.setHeader('Content-Type', 'application/json');
                                         res.json({ success: true });
-                                    }, err => next(err))
-                            }, err => next(err))
-                    } else {
-                        models.Pending.create({ rela_id: result[0].rela_id, time_start: req.body.timein, status: 'Đang đặt trước' })
-                            .then(() => {
-                                res.statusCode = 201;
-                                res.setHeader('Content-Type', 'application/json');
-                                res.json({ success: true });
-                            })
+                                    })
+                            }
+                        }, err => next(err))
+
                     }
                 }, err => next(err))
-
+                    .catch(err => next(err));
             }
         }, err => next(err))
-            .catch(err => next(err));
+        .catch(err => next(err));
     })
     .delete(authenticate.verifyUser, (req, res, next) => {
         models.Pending.update({ status: 'Đã hủy' }, {

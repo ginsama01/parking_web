@@ -30,7 +30,7 @@ function RenderParkStatus(props) {
         postBooking(park_status.park_id, search_info.timein)
     }
     function convertTime(time) {
-        var date = new Date(Date.parse(time));
+        var date = time ? new Date(Date.parse(time)) : new Date(new Date().getTime() + 30*60000);
         return(date.getHours() + ':' + date.getMinutes() + ' ngày ' + date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear());
     }
 

@@ -88,21 +88,14 @@ class Header extends Component {
                                     <strong>Tìm bãi đỗ</strong>
                                 </NavLink>
                             </NavItem>
-                            {sessionStorage.getItem('role') == 'owner' &&
                             <NavItem>
                                 <NavLink style={{ color: '#3E7C17' }} className="nav-link" to="/">
                                     <strong>Quản lý bãi đỗ</strong>
                                 </NavLink>
                             </NavItem>
-                            }
                             <NavItem>
                                 <NavLink style={{ color: '#3E7C17' }} className="nav-link" to="/">
-                                    <strong>Nav Example</strong>
-                                </NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink style={{ color: '#3E7C17' }} className="nav-link" to="/">
-                                    <strong>Nav Example</strong>
+                                    <strong>Về chúng tôi</strong>
                                 </NavLink>
                             </NavItem>
 

@@ -15,7 +15,7 @@ import Map from "./Map";
 import SearchInfoBar from "./SearchInfoComponent";
 import { formValueSelector } from "redux-form";
 import { postSearchInfo } from "../../redux/UserActionCreators";
-
+import {googlemapKey} from "../../shared/baseUrl";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -231,7 +231,7 @@ function ParkListTabs(props) {
                         search_info={props.search_info.search_info} 
                         setFilter={setFilter} />
                     <Map
-                        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyAqvvK78HJ1YKUHXJHk5FuqHHrsrSXygYk&&callback=initMap&v=weekly`}
+                        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=` + googlemapKey + `&&callback=initMap&v=weekly`}
                         loadingElement={<div style={{ height: `90%` }} />}
                         containerElement={<div style={{ height: `90vh`, margin: `auto` }} />}
                         mapElement={<div style={{ height: `90%` }} />}
