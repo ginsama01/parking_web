@@ -28,28 +28,35 @@ ownRouter.route('/info')
     //Create a park
     .post(authenticate.verifyOwner, (req, res, next) => {
         const own_id = authenticate.getAccountId(req);
-        dbConnect.query("SELECT isactivated FROM owner WHERE own_id = " + own_id, {
-            type: dbConnect.QueryTypes.SELECT
-        }).then((result) => {
-            if (result.isactivated == false) {
-                res.statusCode = 403;
-                res.json({ message: "Tạo bãi đỗ thất bại. Tài khoản chưa được xác minh" })
-            } else {
-                let parkJson = req.body;
-                parkJson["own_id"] = authenticate.getAccountId(req);
-                parkJson["location"] = JSON.parse(parkJson.location).name;
-                parkJson['open_time'] = parkJson['allow24h'] == true ? 'Cả ngày' : parkJson['open_time'] + ' - ' + parkJson['close_time'];
-                models.Park.create(parkJson)
-                    .then((park) => {
-                        res.statusCode = 201;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json({ success: true, park_id: park.dataValues.park_id });
-                    }, (err) => next(err))
-                    .catch((err) => next(err));
-            }
-        }, err => next(err))
-        .catch(err => next(err));
-
+        if (!req.body.name) {
+            res.statusCode = 403;
+            res.json({ message: "Vui lòng nhập tên bãi đỗ" })
+        } else if (!req.body.location) {
+            res.statusCode = 403;
+            res.json({ message: "Vui lòng nhập địa chỉ" })
+        } else {
+            dbConnect.query("SELECT isactivated FROM owner WHERE own_id = " + own_id, {
+                type: dbConnect.QueryTypes.SELECT
+            }).then((result) => {
+                if (result[0].isactivated == false) {
+                    res.statusCode = 403;
+                    res.json({ message: "Tạo bãi đỗ thất bại. Tài khoản chưa được xác minh" })
+                } else {
+                    let parkJson = req.body;
+                    parkJson["own_id"] = authenticate.getAccountId(req);
+                    parkJson["location"] = JSON.parse(parkJson.location).name;
+                    parkJson['open_time'] = parkJson['allow24h'] == true ? 'Cả ngày' : parkJson['open_time'] + ' - ' + parkJson['close_time'];
+                    models.Park.create(parkJson)
+                        .then((park) => {
+                            res.statusCode = 201;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json({ success: true, park_id: park.dataValues.park_id });
+                        }, (err) => next(err))
+                        .catch((err) => next(err));
+                }
+            }, err => next(err))
+                .catch(err => next(err));
+        }
     });
 
 //Fetch info of a park
@@ -199,7 +206,7 @@ ownRouter.route('/status/:parkId')
     })
 
 ownRouter.route('/pending/:parkId')
-//Fetch list pending of a park
+    //Fetch list pending of a park
     .get(authenticate.verifyOwner, (req, res, next) => {
         dbConnect.query("SELECT p.pending_id, a.username, CONCAT(a.firstname, ' ', a.lastname) AS name, a.phone, p.time_start "
             + "FROM pending p JOIN park_user pu ON p.rela_id = pu.rela_id JOIN account a ON pu.user_id = a.id "
@@ -245,11 +252,11 @@ ownRouter.route('/pending/:parkId')
         }).then(result => {
             if (result.length == 0) {
                 res.statusCode = 400;
-                res.json({message: "Người dùng đã xóa đặt trước"});
+                res.json({ message: "Người dùng đã xóa đặt trước" });
             } else {
                 const now = new Date();
-                var differentFromPending = (now.getTime() - result[0].createdAt.getTime())/(1000*60);
-                var differentFromStart = (result[0].time_start.getTime() - now.getTime())/(1000*60);
+                var differentFromPending = (now.getTime() - result[0].createdAt.getTime()) / (1000 * 60);
+                var differentFromStart = (result[0].time_start.getTime() - now.getTime()) / (1000 * 60);
                 if (differentFromPending <= 15 || differentFromStart > 60) {
                     models.Pending.update({ status: "Chủ bãi hủy" }, {
                         where: {
@@ -260,7 +267,7 @@ ownRouter.route('/pending/:parkId')
                         res.json({ sucess: true });
                     }, err => next(err))
                 } else if (differentFromStart <= -10) {
-                    models.User.increment({penalty: 1}, {
+                    models.User.increment({ penalty: 1 }, {
                         where: {
                             user_id: result[0].id
                         }
@@ -276,7 +283,7 @@ ownRouter.route('/pending/:parkId')
                 }
             }
         }, err => next(err))
-        .catch(err => next(err));
+            .catch(err => next(err));
     })
 
 module.exports = ownRouter;

@@ -5,10 +5,8 @@ import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 import Layout from './LayOut';
 import { fetchInfoUser, postChange, postDelete, postChangePass, postVerify} from "../../redux/AccountActionCreators";
-import { Logout } from "../../redux/AuthenActionCreators";
 import { connect } from "react-redux";
 import AlertDialog from "../Dialog_Component";
-import { useHistory, useLocation } from "react-router-dom";
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -17,7 +15,9 @@ const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val
 const validUsername = (val) => /^[a-zA-Z][a-zA-Z0-9]+$/.test(val);
 //const validPasword = (val) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]$/.test(val);
 const validPasword = (val) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{0,}$/.test(val);
-
+const passwordsMatch = ({ newpass, repass }) => {
+    return newpass === repass;
+  };
 // const mapDispatchToProps = dispatch => ({
 //     postUser: (username, password, email, firstname, lastname,address, type) => dispatch(postUser(username, password, email, firstname, lastname,address, type))
 // });
@@ -33,16 +33,14 @@ const mapDispatchToProps = dispatch => ({
     postChange: (username, firstname, lastname, email, phone, address) => dispatch(postChange(username, firstname, lastname, email, phone, address)),
     postChangePass: (password, newpass, repass) => dispatch(postChangePass(password, newpass, repass)),
     postDelete: (username, email) => dispatch(postDelete(username, email)),
-    postVerify: () => dispatch(postVerify()),
-    Logout: () => dispatch(Logout())
+    postVerify: () => dispatch(postVerify())
 
 });
 
 function ChangeInfo(props){
 
     const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
-    const history = useHistory();
-    const location = useLocation();
+
     React.useEffect(() => {
 		props.fetchInfoUser();
 	}, []);
@@ -92,12 +90,8 @@ function ChangeInfo(props){
     const handleVerify = () => {
         props.postVerify();
     }
-    const handleDeleteUser = async () => {
-        var result = await props.postDelete();
-        if (result) {
-            await props.Logout();
-            history.push('/');
-        }
+    const handleDeleteUser = () => {
+        props.postDelete()
     }
 
         return (
@@ -113,7 +107,7 @@ function ChangeInfo(props){
                       <p>Bạn có thể chỉnh sửa thông tin hồ sơ của mình bên dưới. Nhấp vào nút đặt lại mật khẩu sẽ gửi một liên kết đặt lại đến email của bạn.</p>
                     </div>
                     <div className="col-12 ">
-                        <LocalForm model="changeinfo" onSubmit={handleSubmit} >
+                        <LocalForm model="changeinfo" onSubmit={handleSubmit}>
                             <Row className="form-group">
                                 <Label htmlFor="username" md={3}>Tên người dùng</Label>
                                 <Col >
@@ -281,7 +275,7 @@ function ChangeInfo(props){
                                     </Button>
                                     <Modal style={{display: 'block', marginLeft: '500px', border: "15px solid green" }} open={changePass} onClose={closeChangePass} >
                                         <h5 style={{color:"green", fontWeight:"bold", marginLeft:"30%" }}>Đặt lại mặt khẩu</h5>
-                                        <LocalForm model="changepass" onSubmit={clickChangePass} >
+                                        <LocalForm model="changepass" onSubmit={clickChangePass} validators={{'': {passwordsMatch}}}>
                                            <Row className="form-group" style={{marginTop:"10px"}}>
                                                 <Col md={5}>
                                                     <Label htmlFor="password">Mật khẩu hiện tại</Label>
