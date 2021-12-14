@@ -15,9 +15,9 @@ function Info(props) {
     const [login, setLogin] = React.useState(true);
 
     React.useEffect(() => {
-        setLogin(sessionStorage.getItem('login') || false)
+        setLogin(localStorage.getItem('login') || false)
         function listenStorage() {
-            setLogin(sessionStorage.getItem('login') || false);
+            setLogin(localStorage.getItem('login') || false);
         };
         window.addEventListener('storagechange', listenStorage);
     }, []);
@@ -32,21 +32,21 @@ function Info(props) {
                     </Button>
                 </Link>
             }
-            {login && sessionStorage.getItem('role') == 'user' &&
+            {login && localStorage.getItem('role') == 'user' &&
                 <Link to='/account/info'>
                     <Button outline>
                         <span className="fa fa-sign-in fa-lg"></span> Tài khoản
                     </Button>
                 </Link>
             }
-            {login && sessionStorage.getItem('role') == 'owner' &&
+            {login && localStorage.getItem('role') == 'owner' &&
                 <Link to='/account/info'>
                     <Button outline>
                         <span className="fa fa-sign-in fa-lg"></span> Tài khoản
                     </Button>
                 </Link>
             }
-            {login && sessionStorage.getItem('role') == 'admin' &&
+            {login && localStorage.getItem('role') == 'admin' &&
                 <Link to='/admin/dashboard'>
                     <Button outline>
                         <span className="fa fa-sign-in fa-lg"></span> Quản lý

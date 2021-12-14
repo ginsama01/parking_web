@@ -115,21 +115,21 @@ function ParkListTabs(props) {
         if (!success) {
             return;
         } else {
-            sessionStorage.setItem('search_id', success.search_id);
+            localStorage.setItem('search_id', success.search_id);
         }
         if (selectedPark == -1) {
-            props.fetchBestParks(sessionStorage.getItem('search_id'));
-            props.fetchCheapParks(sessionStorage.getItem('search_id'));
-            props.fetchNearParks(sessionStorage.getItem('search_id'));
+            props.fetchBestParks(localStorage.getItem('search_id'));
+            props.fetchCheapParks(localStorage.getItem('search_id'));
+            props.fetchNearParks(localStorage.getItem('search_id'));
         } else {
             setSelectedPark(-1);
         }
-        props.fetchSearchInfo(sessionStorage.getItem('search_id'));
+        props.fetchSearchInfo(localStorage.getItem('search_id'));
     }
 
     useEffect(
         () => {
-            props.fetchSearchInfo(sessionStorage.getItem('search_id'));
+            props.fetchSearchInfo(localStorage.getItem('search_id'));
         }, []
     )
 
@@ -150,12 +150,12 @@ function ParkListTabs(props) {
     useEffect(
         () => {
             if (selectedPark < 0) {
-                props.fetchBestParks(sessionStorage.getItem('search_id'));
-                props.fetchCheapParks(sessionStorage.getItem('search_id'));
-                props.fetchNearParks(sessionStorage.getItem('search_id'));
+                props.fetchBestParks(localStorage.getItem('search_id'));
+                props.fetchCheapParks(localStorage.getItem('search_id'));
+                props.fetchNearParks(localStorage.getItem('search_id'));
             }
             if (selectedPark >= 0) {
-                props.fetchParkStatus(selectedPark, sessionStorage.getItem('search_id'));
+                props.fetchParkStatus(selectedPark, localStorage.getItem('search_id'));
                 props.fetchParkInfo(selectedPark);
                 props.fetchComments(selectedPark);
                 props.fetchMark(selectedPark);

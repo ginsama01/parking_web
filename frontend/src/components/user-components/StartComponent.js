@@ -73,7 +73,7 @@ class Start extends Component {
         event.preventDefault();
         var success = await this.props.postSearchInfo(this.props.address, this.props.timein);
         if (success) {
-            sessionStorage.setItem('search_id', success.search_id);
+            localStorage.setItem('search_id', success.search_id);
             this.props.history.push('/user/parks');
         }
     }

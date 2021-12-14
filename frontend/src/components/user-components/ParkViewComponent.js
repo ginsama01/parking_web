@@ -74,7 +74,7 @@ function ParkView(props) {
     useEffect(
         () => {
             if (selectedPark >= 0) {
-                props.fetchParkStatus(selectedPark, sessionStorage.getItem('search_id'));
+                props.fetchParkStatus(selectedPark, localStorage.getItem('search_id'));
                 props.fetchParkInfo(selectedPark);
                 props.fetchComments(selectedPark);
                 props.fetchMark(selectedPark);
