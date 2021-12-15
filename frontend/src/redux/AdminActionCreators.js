@@ -5,8 +5,13 @@ import { setSnackbar } from './AuthenActionCreators';
 // get user list for admin
 export const fetchUserList = () => (dispatch) => {
     dispatch(userListLoading(true));
-
-    return fetch(baseUrl + 'admin/accounts/userinfo', { credentials: 'include' })
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'admin/accounts/userinfo', {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -43,8 +48,13 @@ export const addUserList = (user_list) => ({
 // get owner list for admin
 export const fetchOwnerList = () => (dispatch) => {
     dispatch(ownerListLoading(true));
-
-    return fetch(baseUrl + 'admin/accounts/ownerinfo', { credentials: 'include' })
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'admin/accounts/ownerinfo', {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -81,8 +91,13 @@ export const addOwnerList = (owner_list) => ({
 // get park list for admin
 export const fetchParkList = () => (dispatch) => {
     dispatch(parkListLoading(true));
-
-    return fetch(baseUrl + 'admin/parks', { credentials: 'include' })
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'admin/parks', {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -119,8 +134,13 @@ export const addParkList = (park_list) => ({
 // get user chart for admin
 export const fetchUserChart = () => (dispatch) => {
     dispatch(userChartLoading(true));
-
-    return fetch(baseUrl + 'admin/charts/user-number', { credentials: 'include' })
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'admin/charts/user-number', {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -157,8 +177,13 @@ export const addUserChart = (user_chart) => ({
 // get rating chart for admin
 export const fetchRatingChart = () => (dispatch) => {
     dispatch(ratingChartLoading(true));
-
-    return fetch(baseUrl + 'admin/charts/rating-count', { credentials: 'include' })
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'admin/charts/rating-count', {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -195,8 +220,13 @@ export const addRatingChart = (rating_chart) => ({
 // get rating chart for admin
 export const fetchTransChart = () => (dispatch) => {
     dispatch(transChartLoading(true));
-
-    return fetch(baseUrl + 'admin/charts/transaction', { credentials: 'include' })
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'admin/charts/transaction', {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -232,7 +262,7 @@ export const addTransChart = (trans_chart) => ({
 
 // method delete user for admin
 export const deleteUsers = (users_delete) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     const users = { users_delete: users_delete }
 
     return fetch(baseUrl + "admin/accounts/userinfo",
@@ -240,6 +270,7 @@ export const deleteUsers = (users_delete) => (dispatch) => {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(users),
             credentials: "include"
@@ -265,7 +296,7 @@ export const deleteUsers = (users_delete) => (dispatch) => {
 
 // method delete owner for admin
 export const deleteOwners = (owners_delete) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     const owners = { owners_delete: owners_delete }
 
     return fetch(baseUrl + "admin/accounts/ownerinfo",
@@ -273,6 +304,7 @@ export const deleteOwners = (owners_delete) => (dispatch) => {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(owners),
             credentials: "include"
@@ -298,7 +330,7 @@ export const deleteOwners = (owners_delete) => (dispatch) => {
 
 // method delete park for admin
 export const deleteParks = (parks_delete) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     const parks = { parks_delete: parks_delete }
 
     return fetch(baseUrl + "admin/parks",
@@ -306,6 +338,7 @@ export const deleteParks = (parks_delete) => (dispatch) => {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(parks),
             credentials: "include"
@@ -332,7 +365,7 @@ export const deleteParks = (parks_delete) => (dispatch) => {
 
 // post verified park
 export const postVerify = (park_id) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     const verifiedPark= { park_id: park_id };
 
     return fetch(baseUrl + "admin/parks/verify",
@@ -340,6 +373,7 @@ export const postVerify = (park_id) => (dispatch) => {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(verifiedPark),
             credentials: "include"

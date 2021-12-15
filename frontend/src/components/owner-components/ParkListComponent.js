@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { fetchOwnerParks, deletePark } from "../../redux/OwnerActionCreators";
 import { useHistory } from "react-router-dom";
 import AlertDialog from '../DialogComponent';
-import { baseUrl } from '../../shared/baseUrl';
+import { baseImgUrl } from '../../shared/baseUrl';
 
 function ParkCard(props) {
 
@@ -31,7 +31,7 @@ function ParkCard(props) {
             <CardMedia
                 component="img"
                 height="194"
-                src={baseUrl + park.image}
+                src={baseImgUrl + park.image}
                 alt={park.name}
             />
             <CardContent>

@@ -3,7 +3,7 @@ import { Button, Label, Row, Col } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { postUser } from "../../redux/AuthenActionCreators";
 import { connect } from "react-redux";
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -24,8 +24,11 @@ class Register extends Component {
         super(props);
     }
 
-    handleSubmit(values) {
-        this.props.postUser(values.username, values.password, values.email, values.firstname, values.lastname, values.type)
+    async handleSubmit(values) {
+        var response = await this.props.postUser(values.username, values.password, values.email, values.firstname, values.lastname, values.type);
+        if (response) {
+            this.props.history.push('/login');
+        }
     }
     render() {
         return (
@@ -203,4 +206,4 @@ class Register extends Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(Register);
+export default withRouter(connect(null, mapDispatchToProps)(Register));

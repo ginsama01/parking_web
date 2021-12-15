@@ -3,8 +3,7 @@ const { dbConnect } = require('./connectDB');
 const nodemailer = require('nodemailer');
 var models = require('./models/models');
 var config = require('./config');
-var FacebookTokenStrategy = require('passport-facebook-token');
-var passport = require('passport');
+
 
 exports.getToken = function(user) {
     return jwt.sign(user, config.secretKey, {expiresIn: "2d"});
@@ -34,7 +33,7 @@ exports.getCodeForgotten = () => {
 }
 
 exports.getAccountId = (req) => {
-    var token = req.signedCookies.token;
+    var token = req.headers.authorization.split(" ")[1];
     var id = jwt.verify(token, config.secretKey).id;
     return id;
 }
@@ -97,12 +96,12 @@ exports.sendCode = (email, code) => {
 
 
 exports.verifyUser = (req, res, next) => {
-    if (!req.signedCookies.token) {
+    if (!req.headers.authorization) {
         res.statusCode = 401;
         res.json({message: 'Bạn chưa đăng nhập tài khoản người dùng'});
     }
     else {
-        var token = req.signedCookies.token;
+        var token = req.headers.authorization.split(" ")[1];
         try {
             var decode = jwt.verify(token, config.secretKey).id;
         } catch(error) {
@@ -124,12 +123,12 @@ exports.verifyUser = (req, res, next) => {
 }
 
 exports.verifyOwner = (req, res, next) => {
-    if (!req.signedCookies.token) {
+    if (!req.headers.authorization) {
         res.statusCode = 401;
         res.json({message: 'Bạn chưa đăng nhập tài khoản chủ bãi đỗ'});
     }
     else {
-        var token = req.signedCookies.token;
+        var token = req.headers.authorization.split(" ")[1];
         try {
             var decode = jwt.verify(token, config.secretKey).id;
         } catch(error) {
@@ -150,12 +149,12 @@ exports.verifyOwner = (req, res, next) => {
 }
 
 exports.verifyUserOrOwner = (req, res, next) => {
-    if (!req.signedCookies.token) {
+    if (!req.headers.authorization) {
         res.statusCode = 401;
         res.json({message: 'Bạn chưa đăng nhập tài khoản chủ bãi đỗ hoặc tài khoản người dùng'});
     }
     else {
-        var token = req.signedCookies.token;
+        var token = req.headers.authorization.split(" ")[1];
         try {
             var decode = jwt.verify(token, config.secretKey).id;
         } catch(error) {
@@ -184,12 +183,12 @@ exports.verifyUserOrOwner = (req, res, next) => {
     }
 }
 exports.verifyAdmin = (req, res, next) => {
-    if (!req.signedCookies.token) {
+    if (!req.headers.authorization) {
         res.statusCode = 401;
         res.json({message: 'Bạn không phải là quản trị viên'});
     }
     else {
-        var token = req.signedCookies.token;
+        var token = req.headers.authorization.split(" ")[1];
         try {
             var decode = jwt.verify(token, config.secretKey).id;
         } catch(error) {

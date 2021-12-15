@@ -1,6 +1,6 @@
 import React from "react";
 import { Rating, CardMedia, CardContent, Box, Card, ButtonBase, CircularProgress } from "@mui/material";
-import { baseUrl } from '../../shared/baseUrl';
+import { baseImgUrl } from '../../shared/baseUrl';
 import { Media, } from "reactstrap";
 
 
@@ -17,7 +17,7 @@ function RenderParkCard({ park, selectedPark, setSelectedPark }) {
                     <CardMedia
                         component="img"
                         sx={{ width: 150 }}
-                        image={baseUrl + park.image}
+                        image={baseImgUrl + park.image}
                         alt={park.name} />
                     <Box>
                         <CardContent>

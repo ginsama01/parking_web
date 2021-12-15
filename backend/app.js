@@ -2,12 +2,8 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var passport = require('passport');
-var FileStore = require('session-file-store')(session);
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var ownRouter = require('./routes/park.owner.router');
 var parkUserRouter = require('./routes/park.user.router');
 var parkAdminRouter = require('./routes/park.admin.router');
@@ -17,7 +13,7 @@ var chartRouter = require('./routes/chart.admin.router');
 var authenRouter = require('./routes/authen.router');
 var uploadRouter = require('./routes/upload.image.router');
 var config = require('./config');
-const { cors, corsWithOptions } = require('./routes/cors');
+const { cors, corsWithOptions } = require('./cors');
 
 var app = express();
 
@@ -34,17 +30,16 @@ app.use(cookieParser(config.cookieKey));
 
 app.use('/', indexRouter);
 
-app.use('/authen', authenRouter);
+app.use('/api/authen', authenRouter);
 
 
-app.use('/users', usersRouter);
-app.use('/owner/parks', ownRouter);
-app.use('/parks', parkUserRouter);
-app.use('/accounts', accountUserRouter);
-app.use('/admin/parks', parkAdminRouter);
-app.use('/admin/accounts', accountAdminRouter);
-app.use('/admin/charts', chartRouter);
-app.use('/upload/parks', uploadRouter);
+app.use('/api/owner/parks', ownRouter);
+app.use('/api/parks', parkUserRouter);
+app.use('/api/accounts', accountUserRouter);
+app.use('/api/admin/parks', parkAdminRouter);
+app.use('/api/admin/accounts', accountAdminRouter);
+app.use('/api/admin/charts', chartRouter);
+app.use('/api/upload/parks', uploadRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

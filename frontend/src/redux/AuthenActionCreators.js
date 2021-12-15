@@ -209,6 +209,7 @@ export const postLogin = (username, password) => (dispatch) => {
             localStorage.setItem('login', true);
             localStorage.setItem('username', user['username']);
             localStorage.setItem('role', user['role']);
+            localStorage.setItem('token', user['token']);
             const event = new Event('storagechange');
             window.dispatchEvent(event);
             dispatch(setSnackbar(true, "success", "Đăng nhập thành công"));
@@ -223,11 +224,13 @@ export const postLogin = (username, password) => (dispatch) => {
 
 
 export const Logout = () => (dispatch) => {
+    const token = localStorage.getItem('token');
     return fetch(baseUrl + 'authen/logout',
         {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
             },
             credentials: "include"
         })
@@ -243,6 +246,7 @@ export const Logout = () => (dispatch) => {
             localStorage.removeItem('login');
             localStorage.removeItem('username');
             localStorage.removeItem('role');
+            localStorage.removeItem('token');
             const event = new Event('storagechange');
             window.dispatchEvent(event);
             dispatch(setSnackbar(true, "success", "Đăng xuất thành công"));
@@ -251,6 +255,7 @@ export const Logout = () => (dispatch) => {
             localStorage.removeItem('login');
             localStorage.removeItem('username');
             localStorage.removeItem('role');
+            localStorage.removeItem('token');
             const event = new Event('storagechange');
             window.dispatchEvent(event);
             error.json().then(body => {

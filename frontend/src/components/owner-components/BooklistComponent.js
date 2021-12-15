@@ -14,6 +14,10 @@ import AlertDialog from "../DialogComponent"
 
 function BookList(props) {
     const { book_list, handleDeleteBooking, handlePutBooking, setIsChange } = props;
+    function convertTime(time) {
+        var date = new Date(Date.parse(time));
+        return(date.getHours() + ':' + date.getMinutes() + '  ' + date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear());
+    }
 
     // xóa một lượt đặt trước
     const deleteBooking = (pending_id) => {
@@ -57,7 +61,7 @@ function BookList(props) {
                                     <TableCell align="left">{row.username}</TableCell>
                                     <TableCell align="left">{row.name}</TableCell>
                                     <TableCell align="right">{row.phone}</TableCell>
-                                    <TableCell align="center">{row.time_start}</TableCell>
+                                    <TableCell align="center">{convertTime(row.time_start)}</TableCell>
                                     <TableCell align="center">
                                         <Stack spacing={2} direction="row">
                                             <AlertDialog

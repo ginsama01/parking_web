@@ -5,9 +5,13 @@ import { setSnackbar } from './AuthenActionCreators';
 
 export const fetchLoveParks = () => (dispatch) => {
     dispatch(loveParksLoading(true));
-
-    return fetch(baseUrl + 'accounts/favorite',{credentials: "include"})
-    
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'accounts/favorite', {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -42,8 +46,13 @@ export const addLoveParks = (love_parks) => ({
 
 export const fetchOrderParks = () => (dispatch) => {
     dispatch(orderParksLoading(true));
-
-    return fetch(baseUrl + 'accounts/pending',{credentials: "include"})
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'accounts/pending',{
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -78,8 +87,13 @@ export const addOrderParks = (order_parks) => ({
 
 export const fetchHistoryParks = () => (dispatch) => {
     dispatch(historyParksLoading(true));
-
-    return fetch(baseUrl + 'accounts/parking',{credentials: "include"})
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'accounts/parking',{
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -114,8 +128,13 @@ export const addHistoryParks = (history_parks) => ({
 
 export const fetchInfoUser = () => (dispatch) => {
     dispatch(infoUserLoading(true));
-
-    return fetch(baseUrl + 'accounts/info',{credentials: "include"})
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'accounts/info',{
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -158,11 +177,13 @@ export const postChange = (username, firstname, lastname, email, phone, address)
         phone: phone,
         address: address,
     };
+    const token = localStorage.getItem('token');
     return fetch(baseUrl + 'accounts/info', 
         {
             method: 'PUT',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
               },
             body: JSON.stringify(changeUser),
             credentials: "include"
@@ -198,11 +219,13 @@ export const addChange = (user) => ({
 
 //delete user
 export const postDelete = (username, email) => (dispatch) => {
+    const token = localStorage.getItem('token');
     return fetch(baseUrl + 'accounts/info', 
         {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
               },
             credentials: "include"
         })
@@ -227,6 +250,7 @@ export const postDelete = (username, email) => (dispatch) => {
 
 //delete lovepark
 export const postDeleteLovepark = (parks) => (dispatch) => {
+    const token = localStorage.getItem('token');
     const deleteLovepark = {
         flist_list: parks
     };
@@ -235,6 +259,7 @@ export const postDeleteLovepark = (parks) => (dispatch) => {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
               },
             body: JSON.stringify(deleteLovepark),
             credentials: "include"
@@ -261,6 +286,7 @@ export const postDeleteLovepark = (parks) => (dispatch) => {
 
 //delete historypark
 export const postDeleteHistorypark = (parks) => (dispatch) => {
+    const token = localStorage.getItem('token');
     const deleteHistorypark = {
         parking_list: parks
     };
@@ -269,6 +295,7 @@ export const postDeleteHistorypark = (parks) => (dispatch) => {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
               },
             body: JSON.stringify(deleteHistorypark),
             credentials: "include"
@@ -294,6 +321,7 @@ export const postDeleteHistorypark = (parks) => (dispatch) => {
 
 //delete orderpark
 export const postDeleteOrderpark = (parks) => (dispatch) => {
+    const token = localStorage.getItem('token');
     const deleteOrderpark = {
         pending_list: parks
     };
@@ -302,6 +330,7 @@ export const postDeleteOrderpark = (parks) => (dispatch) => {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
               },
             body: JSON.stringify(deleteOrderpark),
             credentials: "include"
@@ -326,6 +355,7 @@ export const postDeleteOrderpark = (parks) => (dispatch) => {
     }
 //change pass
 export const postChangePass = (password, newpass, repass) => (dispatch) => {
+    const token = localStorage.getItem('token');
     const changeUser = {
         password: password,
         newpass: newpass,
@@ -336,6 +366,7 @@ export const postChangePass = (password, newpass, repass) => (dispatch) => {
             method: 'PUT',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
               },
             body: JSON.stringify(changeUser),
             credentials: "include"
@@ -361,11 +392,13 @@ export const postChangePass = (password, newpass, repass) => (dispatch) => {
 
 //Post verify
 export const postVerify = () => (dispatch) => {
+    const token = localStorage.getItem('token');
     return fetch(baseUrl + 'authen/verify', 
         {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`
               },
             credentials: "include"
         })

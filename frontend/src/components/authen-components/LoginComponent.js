@@ -22,8 +22,10 @@ class Login extends Component {
     async handleSubmit(values) {
         var result = await this.props.postLogin(values.username, values.password);
         if (result) {
-            await this.props.fetchInfoUser();
-            this.props.history.push('/');
+            if (result.role != 'admin') await this.props.fetchInfoUser();
+            if (result.role == 'user') this.props.history.push('/');
+            if (result.role == 'admin') this.props.history.push('/admin/dashboard');
+            if (result.role == 'owner') this.props.history.push('/owner/myparks');
         }
     }
 

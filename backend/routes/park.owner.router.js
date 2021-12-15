@@ -62,7 +62,7 @@ ownRouter.route('/info')
 //Fetch info of a park
 ownRouter.route('/info/:id')
     .get(authenticate.verifyOwner, (req, res, next) => {
-        dbConnect.query("SELECT park_id AS id, name, image_url, location, total_space, price, hasCamera, hasRoof, allowOvernight, allowBooking, description, open_time "
+        dbConnect.query("SELECT park_id AS id, name, isActivated, image_url, location, total_space, price, hasCamera, hasRoof, allowOvernight, allowBooking, description, open_time "
             + "FROM park WHERE park_id = " + req.params.id + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then((result) => {
@@ -236,7 +236,7 @@ ownRouter.route('/pending/:parkId')
                         park_id: park_id
                     }
                 }).then(() => {
-                    models.Parking.create({ rela_id: rela_id, status: 'Đang đỗ xe' });
+                    models.Parking.create({ rela_id: rela_id, status: 'OK' });
                     res.statusCode = 201;
                     res.json({ sucess: true });
                 }, err => next(err))

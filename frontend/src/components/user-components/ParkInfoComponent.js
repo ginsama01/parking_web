@@ -1,6 +1,6 @@
 import { ImageList, ImageListItem, CircularProgress } from "@mui/material";
 import React from "react";
-import { baseUrl } from "../../shared/baseUrl";
+import { baseImgUrl } from "../../shared/baseUrl";
 
 
 function CameraIcon({ hasCamera }) {
@@ -69,7 +69,7 @@ function RenderParkInfo({ park_info }) {
                         {park_info.image.map((item) => (
                             <ImageListItem key={item.img}>
                                 <img
-                                    src={baseUrl + item.img}
+                                    src={baseImgUrl + item.img}
                                     alt=""
                                 />
                             </ImageListItem>

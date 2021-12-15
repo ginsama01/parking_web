@@ -5,8 +5,13 @@ import { setSnackbar } from './AuthenActionCreators';
 // get all parks for maker
 export const fetchAllParks = () => (dispatch) => {
     dispatch(allParksLoading(true));
-
-    return fetch(baseUrl + 'parks')
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'parks', {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -43,8 +48,13 @@ export const addAllParks = (all_parks) => ({
 // fetch best parks list
 export const fetchBestParks = (search_id) => (dispatch) => {
     dispatch(bestParksLoading(true));
-
-    return fetch(baseUrl + 'parks/best?search_id=' + search_id, { credentials: 'include' })
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'parks/best?search_id=' + search_id, {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -81,8 +91,13 @@ export const addBestParks = (best_parks) => ({
 // fetch cheap parks list
 export const fetchCheapParks = (search_id) => (dispatch) => {
     dispatch(cheapParksLoading(true));
-
-    return fetch(baseUrl + 'parks/cheap?search_id=' + search_id, { credentials: 'include' })
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'parks/cheap?search_id=' + search_id, {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -119,8 +134,13 @@ export const addCheapParks = (cheap_parks) => ({
 // fetch near parks list
 export const fetchNearParks = (search_id) => (dispatch) => {
     dispatch(nearParksLoading(true));
-
-    return fetch(baseUrl + 'parks/near?search_id=' + search_id, { credentials: 'include' })
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'parks/near?search_id=' + search_id, {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -157,8 +177,13 @@ export const addNearParks = (near_parks) => ({
 // park-status
 export const fetchParkStatus = (park_id, search_id) => (dispatch) => {
     dispatch(parkStatusLoading(true));
-
-    return fetch(baseUrl + 'parks/status/' + park_id + "?search_id=" + search_id, { credentials: 'include' })
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'parks/status/' + park_id + "?search_id=" + search_id, {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -195,8 +220,13 @@ export const addParkStatus = (park_status) => ({
 //park-info
 export const fetchParkInfo = (park_id) => (dispatch) => {
     dispatch(parkInfoLoading(true));
-
-    return fetch(baseUrl + 'parks/info/' + park_id, { credentials: 'include' })
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'parks/info/' + park_id, {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -232,7 +262,13 @@ export const addParkInfo = (park_info) => ({
 
 //get comments
 export const fetchComments = (park_id) => (dispatch) => {
-    return fetch(baseUrl + 'parks/comment/' + park_id, { credentials: 'include' })
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'parks/comment/' + park_id, {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -265,7 +301,7 @@ export const addComments = (comments) => ({
 
 //post comment
 export const postComment = (park_id, rating, content) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     const newComment = {
         park_id: park_id,
         rating: rating,
@@ -276,7 +312,8 @@ export const postComment = (park_id, rating, content) => (dispatch) => {
         method: 'POST',
         body: JSON.stringify(newComment),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         credentials: 'include'
     })
@@ -302,7 +339,7 @@ export const postComment = (park_id, rating, content) => (dispatch) => {
 
 //post report
 export const postReport = (park_id, content) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     const newReport = {
         park_id: park_id,
         content: content
@@ -312,7 +349,8 @@ export const postReport = (park_id, content) => (dispatch) => {
         method: 'POST',
         body: JSON.stringify(newReport),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         credentials: 'include'
     })
@@ -345,7 +383,13 @@ export const postReport = (park_id, content) => (dispatch) => {
 
 // fetch search infomation
 export const fetchSearchInfo = (search_id) => (dispatch) => {
-    return fetch(baseUrl + 'parks/search?search_id=' + search_id)
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'parks/search?search_id=' + search_id, {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -372,7 +416,7 @@ export const addSearchInfo = (search_info) => ({
 
 //post search infomation
 export const postSearchInfo = (address, timein) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     const newSearchInfo = {
         address: address,
         timein: timein
@@ -382,7 +426,8 @@ export const postSearchInfo = (address, timein) => (dispatch) => {
         method: 'POST',
         body: JSON.stringify(newSearchInfo),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         credentials: 'include'
     })
@@ -409,7 +454,7 @@ export const postSearchInfo = (address, timein) => (dispatch) => {
 
 // post booking
 export const postBooking = (park_id, timein) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     const newBooking = {
         park_id: park_id,
         timein: timein,
@@ -419,7 +464,8 @@ export const postBooking = (park_id, timein) => (dispatch) => {
         method: 'POST',
         body: JSON.stringify(newBooking),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         credentials: 'include'
     })
@@ -446,7 +492,7 @@ export const postBooking = (park_id, timein) => (dispatch) => {
 
 // post is mark
 export const postMark = (park_id, isMark) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     const newMark = {
         park_id,
         isMark
@@ -456,7 +502,8 @@ export const postMark = (park_id, isMark) => (dispatch) => {
         method: 'POST',
         body: JSON.stringify(newMark),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         credentials: 'include'
     })
@@ -481,9 +528,12 @@ export const postMark = (park_id, isMark) => (dispatch) => {
 }
 
 export const fetchMark = (park_id) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     return fetch(baseUrl + 'parks/mark/' + park_id, {
-        credentials: 'include'
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
     })
         .then(response => {
             if (response.ok) {

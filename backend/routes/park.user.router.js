@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('./cors');
 const models = require('../models/models');
 const { dbConnect } = require('../connectDB');
 const authenticate = require('../authenticate');
@@ -173,7 +172,7 @@ parkRouter.route('/near')
     //get mark for favorite
 parkRouter.route('/mark/:parkId')
     .get(async (req, res, next) => {
-        if (!req.signedCookies.token) {
+        if (!req.headers.authorization) {
             res.statusCode = 200;
             res.json({ isMark: false });
         } else {

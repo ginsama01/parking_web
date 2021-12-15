@@ -1,10 +1,7 @@
 var express = require('express');
-var router = express.Router();
-var cors = require('./cors');
 var models = require('../models/models');
 var authenticate = require('../authenticate');
-var passport = require('passport');
-var cors = require('./cors');
+
 
 const { dbConnect } = require('../connectDB');
 
@@ -20,7 +17,7 @@ accountRouter.route('/signup')
         }).then((result) => {
             if (result.length != 0) {
                 res.statusCode = 403;
-                res.json({ message: 'User ' + req.body.username + ' already exists!' });
+                res.json({ message: 'Tài khoản ' + req.body.username + ' đã tồn tại!' });
             } else {
                 models.Account.create(req.body)
                     .then((result) => {
@@ -59,30 +56,29 @@ accountRouter.route('/signup')
         }).then((result) => {
             if (result.length == 0) {
                 res.statusCode = 403;
-                res.json({ message: 'User ' + username + ' does not exist!' });
+                res.json({ message: 'Tài khoản ' + username + ' không tồn tại!' });
             }
             else if (result[0].password !== password) {
                 res.statusCode = 403;
-                res.json({ message: "Your password is incorrect!" });
+                res.json({ message: "Sai mật khẩu!" });
             }
             else if (result[0].username === username && result[0].password === password) {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 var token = authenticate.getToken({ id: result[0].id });
-                res.cookie('token', token, { signed: true });
                 dbConnect.query("SELECT * FROM user WHERE user_id = " + result[0].id + ";", {
                     type: dbConnect.QueryTypes.SELECT
                 }).then(result1 => {
                     if (result1.length != 0) {
-                        res.json({ login: true, username: username, role: 'user' });
+                        res.json({ token: token, login: true, username: username, role: 'user' });
                     } else {
                         dbConnect.query("SELECT * FROM owner WHERE own_id = " + result[0].id + ";", {
                             type: dbConnect.QueryTypes.SELECT
                         }).then(result => {
                             if (result.length != 0) {
-                                res.json({ login: true, username: username, role: 'owner' });
+                                res.json({ token: token, login: true, username: username, role: 'owner' });
                             } else {
-                                res.json({ login: true, username: username, role: 'admin' });
+                                res.json({ token: token, login: true, username: username, role: 'admin' });
                             }
                         }, err => next(err))
                     }
@@ -94,12 +90,11 @@ accountRouter.route('/signup')
 
 accountRouter.route('/logout')
     .get((req, res, next) => {
-        if (req.signedCookies.token) {
-            res.clearCookie("token");
-            res.json({ success: true, status: 'You are successfully logged out!' });
+        if (req.headers.authorization) {
+            res.json({ success: true, status: 'Đăng xuất thành công!' });
         } else {
             res.statusCode = 403;
-            res.json({ message: 'You are not logged in!' });
+            res.json({ message: 'Bạn chưa đăng nhập!' });
         }
     });
 

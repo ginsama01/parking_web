@@ -5,7 +5,7 @@ import {
     List, ListItemAvatar, ListItemText, Divider, Paper, CircularProgress
 } from "@mui/material";
 import { ListInlineItem } from "reactstrap";
-import { baseUrl } from "../../shared/baseUrl";
+import { baseImgUrl } from "../../shared/baseUrl";
 import { useEffect, useState } from 'react';
 import React from "react";
 import { useHistory, useParams } from "react-router-dom";
@@ -54,8 +54,8 @@ const RenderParkInfo = (props) => {
     const { park_info, park_review } = props;
     const history = useHistory();
     const images_gallery = park_info.images.map((image) => ({
-        original: `${baseUrl + image.img}`,
-        thumbnail: `${baseUrl + image.img}`
+        original: `${baseImgUrl + image.img}`,
+        thumbnail: `${baseImgUrl + image.img}`
     }));
 
     const rating_data = {
@@ -123,9 +123,11 @@ const RenderParkInfo = (props) => {
                     <div className="col-1"></div>
                 </div>
                 <Divider variant="inset" />
+                {park_info.isActivated && 
                 <Grid align='center' style={{ color: "#22577E", marginBottom: "30px", marginTop: "30px" }}>
                     <h2 style={{ fontWeight: "bolder" }}>Thông tin đánh giá</h2>
-                </Grid>
+                </Grid>}
+                {park_info.isActivated &&
                 <div className="row">
                     <div className="col-1"></div>
                     <div className="col-2">
@@ -170,7 +172,7 @@ const RenderParkInfo = (props) => {
                         </List>
                     </div>
                     <div className="col-1"></div>
-                </div>
+                </div> }
             </div>
         </div >
     );

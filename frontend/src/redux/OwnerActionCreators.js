@@ -5,8 +5,13 @@ import { setSnackbar } from './AuthenActionCreators';
 // get parks for owner
 export const fetchOwnerParks = () => (dispatch) => {
     dispatch(ownerParksLoading(true));
-
-    return fetch(baseUrl + 'owner/parks/info',{credentials: 'include'})
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'owner/parks/info',{
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -42,8 +47,13 @@ export const addOwnerParks = (owner_parks) => ({
 // fetch park info
 export const fetchOwnerParkInfo = (park_id) => (dispatch) => {
     dispatch(ownerParkInfoLoading(true));
-
-    return fetch(baseUrl + 'owner/parks/info/' + park_id,{credentials: 'include'})
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'owner/parks/info/' + park_id,{
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -79,7 +89,7 @@ export const addOwnerParkInfo = (owner_park_info) => ({
 // push edit park info
 export const pushEditParkInfo = (park_id, name, total_space, location, price, hasCamera, hasRoof,
     allowOvernight, allowBooking, description, open_time, close_time, allow24h, removeImages) => (dispatch) => {
-
+        const token = localStorage.getItem('token');
         const editParkInfo = {
             name: name,
             total_space: total_space,
@@ -100,7 +110,8 @@ export const pushEditParkInfo = (park_id, name, total_space, location, price, ha
             method: 'PUT',
             body: JSON.stringify(editParkInfo),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             credentials: 'include'
         })
@@ -126,14 +137,15 @@ export const pushEditParkInfo = (park_id, name, total_space, location, price, ha
 
 // post park image
 export const postParkImages = (park_id, images) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     const newImages = { images: images }
 
     return fetch(baseUrl + 'upload/parks/' + park_id, {
         method: 'POST',
         body: JSON.stringify(newImages),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         credentials: 'include'
     })
@@ -156,7 +168,7 @@ export const postParkImages = (park_id, images) => (dispatch) => {
 // post new park
 export const postNewPark = (name, total_space, location, price, hasCamera, hasRoof,
     allowOvernight, allowBooking, description, open_time, close_time, allow24h) => (dispatch) => {
-
+        const token = localStorage.getItem('token');
         const newPark = {
             name: name,
             total_space: total_space,
@@ -176,7 +188,8 @@ export const postNewPark = (name, total_space, location, price, hasCamera, hasRo
             method: 'POST',
             body: JSON.stringify(newPark),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             credentials: 'include'
         })
@@ -201,10 +214,13 @@ export const postNewPark = (name, total_space, location, price, hasCamera, hasRo
 
 // delete a park
 export const deletePark = (park_id) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     return fetch(baseUrl + "owner/parks/info/" + park_id,
         {
             method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
             credentials: "include"
         })
         .then(response => {
@@ -229,8 +245,13 @@ export const deletePark = (park_id) => (dispatch) => {
 // fetch park review
 export const fetchParkReview = (park_id) => (dispatch) => {
     dispatch(parkReviewLoading(true));
-
-    return fetch(baseUrl + 'owner/parks/rating/' + park_id,{credentials: 'include'})
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'owner/parks/rating/' + park_id,{
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -266,8 +287,13 @@ export const addParkReview = (owner_park_info) => ({
 // fetch park status
 export const fetchParkStatus = (park_id) => (dispatch) => {
     dispatch(parkStatusLoading(true));
-
-    return fetch(baseUrl + 'owner/parks/status/' + park_id,{credentials: 'include'})
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'owner/parks/status/' + park_id,{
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -303,8 +329,13 @@ export const addParkStatus = (owner_park_info) => ({
 // fetch book list
 export const fetchBookList = (park_id) => (dispatch) => {
     dispatch(bookListLoading(true));
-
-    return fetch(baseUrl + 'owner/parks/pending/' + park_id, {credentials: 'include'})
+    const token = localStorage.getItem('token');
+    return fetch(baseUrl + 'owner/parks/pending/' + park_id, {
+        credentials: "include",
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (response.ok) {
                 return response;
@@ -339,14 +370,15 @@ export const addBookList = (book_list) => ({
 
 // owner change park status
 export const postNewStatus = (park_id, value) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     const newStatus = { control: value }
 
     return fetch(baseUrl + 'owner/parks/status/' + park_id, {
         method: 'POST',
         body: JSON.stringify(newStatus),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         credentials: 'include'
     })
@@ -371,10 +403,14 @@ export const postNewStatus = (park_id, value) => (dispatch) => {
 
 // owner verify booking
 export const putBooking = (pending_id) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     return fetch(baseUrl + 'owner/parks/pending/' + pending_id, {
         method: 'PUT',
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
     })
     .then(response => {
         if (response.ok) {
@@ -397,9 +433,13 @@ export const putBooking = (pending_id) => (dispatch) => {
 
 // owner report booking
 export const deleteBooking = (pending_id) => (dispatch) => {
-
+    const token = localStorage.getItem('token');
     return fetch(baseUrl + 'owner/parks/pending/' + pending_id, {
         method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
         credentials: 'include'
     })
     .then(response => {

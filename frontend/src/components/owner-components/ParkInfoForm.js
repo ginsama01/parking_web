@@ -6,7 +6,7 @@ import { LocationSearchInput } from '../user-components/LocationSearchInput';
 import Dropzone from "react-dropzone";
 import "react-widgets/styles.css";
 import { useHistory } from "react-router-dom";
-import { baseUrl } from '../../shared/baseUrl';
+import { baseImgUrl } from '../../shared/baseUrl';
 
 // xác thực một số trường cần thiết
 const required = value => value ? undefined : <p style={{color: "red"}}>Cần thiết</p>
@@ -172,7 +172,7 @@ function ParkInfoForm(props) {
                     <Grid container spacing={3}>
                         {iniImages.map((image) =>
                             <Grid item xs={4}>
-                                <img width='150' height='150' src={baseUrl + image.img} />
+                                <img width='150' height='150' src={baseImgUrl + image.img} />
                                 <IconButton color="success" aria-label="remove" size="large"
                                     style={{ marginBottom: "120px", marginLeft: "-20px" }}
                                     onClick={() => handleRemoveIni(image)} >
