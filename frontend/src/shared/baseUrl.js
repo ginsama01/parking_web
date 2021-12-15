@@ -1,2 +1,2 @@
 export const baseUrl = 'http://localhost:8000/';
-export const googlemapKey = 'AIzaSyBWbole7QF_L4eWU8cpLMBkz2v1Er1DeyE';
+export const googlemapKey = 'AIzaSyDPuHw0L1Cue7rJRk6Hp2VMmm7GkV2C_VA';

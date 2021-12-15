@@ -11,6 +11,11 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import { Button } from '@mui/material';
 
+function convertTime(time) {
+    var date = new Date(Date.parse(time));
+    return(date.getHours() + ':' + date.getMinutes() + '  ' + date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear());
+}
+
 function Row(props) {
     const { row, isItemSelected, handleClick, labelId, typeTable, postVerify, setIsListChange } = props;
     const [open, setOpen] = React.useState(false);
@@ -99,6 +104,33 @@ function Row(props) {
                                         <p>Mô tả: {row.description}</p>
                                     </div>
                                 </div>
+                                <Typography variant="h6" gutterBottome component="div">
+                                    Report
+                                </Typography>
+                                {row.reportNum > 0 ? (<Table size="small" aria-label="purchases">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell align="center">ID</TableCell>
+                                            <TableCell align="left">Thời gian</TableCell>
+                                            <TableCell align="left">Nội dung báo cáo</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {row.reports.map((report) => (
+                                            <TableRow key={report.id}>
+                                                <TableCell component="th" scope='row' align='center'>
+                                                    {report.id}
+                                                </TableCell>
+                                                <TableCell align='left'>
+                                                    {convertTime(report.time)}
+                                                </TableCell>
+                                                <TableCell align='left'>
+                                                    {report.content}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>) : (<p>Bãi đỗ không có reports nào</p>)}
                             </Box>
                         </Collapse>
                     </TableCell>

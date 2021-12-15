@@ -39,6 +39,16 @@ ChartJS.register(
     Legend
 );
 
+function convert2digit(n) {
+    return n > 9 ? "" + n: "0" + n;
+}
+
+function parseTime(time) {
+    let hour = new Date(Date.parse(time)).getHours();
+    let minute = new Date(Date.parse(time)).getMinutes();
+    return convert2digit(hour) + ":" + convert2digit(minute);
+}
+
 const RenderParkInfo = (props) => {
 
     const { park_info, park_review } = props;
@@ -106,7 +116,7 @@ const RenderParkInfo = (props) => {
                                 </div>
                             </Grid>
                             <Grid item xs={12}><i class="fas fa-file-medical"></i> {park_info.description}</Grid>
-                            <Grid item xs={12}><i class="far fa-clock"></i> {park_info.allow24h ? ("Mở cửa 24/24") : ("Mở cửa từ: " + park_info.open_time + " - " + park_info.close_time)}</Grid>
+                            <Grid item xs={12}><i class="far fa-clock"></i> {park_info.allow24h ? ("Mở cửa 24/24") : ("Mở cửa từ: " + parseTime(park_info.open_time) + " - " + parseTime(park_info.close_time))}</Grid>
                             <Grid item xs={5}><Button variant="contained" color="success" onClick={() => history.push("/owner/edit/" + props.id)}> Chỉnh sửa thông tin</Button></Grid>
                         </Grid>
                     </div>

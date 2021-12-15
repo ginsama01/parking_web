@@ -192,6 +192,9 @@ parkRouter.route('/mark/:parkId')
         }
     })
 
+function convert2digit(n) {
+    return n > 9 ? "" + n: "0" + n;
+}
     //fetch status park
 parkRouter.route('/status/:parkId')
     .get(async (req, res, next) => {
@@ -207,10 +210,11 @@ parkRouter.route('/status/:parkId')
                 let currentHour = new Date().getHours();
                 let currentMinute = new Date().getMinutes();
                 let [start, end] = park['openTime'].split(" - ");
-                let startHour = Number(start.slice(0, 2));
-                let startMinute = Number(start.slice(3, 5));
-                let endHour = Number(end.slice(0, 2));
-                let endMinute = Number(end.slice(3, 5));
+                let startHour = new Date(Date.parse(start)).getHours();
+                let startMinute = new Date(Date.parse(start)).getMinutes();
+                let endHour = new Date(Date.parse(end)).getHours();
+                let endMinute = new Date(Date.parse(end)).getMinutes();
+                park['openTime'] = convert2digit(startHour) + ":" + convert2digit(startMinute) + " - " + convert2digit(endHour) + ":" + convert2digit(endMinute);
                 let startBool;
                 let endBool;
                 if ((currentHour > startHour) || (currentHour == startHour && currentMinute > startMinute)) {

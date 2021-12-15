@@ -23,19 +23,19 @@ let SearchForm = props => {
     const { handleSubmit } = props;
     return (
         <div className="row-content">
-            <div className="title">
+            <div className="title" style={{color:"white"}}>
                 <h2>Chào mừng bạn đến với Park Type</h2>
                 <p>Tìm và đặt trước bãi đỗ xe chỉ với vài thao tác đơn giản</p>
             </div>
             <form onSubmit={handleSubmit}>
                 <div className="row row-margin">
-                    <label className="col-2">Vị trí</label>
+                    <label className="col-2" style={{color:"white"}}>Vị trí</label>
                     <div className="col-6">
                         <Field name="address" component={LocationSearchInput} />
                     </div>
                 </div>
                 <div className="row row-margin">
-                    <label className="col-2">Thời gian gửi</label>
+                    <label className="col-2" style={{color:"white"}}>Thời gian gửi</label>
                     <div className="col-6">
                         <Field
                             name="timein"
@@ -80,7 +80,7 @@ class Start extends Component {
 
     render() {
         return (
-            <div>
+            <div style={{backgroundImage: "url(/logo.jpg)"}}>
                 <SearchForm handleSubmit={this.handleSubmitSearch} />
             </div>
         );

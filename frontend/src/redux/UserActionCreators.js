@@ -285,22 +285,16 @@ export const postComment = (park_id, rating, content) => (dispatch) => {
                 return response;
             }
             else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
+                throw response;
             }
-        },
-            error => {
-                var errmess = new Error(error.message);
-                throw errmess;
-            })
+        })
         .then(response => response.json())
         .then((newComment) => {
-            alert(JSON.stringify(newComment));
+            dispatch(setSnackbar(true, "success", "Thêm đánh giá thành công"));
         })
         .catch(error => {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
 }
@@ -338,11 +332,11 @@ export const postReport = (park_id, content) => (dispatch) => {
             })
         .then(response => response.json())
         .then((newReport) => {
-            alert('Bạn đã thêm report' + JSON.stringify(newReport))
+            dispatch(setSnackbar(true, "success", "Thêm report thành công")); 
         })
         .catch(error => {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
 }
@@ -403,12 +397,11 @@ export const postSearchInfo = (address, timein) => (dispatch) => {
         })
         .then(response => response.json())
         .then((newSearchInfo) => {
-            //alert("Tìm kiếm với: " + JSON.stringify(newSearchInfo));
             return newSearchInfo;
         })
         .catch(error => {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message));
             })
         });
 }
@@ -441,11 +434,11 @@ export const postBooking = (park_id, timein) => (dispatch) => {
         })
         .then(response => response.json())
         .then((newBooking) => {
-            alert("Đặt trước: " + JSON.stringify(newBooking));
+            dispatch(setSnackbar(true, "sucess", "Đặt trước thành công"))
         })
         .catch(error => {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message))
             })
         });
 }
@@ -482,7 +475,7 @@ export const postMark = (park_id, isMark) => (dispatch) => {
         })
         .catch(error => {
             error.json().then(body => {
-                alert(body.message);
+                dispatch(setSnackbar(true, "error", body.message))
             })
         });
 }

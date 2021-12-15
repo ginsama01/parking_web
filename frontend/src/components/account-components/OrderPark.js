@@ -253,6 +253,7 @@ function OrderPark(props) {
     setSelected(newSelected);
   };
   const handleRowClick = (event, id) => {
+    if (event.target.tagName != "INPUT") window.open("/user/park?id=" + id, "_blank");
   }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -317,7 +318,7 @@ function OrderPark(props) {
                           return (
                             <TableRow
                               hover
-                              onClick={(event) => handleRowClick(event, row.pending_id)}
+                              onClick={(event) => handleRowClick(event, row.park_id)}
                               role="checkbox"
                               aria-checked={isItemSelected}
                               tabIndex={-1}

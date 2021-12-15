@@ -26,6 +26,7 @@ import Layout from './LayOut';
 import { Rating } from '@mui/material';
 import { fetchLoveParks, postDeleteLovepark } from "../../redux/AccountActionCreators"
 import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 const mapStateToProps = state => {
 	return {
@@ -229,7 +230,6 @@ function LovePark(props) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
   React.useEffect(() => {
 		props.fetchLoveParks();
 	}, []);
@@ -270,8 +270,9 @@ function LovePark(props) {
   };
   
   const handleRowClick = (event, id) => {
-    
+    if (event.target.tagName != "INPUT") window.open("/user/park?id=" + id, "_blank");
   }
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -330,7 +331,7 @@ function LovePark(props) {
                           return (
                             <TableRow
                               hover
-                              onClick={(event) => handleRowClick(event, row.flist_id)}
+                              onClick={(event) => handleRowClick(event, row.park_id)}
                               role="checkbox"
                               aria-checked={isItemSelected}
                               tabIndex={-1}
