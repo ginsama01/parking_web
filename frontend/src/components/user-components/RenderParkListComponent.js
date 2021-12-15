@@ -14,11 +14,13 @@ function RenderParkCard({ park, selectedPark, setSelectedPark }) {
                 <ButtonBase
                     style={{ textAlign: "initial", width: "100%", height: "100%" }}
                     onClick={() => handleSelect(park.id)} >
+
                     <CardMedia
                         component="img"
                         sx={{ width: 150 }}
                         image={baseImgUrl + park.image}
                         alt={park.name} />
+
                     <Box>
                         <CardContent>
                             <h5>{park.name}</h5>
@@ -64,15 +66,15 @@ export const ParkList = (props) => {
             <div className="container">
                 <Media list>
                     {props.parks.parks.map((park) => {
-                        if ((props.filter.camera == true || park.hasCamera == true) 
+                        if ((props.filter.camera == true || park.hasCamera == true)
                             && (props.filter.roof == true || park.hasRoof == true)
                             && (props.filter.booking == true || park.allowBooking == true)
                             && (props.filter.overnight == true || park.allowOvernight == true))
-                        return (
-                            <div key={park.id} style={{ margin: "15px 0px 0px -70px" }}>
-                                <RenderParkCard park={park} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
-                            </div>
-                        );
+                            return (
+                                <div key={park.id} style={{ margin: "15px 0px 0px -70px" }}>
+                                    <RenderParkCard park={park} selectedPark={selectedPark} setSelectedPark={setSelectedPark} />
+                                </div>
+                            );
                     })}
                 </Media>
             </div>

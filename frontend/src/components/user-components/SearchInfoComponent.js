@@ -9,7 +9,7 @@ import { LocationSearchInput } from "./LocationSearchInput";
 const renderDateTimePicker = ({ label, input: { onChange, value } }) =>
     <DatePicker
         onChange={onChange}
-        value={!value < new Date() || !value ? null : new Date(value)}
+        value={ !value || value.getDate() < new Date().getDate() ? null : new Date(value)}
         placeholder={label}
         includeTime
     />

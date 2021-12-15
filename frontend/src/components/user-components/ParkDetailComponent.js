@@ -67,8 +67,8 @@ const ParkDetail = (props) => {
         setValue(index);
     }
 
-    const handleChangeMark = (value) => {
-        postMark(props.park_status.park_status.park_id, value);
+    const handleChangeMark = async (value) => {
+        await postMark(props.park_status.park_status.park_id, value);
         setIsPostMark(true);
     }
 

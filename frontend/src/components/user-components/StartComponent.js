@@ -13,7 +13,7 @@ const renderDateTimePicker = ({ input: { onChange, value }, showTime }) =>
     <DatePicker
         onChange={onChange}
         time={showTime}
-        value={!value ? null : new Date(value)}
+        value={ !value || value.getDate() < new Date().getDate() ? null : new Date(value)}
         defaultValue={new Date()}
         includeTime
     />

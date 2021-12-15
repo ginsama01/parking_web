@@ -20,14 +20,14 @@ function BookList(props) {
     }
 
     // xóa một lượt đặt trước
-    const deleteBooking = (pending_id) => {
-        handleDeleteBooking(pending_id);
+    const deleteBooking = async (pending_id) => {
+        await handleDeleteBooking(pending_id);
         setIsChange(true);
     }
 
     // xác nhận lượt đặt trước
-    const putBooking = (pending_id) => {
-        handlePutBooking(pending_id);
+    const putBooking = async (pending_id) => {
+        await handlePutBooking(pending_id);
         setIsChange(true);
     }
 

@@ -3,9 +3,11 @@ const uploadRouter = express.Router();
 const { dbConnect } = require("../connectDB");
 const models = require('../models/models');
 const fs = require('fs');
+const sharp = require('sharp');
 var path = require('path');
 
 uploadRouter.use(express.json());
+
 
 uploadRouter.route('/:parkId')
     .post((req, res, next) => {
@@ -25,27 +27,42 @@ uploadRouter.route('/:parkId')
                 url = result[0].image_url;
             }
             number = number + 1;
+            const promises = [];
             for (let i = 0; i < data.length; ++i) {
                 const name = data[i].fileAsBase64;
                 const base64data = new Buffer.from(name.replace(/^data:image\/\w+;base64,/, ""), 'base64');
-                fs.writeFileSync('public/images/park-image-' + req.params.parkId + '-' + number + '.jpg', base64data);
-                if (url == '') {
-                    url = 'images/park-image-' + req.params.parkId + '-' + number + '.jpg';
-                } else {
-                    url = url + ',images/park-image-' + req.params.parkId + '-' + number + '.jpg';
-                }
-                number = number + 1;
+                promises.push(sharp(base64data)
+                    .resize({ width: 1000, height: 1000 })
+                    .toBuffer()
+                    .then(data => {
+                        fs.writeFileSync('public/images/park-image-' + req.params.parkId + '-' + number + '.jpg', data);
+                        if (url == '') {
+                            url = 'images/park-image-' + req.params.parkId + '-' + number + '.jpg';
+                        } else {
+                            url = url + ',images/park-image-' + req.params.parkId + '-' + number + '.jpg';
+                        }
+                        number = number + 1;
+                    }, err => next(err))
+                    .catch(err => next(err))
+                )
             }
-            console.log(url);
-            models.Park.update({image_url: url}, {
-                where: {
-                    park_id: req.params.parkId
-                }
-            }).then(() => {
-                res.json({ sucess: true });
-            }, err => next(err))
+            Promise.all(promises)
+                .then(() => {
+                    console.log(url);
+                    models.Park.update({ image_url: url }, {
+                        where: {
+                            park_id: req.params.parkId
+                        }
+                    }).then(() => {
+                        res.json({ sucess: true });
+                    }, err => next(err))
+                }, err => next(err))
+                .catch(err => next(err));
         }, err => next(err))
-        .catch(err => next(err));
+        .catch(err => next(err))
+
     })
+
+
 
 module.exports = uploadRouter;

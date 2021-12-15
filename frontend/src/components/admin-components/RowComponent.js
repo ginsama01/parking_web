@@ -20,8 +20,8 @@ function Row(props) {
     const { row, isItemSelected, handleClick, labelId, typeTable, postVerify, setIsListChange } = props;
     const [open, setOpen] = React.useState(false);
 
-    const handleVerify = (event) => {
-        postVerify(row.id);
+    const handleVerify = async (event) => {
+        await postVerify(row.id);
         setIsListChange(true)
     }
 
@@ -54,14 +54,14 @@ function Row(props) {
                     {row.id}
                 </TableCell>
                 {typeTable != "Bãi đỗ" && <TableCell align="left">{row.username}</TableCell>}
-                {typeTable != "Bãi đỗ" && <TableCell align="right">{row.isActivated}</TableCell>}
+                {typeTable != "Bãi đỗ" && <TableCell align="center">{row.isActivated}</TableCell>}
                 {typeTable != "Bãi đỗ" && <TableCell align="left">{row.name}</TableCell>}
                 {typeTable != "Bãi đỗ" && <TableCell align="right">{row.phone}</TableCell>}
                 {typeTable != "Bãi đỗ" && <TableCell align="left">{row.email}</TableCell>}
                 {typeTable != "Bãi đỗ" && <TableCell align="left">{row.address}</TableCell>}
-                {typeTable == "Người dùng" && <TableCell align="right">{row.penalty}</TableCell>}
+                {typeTable == "Người dùng" && <TableCell align="center">{row.penalty}</TableCell>}
                 {typeTable == "Bãi đỗ" && <TableCell align="left">{row.name}</TableCell>}
-                {typeTable == "Bãi đỗ" && <TableCell align="left">{row.isActivated}</TableCell>}
+                {typeTable == "Bãi đỗ" && <TableCell align="center">{row.isActivated}</TableCell>}
                 {typeTable == "Bãi đỗ" && <TableCell align="right">{row.price}</TableCell>}
                 {typeTable == "Bãi đỗ" && <TableCell align="left">{row.location}</TableCell>}
                 {typeTable == "Bãi đỗ" && <TableCell align="left">ID: {row.owner_id}<br></br>Tên: {row.owner}</TableCell>}

@@ -210,7 +210,7 @@ ownRouter.route('/pending/:parkId')
     .get(authenticate.verifyOwner, (req, res, next) => {
         dbConnect.query("SELECT p.pending_id, a.username, CONCAT(a.firstname, ' ', a.lastname) AS name, a.phone, p.time_start "
             + "FROM pending p JOIN park_user pu ON p.rela_id = pu.rela_id JOIN account a ON pu.user_id = a.id "
-            + "WHERE p.status = 'Đang đặt trước' AND pu.park_id = " + req.params.parkId + ";", {
+            + "WHERE p.status = 'Đang đặt trước' AND pu.park_id = " + req.params.parkId + " ORDER BY p.time_start DESC;", {
             type: dbConnect.QueryTypes.SELECT
         }).then(result => {
             res.statusCode = 200;

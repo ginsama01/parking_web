@@ -18,8 +18,8 @@ function ParkCard(props) {
     const history = useHistory();
     
     // xóa một bãi đỗ
-    const handleSubmitDelete = (event) => {
-        deletePark(park.id);
+    const handleSubmitDelete = async (event) => {
+        await deletePark(park.id);
         setIsChange(true)
     }
 
