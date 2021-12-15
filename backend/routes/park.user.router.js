@@ -19,7 +19,7 @@ parkRouter.route('/')
 //fetch all park for marker
     .get((req, res, next) => {
         console.log(req.headers.origin);
-        dbConnect.query("SELECT park_id, location FROM park", {
+        dbConnect.query("SELECT park_id, location FROM park WHERE isActivated = 1", {
             type: dbConnect.QueryTypes.SELECT
         }).then((result) => {
             res.statusCode = 200;
@@ -67,7 +67,7 @@ parkRouter.route('/search')
             lng = req.body.address.location.lng;
             dbConnect.query("SELECT park_id AS id, name, image_url AS image, price, location, hasCamera, hasRoof, allowBooking, allowOvernight, (SELECT AVG(rating) FROM comment WHERE rela_id IN " +
                 "(SELECT rela_id FROM park_user WHERE park_id = park.park_id)) AS rate, (SELECT COUNT(rating) FROM comment WHERE" +
-                " rela_id IN (SELECT rela_id FROM park_user WHERE park_id = park.park_id)) AS numOfRate FROM park", {
+                " rela_id IN (SELECT rela_id FROM park_user WHERE park_id = park.park_id)) AS numOfRate FROM park WHERE isActivated = 1", {
                 type: dbConnect.QueryTypes.SELECT
             }).then((parks) => {
                 parkObj = parks;
