@@ -434,7 +434,7 @@ export const postBooking = (park_id, timein) => (dispatch) => {
         })
         .then(response => response.json())
         .then((newBooking) => {
-            dispatch(setSnackbar(true, "sucess", "Đặt trước thành công"))
+            dispatch(setSnackbar(true, "success", "Đặt trước thành công"))
         })
         .catch(error => {
             error.json().then(body => {

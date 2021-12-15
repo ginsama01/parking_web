@@ -248,6 +248,11 @@ export const Logout = () => (dispatch) => {
             dispatch(setSnackbar(true, "success", "Đăng xuất thành công"));
         })
         .catch(error =>  {
+            localStorage.removeItem('login');
+            localStorage.removeItem('username');
+            localStorage.removeItem('role');
+            const event = new Event('storagechange');
+            window.dispatchEvent(event);
             error.json().then(body => {
                 dispatch(setSnackbar(true, "error", body.message));
             })
