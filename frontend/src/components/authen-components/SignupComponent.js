@@ -41,7 +41,7 @@ class Register extends Component {
                     <div className="col-12 col-md-8 offset-2">
                         <LocalForm model="signup" onSubmit={(values) => this.handleSubmit(values)} validators={{'': {passwordsMatch}}}>
                             <Row className="form-group">
-                                <Label htmlFor="username" md={3}>Tên đăng nhập</Label>
+                                <Label htmlFor="username" md={6}>Tên đăng nhập</Label>
                                 <Col md={12}>
                                     <Control.text model=".username" id="username" name="username"
                                         placeholder="Username"
@@ -89,7 +89,7 @@ class Register extends Component {
                             </Row>
                             
                             <Row className="form-group">
-                                <Label htmlFor="password" md={3}>Nhập lại mật khẩu</Label>
+                                <Label htmlFor="password" md={6}>Nhập lại mật khẩu</Label>
                                 <Col md={12}>
                                     <Control model=".confirmPassword" id="password2" name="password"
                                         type="password"

@@ -118,3 +118,15 @@ p {
 .fullscreen .image-gallery-slide img {
   max-height: 100vh;
 }
+
+.nav-header {
+  margin-right: 20px;
+}
+
+.nav-header > .nav-link {
+  color: #3E7C17;
+}
+
+.nav-header > .nav-link:hover {
+  color: white;
+}

@@ -18,9 +18,10 @@ parkRouter.route('/')
 //fetch all park for marker
     .get((req, res, next) => {
         console.log(req.headers.origin);
-        dbConnect.query("SELECT park_id, location FROM park WHERE isActivated = 1", {
+        dbConnect.query("SELECT park_id, location, name FROM park WHERE isActivated = 1", {
             type: dbConnect.QueryTypes.SELECT
         }).then((result) => {
+            console.log(result);
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(result);

@@ -35,21 +35,21 @@ function Info(props) {
             {login && localStorage.getItem('role') == 'user' &&
                 <Link to='/account/info'>
                     <Button outline>
-                        <span className="fa fa-sign-in fa-lg"></span> Tài khoản
+                        <span className="fas fa-user fa-lg"></span> Tài khoản
                     </Button>
                 </Link>
             }
             {login && localStorage.getItem('role') == 'owner' &&
                 <Link to='/account/info'>
                     <Button outline>
-                        <span className="fa fa-sign-in fa-lg"></span> Tài khoản
+                        <span className="fas fa-user fa-lg"></span> Tài khoản
                     </Button>
                 </Link>
             }
             {login && localStorage.getItem('role') == 'admin' &&
                 <Link to='/admin/dashboard'>
                     <Button outline>
-                        <span className="fa fa-sign-in fa-lg"></span> Quản lý
+                        <span className="fas fa-user-cog fa-lg"></span> Quản lý
                     </Button>
                 </Link>
             }
@@ -83,18 +83,18 @@ class Header extends Component {
                     <NavbarBrand className="app-name ms-auto">Park Type</NavbarBrand>
                     <Collapse isOpen={this.state.isNavOpen} navbar>
                         <Nav className="ms-auto" navbar>
-                            <NavItem>
-                                <NavLink style={{ color: '#3E7C17' }} className="nav-link" to="/">
+                            <NavItem className="nav-header">
+                                <NavLink className="nav-link" to="/">
                                     <strong>Tìm bãi đỗ</strong>
                                 </NavLink>
                             </NavItem>
-                            <NavItem>
-                                <NavLink style={{ color: '#3E7C17' }} className="nav-link" to="/owner/myparks">
+                            <NavItem className="nav-header">
+                                <NavLink className="nav-link" to="/owner/myparks">
                                     <strong>Quản lý bãi đỗ</strong>
                                 </NavLink>
                             </NavItem>
-                            <NavItem>
-                                <NavLink style={{ color: '#3E7C17' }} className="nav-link" to="/">
+                            <NavItem className="nav-header">
+                                <NavLink className="nav-link" to="/">
                                     <strong>Về chúng tôi</strong>
                                 </NavLink>
                             </NavItem>

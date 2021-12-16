@@ -88,11 +88,18 @@ function OwnerParks(props) {
 
     return (
         <div>
+            {props.owner_parks.owner_parks.length >= 0 && localStorage.getItem('role') == 'owner' &&
             <Grid align='center' style={{ color: "#22577E", marginBottom: "30px", marginTop: "30px" }}>
                 <h1 style={{ fontWeight: "bolder" }}>Bãi đỗ của tôi</h1>
             </Grid>
+            }  
+            {props.owner_parks.owner_parks.length >= 0 && localStorage.getItem('role') != 'owner' && 
+                <Grid align='center' style={{ color: "#22577E", marginBottom: "30px", marginTop: "30px" }}>
+                <h1 style={{ fontWeight: "bolder" }}>Chỉ dành cho tài khoản chủ bãi đỗ</h1>
+                </Grid>
+            }
             <div style={{ margin: "3% 0% 3% 3%" }}>
-                {props.owner_parks.owner_parks.length >= 0 &&
+                {props.owner_parks.owner_parks.length >= 0 && localStorage.getItem('role') == 'owner' &&
                     <Grid container spacing={4}>
                         <Grid item>
                             <Card sx={{ width: 400, height: 400 }} style={{ backgroundColor: '#CEE5D0' }}>

@@ -10,18 +10,19 @@ function RenderParkCard({ park, selectedPark, setSelectedPark }) {
     }
     return (
         <div>
-            <Card sx={{ display: 'flex' }}>
+            <Card>
                 <ButtonBase
                     style={{ textAlign: "initial", width: "100%", height: "100%" }}
                     onClick={() => handleSelect(park.id)} >
 
                     <CardMedia
+                        className="col-5"
                         component="img"
                         sx={{ width: 150 }}
                         image={baseImgUrl + park.image}
                         alt={park.name} />
 
-                    <Box>
+                    <Box className="col-7">
                         <CardContent>
                             <h5>{park.name}</h5>
                             <Box sx={{ display: 'flex' }}>
@@ -30,10 +31,10 @@ function RenderParkCard({ park, selectedPark, setSelectedPark }) {
                             </Box>
                             <Box sx={{ display: 'flex' }} style={{ marginTop: "10px" }}>
                                 <div>
-                                    <h5><i class="fas fa-dollar-sign"></i> {park.price}</h5>
+                                    <h6><i class="fas fa-coins"></i> {park.price}</h6>
                                 </div>
                                 <div style={{ marginLeft: "20px" }}>
-                                    <h5><i class="fas fa-route"></i> {park.distance}</h5>
+                                    <h6><i class="fas fa-route"></i> {park.distance}</h6>
                                 </div>
                             </Box>
                         </CardContent>

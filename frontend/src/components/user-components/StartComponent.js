@@ -44,8 +44,8 @@ let SearchForm = props => {
                         />
                     </div>
                 </div>
-                <div className="row-margin" style={{marginLeft: "30%"}}>
-                    <button type="submit" style={{color: "white", backgroundColor: "#2e7d32"}}>Tìm kiếm</button>
+                <div className="row-margin" style={{marginLeft: "35%"}}>
+                    <button type="submit" style={{color: "white", backgroundColor: "#2e7d32", width: "10vw", height: "3vw"}}>Tìm kiếm</button>
                 </div>
             </form>
         </div>

@@ -102,11 +102,11 @@ function ChangeInfo(props) {
             <Col className="col-9">
                 <div className="container" style={{ backgroundColor: '#FFFFFF' }}>
                     <div className="row row-content" style={{ backgroundColor: '#F8F9FB', borderRadius: '20px' }}>
-                        <div className="col-12 ">
+                        <div className="col-10 ">
                             <h3 style={{ color: "green", fontWeight: "bold" }}>Thông tin tài khoản</h3>
-                            <p>Bạn có thể chỉnh sửa thông tin hồ sơ của mình bên dưới. Nhấp vào nút đặt lại mật khẩu sẽ gửi một liên kết đặt lại đến email của bạn.</p>
+                            <p>Bạn có thể chỉnh sửa thông tin hồ sơ của mình bên dưới.</p>
                         </div>
-                        <div className="col-12 ">
+                        <div className="col-10 ">
                             <LocalForm model="changeinfo" onSubmit={handleSubmit}>
                                 <Row className="form-group">
                                     <Label htmlFor="username" md={3}>Tên người dùng</Label>

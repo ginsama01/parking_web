@@ -40,7 +40,7 @@ class Login extends Component {
                     <div className="col-12 col-md-8 offset-2">
                         <LocalForm model="login" onSubmit={(values) => this.handleSubmit(values)}>
                             <Row className="form-group">
-                            <Label htmlFor="username" md={3}>Tên người dùng</Label>
+                            <Label htmlFor="username" md={6}>Tên người dùng</Label>
                                 <Col md={12}>
                                     <Control.text model=".username" id="username" name="username"
                                         placeholder="Username"
