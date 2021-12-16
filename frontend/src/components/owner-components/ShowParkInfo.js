@@ -106,7 +106,7 @@ const RenderParkInfo = (props) => {
                             <Grid item xs={12}><h2>Thông tin chi tiết</h2></Grid>
                             <Grid item xs={12}><i class="fas fa-map-marker-alt"></i> {park_info.location}</Grid>
                             <Grid item xs={12}><i class="fas fa-car"></i> {park_info.total_space} xe</Grid>
-                            <Grid item xs={12}><i class="fas fa-money-check-alt"></i> {park_info.price} K</Grid>
+                            <Grid item xs={12}><i class="fas fa-money-check-alt"></i> {park_info.price} VND</Grid>
                             <Grid item xs={12}>
                                 <div style={{ display: "inline-flex" }}>
                                     {park_info.hasCamera == 1 && <div style={{ marginRight: "10px" }}><i class="fas fa-video"></i> CCTV</div>}

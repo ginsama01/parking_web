@@ -7,6 +7,8 @@ import Layout from './LayOut';
 import { fetchInfoUser, postChange, postDelete, postChangePass, postVerify } from "../../redux/AccountActionCreators";
 import { connect } from "react-redux";
 import AlertDialog from "../Dialog_Component";
+import { Logout } from "../../redux/AuthenActionCreators";
+import { useHistory } from 'react-router-dom';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -33,14 +35,15 @@ const mapDispatchToProps = dispatch => ({
     postChange: (username, firstname, lastname, email, phone, address) => dispatch(postChange(username, firstname, lastname, email, phone, address)),
     postChangePass: (password, newpass, repass) => dispatch(postChangePass(password, newpass, repass)),
     postDelete: (username, email) => dispatch(postDelete(username, email)),
-    postVerify: () => dispatch(postVerify())
+    postVerify: () => dispatch(postVerify()),
+    Logout: () => dispatch(Logout())
 
 });
 
 function ChangeInfo(props) {
 
     const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
-
+    const history = useHistory();
     React.useEffect(() => {
         props.fetchInfoUser();
     }, []);
@@ -90,8 +93,12 @@ function ChangeInfo(props) {
     const handleVerify = () => {
         props.postVerify();
     }
-    const handleDeleteUser = () => {
-        props.postDelete()
+    const handleDeleteUser = async () => {
+        var response = await props.postDelete();
+        if (response) {
+            props.Logout();
+            history.push('/');
+        }
     }
 
     return (
