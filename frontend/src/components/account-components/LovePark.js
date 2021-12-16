@@ -230,6 +230,8 @@ function LovePark(props) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const history = useHistory();
+
   React.useEffect(() => {
 		props.fetchLoveParks();
 	}, []);
@@ -270,7 +272,7 @@ function LovePark(props) {
   };
   
   const handleRowClick = (event, id) => {
-    if (event.target.tagName != "INPUT") window.open("/user/park?id=" + id, "_blank");
+    if (event.target.tagName != "INPUT") history.push("/user/park?id=" + id + "&back=favorite");
   }
 
   const handleChangePage = (event, newPage) => {

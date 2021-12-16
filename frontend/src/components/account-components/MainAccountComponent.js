@@ -24,7 +24,7 @@ function MainAccountComponent(){
         <Route exact path={`${url}/pending`}>
           <OrderPark/>
         </Route>
-        <Redirect to={`${url}/info`} />
+        
     </div>
   );
 };

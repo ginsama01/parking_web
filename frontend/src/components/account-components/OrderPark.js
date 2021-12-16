@@ -26,6 +26,7 @@ import Layout from './LayOut';
 import { Rating } from '@mui/material';
 import { fetchOrderParks, postDeleteOrderpark } from "../../redux/AccountActionCreators";
 import { connect } from "react-redux";
+import { useHistory } from 'react-router-dom';
 
 
 const mapStateToProps = state => {
@@ -223,6 +224,7 @@ function OrderPark(props) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const history = useHistory();
 
   React.useEffect(() => {
 		props.fetchOrderParks();
@@ -253,7 +255,7 @@ function OrderPark(props) {
     setSelected(newSelected);
   };
   const handleRowClick = (event, id) => {
-    if (event.target.tagName != "INPUT") window.open("/user/park?id=" + id, "_blank");
+    if (event.target.tagName != "INPUT") history.push("/user/park?id=" + id + "&back=pending");
   }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

@@ -112,7 +112,7 @@ accountRouter.route('/parking')
         let user_id = authenticate.getAccountId(req);
         dbConnect.query("SELECT p.park_id, p.name, p.location, pkg.parking_id, pkg.createdAt AS open, pkg.status, (SELECT phone FROM account WHERE id = p.own_id) AS phone, "
             + "(SELECT email FROM account WHERE id = p.own_id) AS email, "
-            + "(SELECT AVG(rating) FROM comment WHERE rela_id = pu.rela_id) AS rating FROM parking pkg JOIN park_user pu ON pkg.rela_id = pu.rela_id "
+            + "(SELECT AVG(rating) FROM comment WHERE rela_id IN (SELECT rela_id FROM park_user WHERE park_id = p.park_id)) AS rating FROM parking pkg JOIN park_user pu ON pkg.rela_id = pu.rela_id "
             + "JOIN park p ON pu.park_id = p.park_id WHERE pu.user_id = " + user_id + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then(result => {
@@ -142,7 +142,7 @@ accountRouter.route('/favorite')
         let user_id = authenticate.getAccountId(req);
         dbConnect.query("SELECT p.name, p.location, p.park_id, p.description, p.price, f.flist_id, (SELECT phone FROM account WHERE id = p.own_id) AS phone, "
             + "(SELECT email FROM account WHERE id = p.own_id) AS email, "
-            + "(SELECT AVG(rating) FROM comment WHERE rela_id = pu.rela_id) AS rating FROM favorite f JOIN park_user pu ON f.rela_id = pu.rela_id  "
+            + "(SELECT AVG(rating) FROM comment WHERE rela_id IN (SELECT rela_id FROM park_user WHERE park_id = p.park_id)) AS rating FROM favorite f JOIN park_user pu ON f.rela_id = pu.rela_id  "
             + "JOIN park p ON pu.park_id = p.park_id WHERE pu.user_id = " + user_id + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then(result => {
@@ -237,7 +237,7 @@ accountRouter.route('/pending')
         let user_id = authenticate.getAccountId(req);
         dbConnect.query("SELECT pe.pending_id, p.name, p.park_id, p.location, p.description, p.price, pe.time_start, pe.status, (SELECT phone FROM account WHERE id = p.own_id) AS phone, "
             + "(SELECT email FROM account WHERE id = p.own_id) AS email, "
-            + "(SELECT AVG(rating) FROM comment WHERE rela_id = pu.rela_id) AS rating FROM pending pe JOIN park_user pu ON pe.rela_id = pu.rela_id  "
+            + "(SELECT AVG(rating) FROM comment WHERE rela_id IN (SELECT rela_id FROM park_user WHERE park_id = p.park_id)) AS rating FROM pending pe JOIN park_user pu ON pe.rela_id = pu.rela_id  "
             + "JOIN park p ON pu.park_id = p.park_id WHERE pu.user_id = " + user_id + ";", {
             type: dbConnect.QueryTypes.SELECT
         }).then(result => {

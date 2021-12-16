@@ -26,6 +26,7 @@ import Layout from './LayOut';
 import { Rating } from '@mui/material';
 import { fetchHistoryParks, postDeleteHistorypark } from "../../redux/AccountActionCreators";
 import { connect } from "react-redux";
+import { useHistory } from 'react-router-dom';
 
 const mapStateToProps = state => {
 	return {
@@ -217,7 +218,8 @@ function HistoryPark(props) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  
+  const history = useHistory();
+
   React.useEffect(() => {
 		props.fetchHistoryParks();
 	}, []);
@@ -264,7 +266,7 @@ function HistoryPark(props) {
     setSelected(newSelected);
   };
   const handleRowClick = (event, id) => {
-    if (event.target.tagName != "INPUT") window.open("/user/park?id=" + id, "_blank");
+    if (event.target.tagName != "INPUT") history.push("/user/park?id=" + id + "&back=parking");
   }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

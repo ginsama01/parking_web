@@ -40,7 +40,7 @@ function RenderParkStatus(props) {
                 <Grid container rowSpacing={3} columnSpacing={2} style={{ marginTop: "10px" }}>
                     <Grid item xs={6}>
                         <Item>
-                            <h4><i class="fas fa-coins"></i> {park_status.price} K</h4>
+                            <h4><i class="fas fa-coins"></i> {park_status.price} đ</h4>
                             <p>Thành tiền</p>
                         </Item>
                     </Grid>

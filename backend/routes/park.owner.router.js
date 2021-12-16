@@ -134,7 +134,7 @@ ownRouter.route('/info/:id')
                 park_id: req.params.id
             }
         }).then(() => {
-            res.statusCode = 204;
+            res.statusCode = 200;
             res.json({ success: true });
         }, err => next(err))
             .catch(err => next(err));

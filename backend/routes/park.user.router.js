@@ -15,7 +15,7 @@ var lng = null;
 parkRouter.use(express.json());
 
 parkRouter.route('/')
-//fetch all park for marker
+    //fetch all park for marker
     .get((req, res, next) => {
         console.log(req.headers.origin);
         dbConnect.query("SELECT park_id, location, name FROM park WHERE isActivated = 1", {
@@ -90,7 +90,7 @@ parkRouter.route('/search')
                             if (Number(parkObj[i]['distance'].slice(0, -3)) > 10)
                                 parkObj.splice(i, 1);
                         }
-               
+
                         models.Search.create({ address: address, timein: timein, lat: lat, lng: lng, parks: parkObj })
                             .then(result => {
                                 res.statusCode = 200;
@@ -106,7 +106,7 @@ parkRouter.route('/search')
     });
 
 
-    //Fetch best park
+//Fetch best park
 parkRouter.route('/best')
     .get((req, res, next) => {
         if (req.query.search_id == 'null') {
@@ -122,12 +122,12 @@ parkRouter.route('/best')
                 res.setHeader('Content-Type', 'application/json');
                 res.json(bestPark.sort(sortByRate));
             }, err => next(err))
-            .catch(err => next(err));
+                .catch(err => next(err));
         }
     });
 
 
-    //Fetch cheap park
+//Fetch cheap park
 parkRouter.route('/cheap')
     .get((req, res, next) => {
         if (req.query.search_id == 'null') {
@@ -143,13 +143,13 @@ parkRouter.route('/cheap')
                 res.setHeader('Content-Type', 'application/json');
                 res.json(cheapPark.sort(sortByPrice));
             }, err => next(err))
-            .catch(err => next(err));
+                .catch(err => next(err));
         }
-        
+
     });
 
 
-    //Fetch near park
+//Fetch near park
 parkRouter.route('/near')
     .get((req, res, next) => {
         if (req.query.search_id == 'null') {
@@ -165,12 +165,12 @@ parkRouter.route('/near')
                 res.setHeader('Content-Type', 'application/json');
                 res.json(nearPark.sort(sortByDistance));
             }, err => next(err))
-            .catch(err => next(err));
+                .catch(err => next(err));
         }
-        
+
     });
 
-    //get mark for favorite
+//get mark for favorite
 parkRouter.route('/mark/:parkId')
     .get(async (req, res, next) => {
         if (!req.headers.authorization) {
@@ -193,9 +193,9 @@ parkRouter.route('/mark/:parkId')
     })
 
 function convert2digit(n) {
-    return n > 9 ? "" + n: "0" + n;
+    return n > 9 ? "" + n : "0" + n;
 }
-    //fetch status park
+//fetch status park
 parkRouter.route('/status/:parkId')
     .get(async (req, res, next) => {
         dbConnect.query("SELECT park_id, name, price, location, total_space AS totalSpace, total_space - total_in"
@@ -250,7 +250,7 @@ parkRouter.route('/status/:parkId')
             .catch((err) => next(err));
     });
 
-    //fetch info park
+//fetch info park
 parkRouter.route('/info/:parkId')
     .get((req, res, next) => {
         dbConnect.query("SELECT park_id, hasCamera, hasRoof, allowBooking, allowOvernight, description, image_url FROM park " +
@@ -289,13 +289,34 @@ parkRouter.route('/comment')
                             }, (err) => next(err))
                     }, (err) => next(err))
             } else {
-                comment['rela_id'] = result[0].rela_id;
-                models.Comment.create(comment)
-                    .then(comment => {
-                        res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json({ success: true, status: 'Post comment succesfully!' });
-                    }, (err) => next(err))
+
+                models.Comment.findOne({
+                    where: {
+                        rela_id: result[0].rela_id
+                    }
+                }).then((findcommend) => {
+                    if (findcommend) {
+                        models.Comment.update(comment, {
+                            where: {
+                                rela_id: result[0].rela_id
+                            }
+                        })
+                            .then(() => {
+                                res.statusCode = 200;
+                                res.setHeader('Content-Type', 'application/json');
+                                res.json({ success: true, status: 'Post comment succesfully!' });
+                            }, err => next(err))
+                    } else {
+                        comment['rela_id'] = result[0].rela_id;
+                        models.Comment.create(comment)
+                            .then(comment => {
+                                res.statusCode = 200;
+                                res.setHeader('Content-Type', 'application/json');
+                                res.json({ success: true, status: 'Post comment succesfully!' });
+                            }, (err) => next(err))
+                    }
+                }, err => next(err))
+
             }
         }, (err) => next(err))
             .catch(err => next(err))
@@ -304,7 +325,7 @@ parkRouter.route('/comment')
 //Fetch comment list of 1 park
 parkRouter.route('/comment/:parkId')
     .get((req, res, next) => {
-        dbConnect.query("SELECT c.cmt_id AS id, pu.park_id, c.rating, c.content, c.createdAt AS createTime, "
+        dbConnect.query("SELECT c.cmt_id AS id, pu.park_id, c.rating, c.content, c.updatedAt AS createTime, "
             + "(SELECT CONCAT(firstname, ' ', lastname) FROM account WHERE id = pu.user_id) AS author "
             + "FROM comment c JOIN park_user pu ON c.rela_id = pu.rela_id WHERE pu.park_id = " + req.params.parkId + ";", {
             type: dbConnect.QueryTypes.SELECT

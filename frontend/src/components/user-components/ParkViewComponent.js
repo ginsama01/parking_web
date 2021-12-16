@@ -46,12 +46,13 @@ const mapDispatchToProps = dispatch => ({
 function ParkView(props) {
 
     const theme = useTheme();
-    const [selectedPark, setSelectedPark] = React.useState(-1);
+    const [selectedPark, setSelectedPark] = React.useState(-2);
     const [isPostComment, setIsPostComment] = React.useState(false);
     const [isPostMark, setIsPostMark] = React.useState(false);
-    
+    const history = useHistory();
     const search = useLocation().search;
     const id = new URLSearchParams(search).get('id');
+    const back = new URLSearchParams(search).get('back');
 
     useEffect(() => {
         setSelectedPark(id);
@@ -78,6 +79,11 @@ function ParkView(props) {
                 props.fetchParkInfo(selectedPark);
                 props.fetchComments(selectedPark);
                 props.fetchMark(selectedPark);
+            } else if (selectedPark == -1) {
+                if (back) {
+                    console.log(back);
+                    history.push("/account/" + back);
+                }
             }
         }, [selectedPark]
     )
