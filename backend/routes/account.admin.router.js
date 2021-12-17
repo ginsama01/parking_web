@@ -11,7 +11,7 @@ accountRouter.use(express.json());
 accountRouter.route('/userinfo')
     .get(authenticate.verifyAdmin, (req, res, next) => {
         dbConnect.query("SELECT a.id, a.username, CONCAT(a.firstname, ' ', a.lastname) AS name, a.address, a.phone, a.email, u.isActivated, u.penalty"
-            + " FROM account a JOIN user u ON a.id = u.user_id;", {
+            + " FROM account a JOIN user u ON a.id = u.user_id ORDER BY u.penalty DESC;", {
             type: dbConnect.QueryTypes.SELECT
         }).then(result => {
             res.statusCode = 200;

@@ -280,6 +280,9 @@ ownRouter.route('/pending/:parkId')
                         res.statusCode = 200;
                         res.json({ sucess: true });
                     }, err => next(err));
+                } else {
+                    res.statusCode = 400;
+                    res.json({message: "Hiện tại không thể hủy"});
                 }
             }
         }, err => next(err))

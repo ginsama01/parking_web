@@ -71,6 +71,10 @@ Comment.belongsTo(Park_User, {
 });
 
 //Reference between favorite and park_user
+Park_User.hasMany(Favorite, {
+    foreignKey: 'rela_id',
+    sourceKey: 'rela_id'
+});
 Favorite.belongsTo(Park_User, {
     foreignKey: 'rela_id',
     targetKey: 'rela_id'
