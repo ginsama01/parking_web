@@ -3,11 +3,10 @@ const uploadRouter = express.Router();
 const { dbConnect } = require("../connectDB");
 const models = require('../models/models');
 const fs = require('fs');
-const sharp = require('sharp');
 var path = require('path');
+const sharp = require('sharp');
 
 uploadRouter.use(express.json());
-
 
 uploadRouter.route('/:parkId')
     .post((req, res, next) => {
@@ -59,10 +58,8 @@ uploadRouter.route('/:parkId')
                 }, err => next(err))
                 .catch(err => next(err));
         }, err => next(err))
-        .catch(err => next(err))
+            .catch(err => next(err))
 
     })
-
-
 
 module.exports = uploadRouter;

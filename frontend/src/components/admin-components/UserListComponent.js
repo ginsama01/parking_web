@@ -84,7 +84,7 @@ function UserList(props) {
         const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
         const filteredRows = users_rows.filter((row) => {
             return Object.keys(row).some((field) => {
-                return searchRegex.test(row[field].toString());
+                return searchRegex.test(row[field]);
             });
         });
         setRows(filteredRows);

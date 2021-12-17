@@ -18,10 +18,9 @@ parkRouter.route('/')
     //fetch all park for marker
     .get((req, res, next) => {
         console.log(req.headers.origin);
-        dbConnect.query("SELECT park_id, location, name FROM park WHERE isActivated = 1", {
+        dbConnect.query("SELECT park_id, location FROM park WHERE isActivated = 1", {
             type: dbConnect.QueryTypes.SELECT
         }).then((result) => {
-            console.log(result);
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(result);
@@ -87,6 +86,7 @@ parkRouter.route('/search')
                             parkObj[i]['rate'] = parkObj[i]['rate'] === null ? 0 : parkObj[i]['rate'];
                             parkObj[i]['image'] = parkObj[i]['image'] === null ? '' : parkObj[i]['image'];
                             parkObj[i]['image'] = parkObj[i]['image'].split(',')[0];
+                            parkObj[i]['distance'] = parkObj[i]['distance'].replace(',', '');
                             if (Number(parkObj[i]['distance'].slice(0, -3)) > 10)
                                 parkObj.splice(i, 1);
                         }
@@ -207,12 +207,16 @@ parkRouter.route('/status/:parkId')
             if (park['openTime'] == 'Cả ngày') {
                 park['isOpen'] = true;
             } else {
-                let currentHour = new Date().getHours();
+                let differentTimezone = (new Date().getTimezoneOffset() + 420) / 60;
+                let currentHour = new Date().getHours() + differentTimezone;
+                currentHour = currentHour >= 24 ? currentHour - 24 : currentHour;
                 let currentMinute = new Date().getMinutes();
                 let [start, end] = park['openTime'].split(" - ");
-                let startHour = new Date(Date.parse(start)).getHours();
+                let startHour = new Date(Date.parse(start)).getHours() + differentTimezone;
+                startHour = startHour >= 24 ? startHour - 24 : startHour;
                 let startMinute = new Date(Date.parse(start)).getMinutes();
-                let endHour = new Date(Date.parse(end)).getHours();
+                let endHour = new Date(Date.parse(end)).getHours() + differentTimezone;
+                endHour = endHour >= 24 ? endHour - 24 : endHour;
                 let endMinute = new Date(Date.parse(end)).getMinutes();
                 park['openTime'] = convert2digit(startHour) + ":" + convert2digit(startMinute) + " - " + convert2digit(endHour) + ":" + convert2digit(endMinute);
                 let startBool;
@@ -289,7 +293,6 @@ parkRouter.route('/comment')
                             }, (err) => next(err))
                     }, (err) => next(err))
             } else {
-
                 models.Comment.findOne({
                     where: {
                         rela_id: result[0].rela_id
@@ -316,7 +319,6 @@ parkRouter.route('/comment')
                             }, (err) => next(err))
                     }
                 }, err => next(err))
-
             }
         }, (err) => next(err))
             .catch(err => next(err))

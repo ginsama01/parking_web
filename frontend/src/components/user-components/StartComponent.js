@@ -22,7 +22,7 @@ const renderDateTimePicker = ({ input: { onChange, value }, showTime }) =>
 let SearchForm = props => {
     const { handleSubmit } = props;
     return (
-        <div className="row-content">
+        <div className="row-content" >
             <div className="title" style={{color:"white"}}>
                 <h2>Chào mừng bạn đến với Park Type</h2>
                 <p>Tìm và đặt trước bãi đỗ xe chỉ với vài thao tác đơn giản</p>
@@ -80,7 +80,7 @@ class Start extends Component {
 
     render() {
         return (
-            <div style={{backgroundImage: "url(/logo.jpg)"}}>
+            <div style={{backgroundImage: "url(/logo.jpg)", backgroundSize: '100% 100%'}}>
                 <SearchForm handleSubmit={this.handleSubmitSearch} />
             </div>
         );

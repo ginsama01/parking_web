@@ -6,6 +6,7 @@ import {
     NavbarBrand, Button
 } from "reactstrap";
 import { Logout } from "../redux/AuthenActionCreators";
+import { withRouter } from "react-router-dom";
 
 const mapDispatchToProps = dispatch => ({
     Logout: () => dispatch(Logout())
@@ -67,6 +68,7 @@ class Header extends Component {
         this.state = {
             isNavOpen: false
         }
+        this.handleClickBrand = this.handleClickBrand.bind(this);
     }
 
     toggleNav() {
@@ -75,12 +77,16 @@ class Header extends Component {
         });
     }
 
+    handleClickBrand() {
+        this.props.history.push("/");
+    }
+
     render() {
         return (
             <>
                 <Navbar expand="lg" style={{ backgroundColor: '#CEE5D0' }}>
                     <NavbarToggler onClick={this.toggleNav} />
-                    <NavbarBrand className="app-name ms-auto">Park Type</NavbarBrand>
+                    <NavbarBrand className="app-name ms-auto" onClick={this.handleClickBrand}>Park Type</NavbarBrand>
                     <Collapse isOpen={this.state.isNavOpen} navbar>
                         <Nav className="ms-auto" navbar>
                             <NavItem className="nav-header">
@@ -110,4 +116,4 @@ class Header extends Component {
 
 }
 
-export default Header;
+export default withRouter(Header);
