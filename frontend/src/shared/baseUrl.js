@@ -1,3 +1,3 @@
 export const baseUrl = 'http://localhost:8000/api/';
 export const baseImgUrl = 'http://localhost:8000/'
-export const googlemapKey = 'AIzaSyCQ_dsf_PPZ9B71B3SPZrvR6U7eIkVDkJg';
+export const googlemapKey = 'AIzaSyBXSjHp9ycXaGzsGVI9G_r7w6hbC4cbL9U';

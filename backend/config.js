@@ -6,5 +6,11 @@ module.exports = {
         clientSecret: 'a81abc197b5da607ee6eb3b2c492f441'
     },
     'cookieKey': '1234-4321',
-    'googlemapKey': 'AIzaSyCQ_dsf_PPZ9B71B3SPZrvR6U7eIkVDkJg'
+    'googlemapKey': 'AIzaSyBXSjHp9ycXaGzsGVI9G_r7w6hbC4cbL9U',
+    'sql': {
+        name: 'parking_web',
+        user: 'root',
+        pass: null,
+        host: 'localhost'
+    }
 }
