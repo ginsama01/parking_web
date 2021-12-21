@@ -15,7 +15,7 @@ Công nghệ sử dụng trong project:
 * [Reactjs](https://reactjs.org/)
 * [Nodejs](https://nodejs.dev/)
 * [Express](https://expressjs.com/)
-* [Postgresql](https://www.mysql.com/)
+* [Mysql](https://www.mysql.com/)
 ## Getting Started
 Để thiết lập và chạy một bản sao cục bộ, hãy làm theo các bước đơn giản sau.
 ### Prerequisites
