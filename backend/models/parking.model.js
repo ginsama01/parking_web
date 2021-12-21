@@ -3,16 +3,14 @@ const { dbConnect, DataTypes, Deferrable } = require('../connectDB');
 
 const Parking = dbConnect.define('parking', {
     parking_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
+        autoIncrement: true
     },
     rela_id: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.INTEGER,
         allowNull: false
-    },
-    outAt: {
-        type: DataTypes.DATE
     },
     status: {
         type: DataTypes.STRING(20),
@@ -23,8 +21,8 @@ const Parking = dbConnect.define('parking', {
 });
 
 
-dbConnect.sync().then(() => {
-    console.log('Parking model sync ok');
-}).catch(e => console.error(e));
+// dbConnect.sync().then(() => {
+//     console.log('Parking model sync ok');
+// }).catch(e => console.error(e));
 
 module.exports = Parking;

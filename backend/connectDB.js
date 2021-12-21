@@ -1,9 +1,9 @@
 const { Sequelize, DataTypes, Deferrable} = require('sequelize');
-
+var config = require('./config');
 
 // Option 3: Passing parameters separately (other dialects)
-const sequelize = new Sequelize('parking_web', 'root', null, {
-  host: 'localhost',
+const sequelize = new Sequelize(config.sql.name, config.sql.user, config.sql.pass, {
+  host: config.sql.host,
   dialect: 'mysql'
 });
 
