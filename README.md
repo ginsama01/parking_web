@@ -17,7 +17,7 @@ Công nghệ sử dụng trong project:
 * [Express](https://expressjs.com/)
 * [Postgresql](https://www.mysql.com/)
 ## Getting Started
-To get a local copy up and running follow these simple example steps.
+Để thiết lập và chạy một bản sao cục bộ, hãy làm theo các bước đơn giản sau.
 ### Prerequisites
 
 Bạn cần cài đặt những thứ dưới đây để có thể chạy project.
